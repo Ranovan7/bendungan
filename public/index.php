@@ -297,11 +297,14 @@ $app->group('/api', function() {
 });
 
 require __DIR__ . '/../src/main.php';
+require __DIR__ . '/../src/map.php';
 require __DIR__ . '/../src/user.php';
 require __DIR__ . '/../src/admin.php';
 require __DIR__ . '/../src/asset.php';
 require __DIR__ . '/../src/keamanan.php';
 require __DIR__ . '/../src/kegiatan.php';
+require __DIR__ . '/../src/bendungan.php';
+require __DIR__ . '/../src/embung.php';
 
 /**
  * # ROUTES BLOCK
