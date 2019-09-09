@@ -1,0 +1,11 @@
+{% extends 'layouts/master.html' %}
+
+{% block content %}
+    {% if user().role == '2' %}
+        <h1>Welcome - Petugas</h1>
+        <h3>You are not allowed to access this page</h3>
+    {% else %}
+        <h1>Welcome - Admin</h1>
+        <h3>You can View and Change the content of this page</h3>
+    {% endif %}
+{% endblock %}
