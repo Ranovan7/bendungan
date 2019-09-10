@@ -36,7 +36,7 @@ $app->post('/login', function(Request $request, Response $response, $args) {
 
     // die("Welcommmen {$user['username']}!");
     $this->flash->addMessage('messages', 'Berhasil Login');
-    return $this->response->withRedirect('/admin');
+    return $this->response->withRedirect('/operasi');
 });
 
 // generate admin, warning!

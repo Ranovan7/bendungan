@@ -320,7 +320,8 @@ $app->group('/api', function() {
 
 require __DIR__ . '/../src/main.php';
 require __DIR__ . '/../src/user.php';
-require __DIR__ . '/../src/admin.php';
+require __DIR__ . '/../src/lokasi.php';
+require __DIR__ . '/../src/operasi.php';
 require __DIR__ . '/../src/asset.php';
 require __DIR__ . '/../src/keamanan.php';
 require __DIR__ . '/../src/kegiatan.php';

@@ -1,0 +1,36 @@
+{% extends 'layouts/master.html' %}
+
+{% set title = "User" %}
+
+{% block css %}
+
+{% endblock %}
+
+{% block content %}
+    <section class="content-header">
+        <h1 class="text-danger">Delete Lokasi </h1>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <li class="breadcrumb-item"><a href="/lokasi/">Lokasi</a></li>
+            <li class="breadcrumb-item">{{ lokasi.nama }}</li>
+        </ol>
+    </section>
+    <div class="row">
+        <div class="col-md-6">
+            <form action="{{ path_for('lokasi.delete', {id:lokasi.id}) }}" method="POST">
+                Yakin akan menghapus user {{ lokasi.nama }}?
+                <a class="btn btn-primary" href="/lokasi/">
+                    Tidak
+                </a>
+                <input type="submit" class="btn-danger btn" value="Ya, Hapus">
+            </form>
+        </div>
+        <div class="col-md-6">
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+
+{% endblock %}

@@ -1,0 +1,97 @@
+{% extends 'layouts/master.html' %}
+
+{% set title = "Lokasi" %}
+
+{% block css %}
+
+{% endblock %}
+
+{% block content %}
+    <section class="content-header">
+        <h1>Lokasi
+            <a class="ml-5 btn-sm btn btn-outline-primary"
+                data-toggle="collapse" href="#form-add"
+                role="button" aria-expanded="false"
+                aria-controls="">
+                Tambah
+            </a>
+
+        </h1>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <li class="breadcrumb-item">Lokasi</li>
+        </ol>
+    </section>
+    <div class="row collapse" id="form-add">
+        <div class="col-md-6">
+            <h2>Tambah Pengamat</h2>
+            <form method="POST" action="{{ path_for('lokasi.add') }}">
+              <div class="form-group">
+                  <label for="nama">Nama</label>
+                  <input id="nama" name="nama" autofocus required class="form-control" type="text" value="">
+              </div>
+              <div class="form-group">
+                  <label for="kab">Kabupaten</label>
+                  <input id="kab" name="kab" required class="form-control" type="text" value="">
+              </div>
+              <div class="form-group">
+                  <label for="lbi">Irigasi</label>
+                  <input id="lbi" name="lbi" required class="form-control" type="number" step="0.1" value="">
+              </div>
+              <div class="form-group">
+                  <label for="volume">Tampungan</label>
+                  <input id="volume" name="volume" required class="form-control" type="number" step="0.1" value="">
+              </div>
+              <div class="form-group">
+                <input type="submit" class="btn btn-primary" value="Simpan">
+              </div>
+            </form>
+        </div>
+        <div class="col-md-6">
+        </div>
+    </div>
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+          <th>No</th>
+          <th>Nama</th>
+          <th>Kabupaten</th>
+          <th>LBI</th>
+          <th>Volume</th>
+          <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for l in lokasi %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ l.nama }}</td>
+            <td>{{ l.kab }}</td>
+            <td>{{ l.lbi }}</td>
+            <td>{{ l.volume }}</td>
+            <td>
+                <a href="{{ path_for('lokasi.detail', {id:l.id}) }}" class="small">
+                    Detail
+                </a>
+                <a href="{{ path_for('lokasi.delete', {id:l.id}) }}" class="float-right text-danger" title="DELETE">
+                    &times;
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block js %}
+    <!-- <script src=""></script>
+    <script>
+    $(document).ready(function() {
+        $('.editable').editable({
+            success: function(response, newValue) {
+                newValue = 'Atur Ulang Password';
+            }
+        });
+    })
+    </script> -->
+{% endblock %}
