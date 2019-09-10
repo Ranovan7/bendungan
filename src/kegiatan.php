@@ -14,13 +14,4 @@ $app->group('/kegiatan', function() use ($loggedinMiddleware) {
         return $this->view->render($response, 'kegiatan.html');
     })->setName('kegiatan');
 
-})->add(function(Request $request, Response $response, $next) {
-
-    $user = $request->getAttribute('user', null);
-    if ($user && $user['role'] == 2) {
-        $lokasi = $this->db->query("SELECT * FROM lokasi WHERE id={$user['lokasi_id']}")->fetch();
-        $request = $request->withAttribute('lokasi', $lokasi);
-    }
-
-    return $next($request, $response);
 })->add($loggedinMiddleware);

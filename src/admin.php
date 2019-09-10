@@ -5,7 +5,7 @@ use Slim\Http\Response;
 
 // Manage Operasi Bendungan
 
-$app->group('/admin', function() use ($loggedinMiddleware) {
+$app->group('/admin', function() use ($loggedinMiddleware, $petugasAuthorizationMiddleware) {
 
     $this->get('[/]', function(Request $request, Response $response, $args) {
         // get user yg didapat dari middleware
@@ -14,13 +14,15 @@ $app->group('/admin', function() use ($loggedinMiddleware) {
         return $this->view->render($response, 'admin.html');
     })->setName('admin');
 
-})->add(function(Request $request, Response $response, $next) {
+    $this->group('/add', function() {
 
-    $user = $request->getAttribute('user', null);
-    if ($user && $user['role'] == 2) {
-        $lokasi = $this->db->query("SELECT * FROM lokasi WHERE id={$user['lokasi_id']}")->fetch();
-        $request = $request->withAttribute('lokasi', $lokasi);
-    }
+        $this->get('/curahhujan', function(Request $request, Response $response, $args) {
+            // get user yg didapat dari middleware
+            // $user = $request->getAttribute('user');
 
-    return $next($request, $response);
+            return $this->view->render($response, 'admin/add.html');
+        })->setName('admin.add');
+
+    })->add($petugasAuthorizationMiddleware);
+
 })->add($loggedinMiddleware);

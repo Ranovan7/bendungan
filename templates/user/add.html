@@ -1,0 +1,63 @@
+{% extends 'layouts/master.html' %}
+
+{% set title = "User" %}
+
+{% block css %}
+
+{% endblock %}
+
+{% block content %}
+    <section class="content-header">
+        <h1>User </h1>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <li class="breadcrumb-item">User</li>
+        </ol>
+    </section>
+    <div class="row">
+        <div class="col-md-6">
+            <form method="POST" action="{{ path_for('user.add') }}">
+              {{ pengamatform.hidden_tag() }}
+              <div class="form-group">
+                  <label for="username">Username</label>
+                  <input autofocus required class="form-control" type="text" id="username" name="username" value="">
+                  <small id="usernameHelpBlock" class="form-text text-muted">
+                      Username harus huruf kecil, tanpa spasi, gunakan alfabet
+                  </small>
+              </div>
+              <div class="form-group">
+                  <label for="password">Password</label>
+                  <input class="form-control" type="text" id="password" name="password" value="">
+              </div>
+              <div class="form-group">
+                  <label for="role">Role</label>
+                  <select class="form-control" id="role" name="role">
+                      <option value="1">Admin</option>
+                      <option value="2">Petugas</option>
+                      <option value="3">Pelaksana Teknis</option>
+                      <option value="4">Management</option>
+                  </select>
+              </div>
+              <div class="form-group">
+                  <label for="lokasi">Lokasi</label>
+                  <select class="form-control" id="lokasi" name="lokasi">
+                      <option value="">No Lokasi</option>
+                      {% for l in lokasi %}
+                            <option value="{{ l.id }}">{{ l.nama }}</option>
+                      {% endfor %}
+                  </select>
+              </div>
+              <div class="form-group">
+                <input type="submit" class="btn btn-primary">
+              </div>
+            </form>
+        </div>
+        <div class="col-md-6">
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+
+{% endblock %}

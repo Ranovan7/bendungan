@@ -1,11 +1,133 @@
 {% extends 'layouts/master.html' %}
 
+{% set title = "User" %}
+
+{% block css %}
+
+{% endblock %}
+
 {% block content %}
-    {% if user().role == '2' %}
-        <h1>Welcome - Petugas</h1>
-        <h3>You are not allowed to access this page</h3>
-    {% else %}
-        <h1>Welcome - Admin</h1>
-        <h3>You can View and Change the content of this page</h3>
-    {% endif %}
+    <section class="content-header">
+        <h1>User
+            <a class="ml-5 btn-sm btn btn-outline-primary"
+                data-toggle="collapse" href="#form-add"
+                role="button" aria-expanded="false"
+                aria-controls="">
+                Tambah
+            </a>
+
+        </h1>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <li class="breadcrumb-item">User</li>
+        </ol>
+    </section>
+    <div class="row collapse" id="form-add">
+        <div class="col-md-6">
+            <h2>Tambah Pengamat</h2>
+            <form method="POST" action="{{ path_for('user.add') }}">
+              {{ pengamatform.hidden_tag() }}
+              <div class="form-group">
+                  <label for="username">Username</label>
+                  <input autofocus required class="form-control" type="text" id="username" name="username" value="">
+                  <small id="usernameHelpBlock" class="form-text text-muted">
+                      Username harus huruf kecil, tanpa spasi, gunakan alfabet
+                  </small>
+              </div>
+              <div class="form-group">
+                  <label for="password">Password</label>
+                  <input class="form-control" type="text" id="password" name="password" value="">
+              </div>
+              <div class="form-group">
+                  <label for="role">Role</label>
+                  <select class="form-control" id="role" name="role">
+                      <option value="1">Admin</option>
+                      <option value="2">Petugas</option>
+                      <option value="3">Pelaksana Teknis</option>
+                      <option value="4">Management</option>
+                  </select>
+              </div>
+              <div class="form-group">
+                  <label for="lokasi">Lokasi</label>
+                  <select class="form-control" id="lokasi" name="lokasi">
+                      <option value="">No Lokasi</option>
+                      {% for l in lokasi %}
+                        <option value="{{ l.id }}">
+                            {{ l.nama }}
+                            {% if l.jenis == '1' or l.jenis == '4' %}
+                                (CH)
+                            {% elseif l.jenis == '2' %}
+                                (TMA)
+                            {% endif %}
+                        </option>
+                      {% endfor %}
+                  </select>
+              </div>
+              <div class="form-group">
+                <input type="submit" class="btn btn-primary" value="Simpan">
+              </div>
+            </form>
+        </div>
+        <div class="col-md-6">
+        </div>
+    </div>
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+          <th>No</th>
+          <th>Username</th>
+          <th>Peran</th>
+          <th>Lokasi Pos</th>
+          <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for u in users %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ u.username }}</td>
+            {% if u.role == "1" %}
+                <td>Admin</td>
+            {% elseif u.role == "2" %}
+                <td>Petugas</td>
+            {% elseif u.role == "3" %}
+                <td>Pelaksana Teknis</td>
+            {% elseif u.role == "4" %}
+                <td>Management</td>
+            {% endif %}
+            <td>
+                {{ u.lokasi_nama }}
+                {% if u.lokasi_jenis == '1' or u.lokasi_jenis == '4' %}
+                    (CH)
+                {% elseif u.lokasi_jenis == '2' %}
+                    (TMA)
+                {% endif %}
+            </td>
+            <td>
+                <a href="{{ path_for('user.password', {id:u.id}) }}" class="small">
+                    Atur Ulang Password
+                </a>
+                {% if u.username != 'admin' %}
+                    <a href="{{ path_for('user.delete', {id:u.id}) }}" class="float-right text-danger" title="DELETE">
+                        &times;
+                    </a>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block js %}
+    <!-- <script src=""></script>
+    <script>
+    $(document).ready(function() {
+        $('.editable').editable({
+            success: function(response, newValue) {
+                newValue = 'Atur Ulang Password';
+            }
+        });
+    })
+    </script> -->
 {% endblock %}

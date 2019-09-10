@@ -169,7 +169,7 @@ $container['user'] = function($c) {
 	}
 
     // hide password, just because
-	$stmt = $c->db->prepare("SELECT id,username,role,lokasi_id FROM public.user WHERE id=:id");
+	$stmt = $c->db->prepare("SELECT id,username,role,lokasi_id FROM users WHERE id=:id");
 	$stmt->execute([':id' => $user_id]);
 	$user = $stmt->fetch();
 	return $user ?: null;
@@ -205,6 +205,28 @@ $loggedinMiddleware = function(Request $request, Response $response, $next) {
 
     // inject user ke dalam request agar bisa diakses di route
     $request = $request->withAttribute('user', $user);
+
+    return $next($request, $response);
+};
+
+$petugasAuthorizationMiddleware = function(Request $request, Response $response, $next) {
+    // get user yg didapat dari middleware
+    $user = $request->getAttribute('user');
+
+    if ($user['role'] != '2') {
+        return $this->response->withRedirect('/forbidden');
+    }
+
+    return $next($request, $response);
+};
+
+$adminAuthorizationMiddleware = function(Request $request, Response $response, $next) {
+    // get user yg didapat dari middleware
+    $user = $request->getAttribute('user');
+
+    if ($user['role'] != '1') {
+        return $this->response->withRedirect('/forbidden');
+    }
 
     return $next($request, $response);
 };
@@ -297,14 +319,11 @@ $app->group('/api', function() {
 });
 
 require __DIR__ . '/../src/main.php';
-require __DIR__ . '/../src/map.php';
 require __DIR__ . '/../src/user.php';
 require __DIR__ . '/../src/admin.php';
 require __DIR__ . '/../src/asset.php';
 require __DIR__ . '/../src/keamanan.php';
 require __DIR__ . '/../src/kegiatan.php';
-require __DIR__ . '/../src/bendungan.php';
-require __DIR__ . '/../src/embung.php';
 
 /**
  * # ROUTES BLOCK
