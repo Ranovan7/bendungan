@@ -7,7 +7,7 @@ use Slim\Http\Response;
 
 // home
 $app->get('/', function(Request $request, Response $response, $args) {
-    return $this->response->withRedirect('/admin');
+    return $this->response->withRedirect('/operasi');
     // return $this->view->render($response, 'main/index.html');
 });
 

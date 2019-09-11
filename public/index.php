@@ -169,7 +169,7 @@ $container['user'] = function($c) {
 	}
 
     // hide password, just because
-	$stmt = $c->db->prepare("SELECT id,username,role,lokasi_id FROM users WHERE id=:id");
+	$stmt = $c->db->prepare("SELECT id,username,role,waduk_id FROM users WHERE id=:id");
 	$stmt->execute([':id' => $user_id]);
 	$user = $stmt->fetch();
 	return $user ?: null;
@@ -320,7 +320,7 @@ $app->group('/api', function() {
 
 require __DIR__ . '/../src/main.php';
 require __DIR__ . '/../src/user.php';
-require __DIR__ . '/../src/lokasi.php';
+require __DIR__ . '/../src/waduk.php';
 require __DIR__ . '/../src/operasi.php';
 require __DIR__ . '/../src/asset.php';
 require __DIR__ . '/../src/keamanan.php';

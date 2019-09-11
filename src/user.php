@@ -8,13 +8,13 @@ use Slim\Http\Response;
 $app->group('/user', function() use ($loggedinMiddleware, $adminAuthorizationMiddleware) {
 
     $this->get('[/]', function(Request $request, Response $response, $args) {
-        $lokasi = $this->db->query("SELECT * FROM lokasi")->fetchAll();
-        // $user = $this->db->query("SELECT users.*, lokasi.nama AS lokasi_nama, lokasi.jenis AS lokasi_jenis
+        $waduk = $this->db->query("SELECT * FROM waduk")->fetchAll();
+        // $user = $this->db->query("SELECT users.*, waduk.nama AS waduk_nama, waduk.jenis AS waduk_jenis
         //                             FROM users
-        //                             LEFT JOIN lokasi ON users.lokasi_id=lokasi.id")->fetchAll();
+        //                             LEFT JOIN waduk ON users.waduk_id=waduk.id")->fetchAll();
         $user = $this->db->query("SELECT * FROM users")->fetchAll();
         return $this->view->render($response, 'user/index.html', [
-            'lokasi' => $lokasi,
+            'waduk' => $waduk,
             'users' => $user
         ]);
 
@@ -31,13 +31,13 @@ $app->group('/user', function() use ($loggedinMiddleware, $adminAuthorizationMid
             $form = $request->getParams();
             // echo $form['username'];
             // echo $form['password'];
-            // echo $form['lokasi'];
-            if ($form['lokasi']) {
-                $stmt = $this->db->prepare("INSERT INTO users (username, password, role, lokasi_id) VALUES (:username, :password, :role, :lokasi_id)");
+            // echo $form['waduk'];
+            if ($form['waduk']) {
+                $stmt = $this->db->prepare("INSERT INTO users (username, password, role, waduk_id) VALUES (:username, :password, :role, :waduk_id)");
                 $stmt->execute([
                     ':username' => $form['username'],
                     ':password' => password_hash($form['password'], PASSWORD_DEFAULT),
-                    ':lokasi_id' => $form['lokasi'],
+                    ':waduk_id' => $form['waduk'],
                     ':role' => $form['role']
                 ]);
             } else {
