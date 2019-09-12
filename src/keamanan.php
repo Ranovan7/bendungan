@@ -17,19 +17,55 @@ $app->group('/keamanan', function() use ($loggedinMiddleware, $petugasAuthorizat
     $this->group('/{id}', function() {
 
         $this->get('[/]', function(Request $request, Response $response, $args) {
+            $hari = $request->getParam('sampling', date('Y-m-d'));
             $id = $request->getAttribute('id');
             $waduk = $this->db->query("SELECT * FROM waduk WHERE id={$id}")->fetch();
             $vnotch = $this->db->query("SELECT * FROM vnotch WHERE waduk_id={$id}")->fetchAll();
             $piezometer = $this->db->query("SELECT * FROM piezometer WHERE waduk_id={$id}")->fetchAll();
-            $v_periodik = $this->db->query("SELECT * FROM periodik_keamanan WHERE keamanan_type='vnotch' AND waduk_id={$id}")->fetchAll();
-            $p_periodik = $this->db->query("SELECT * FROM periodik_keamanan WHERE keamanan_type='piezometer' AND waduk_id={$id}")->fetchAll();
+
+            $month = $prev_date = date('m', strtotime($request->getParam('sampling', date('Y-m-d'))));
+            $year = $prev_date = date('Y', strtotime($request->getParam('sampling', date('Y-m-d'))));
+            $periodik = $this->db->query("SELECT * FROM periodik_keamanan
+                                            WHERE waduk_id={$id}
+                                                AND EXTRACT(MONTH FROM sampling)={$month}
+                                                AND EXTRACT(YEAR FROM sampling)={$year}")->fetchAll();
+
+            # make vnotch and piezometer name easier to get
+            $vnotch_q = [];
+            $piezometer_q = [];
+            foreach ($vnotch as $v) {
+                $vnotch_q[$v['id']] = $v['nama'];
+            }
+            foreach ($piezometer as $p) {
+                $piezometer_q[$p['id']] = $p['nama'];
+            }
+
+            # prepare preview data
+            $v_periodik = [];
+            $p_periodik = [];
+            foreach ($periodik as $per) {
+                $tanggal = tanggal_format(strtotime($per['sampling']));
+                if ($per['keamanan_type'] == 'vnotch') {
+                    $v_periodik[$tanggal][] = [
+                        'nama' => $vnotch_q[$per['keamanan_id']],
+                        'tma' => $per['tma'],
+                        'debit' => $per['debit']
+                    ];
+                } else {
+                    $p_periodik[$tanggal][] = [
+                        'nama' => $piezometer_q[$per['keamanan_id']],
+                        'tma' => $per['tma']
+                    ];
+                }
+            }
 
             return $this->view->render($response, 'keamanan/bendungan.html', [
                 'waduk' => $waduk,
                 'vnotch' => $vnotch,
                 'piezometer' => $piezometer,
                 'v_periodik' => $v_periodik,
-                'p_periodik' => $p_periodik
+                'p_periodik' => $p_periodik,
+                'sampling' => tanggal_format(strtotime($hari)),
             ]);
         })->setName('keamanan.bendungan');
 
@@ -61,12 +97,12 @@ $app->group('/keamanan', function() use ($loggedinMiddleware, $petugasAuthorizat
                     }
                     $tma = $form["tma-{$v['id']}"];
                     $debit = $form["debit-{$v['id']}"];
-                    $values .= "({$tma}, {$debit}, 'vnotch', {$v['id']}, {$id})";
+                    $values .= "('{$hari}' ,{$tma}, {$debit}, 'vnotch', {$v['id']}, {$id})";
                 }
 
                 // echo $values;
                 $stmt = $this->db->query("INSERT INTO periodik_keamanan
-                                            (tma, debit, keamanan_type, keamanan_id, waduk_id)
+                                            (sampling, tma, debit, keamanan_type, keamanan_id, waduk_id)
                                         VALUES
                                             {$values}");
 
@@ -101,12 +137,12 @@ $app->group('/keamanan', function() use ($loggedinMiddleware, $petugasAuthorizat
                         $values .= ' ,';
                     }
                     $tma = $form["tma-{$p['id']}"];
-                    $values .= "({$tma}, 'piezometer', {$p['id']}, {$id})";
+                    $values .= "('{$hari}' ,{$tma}, 'piezometer', {$p['id']}, {$id})";
                 }
 
                 // die($values);
                 $stmt = $this->db->query("INSERT INTO periodik_keamanan
-                                            (tma, keamanan_type, keamanan_id, waduk_id)
+                                            (sampling, tma, keamanan_type, keamanan_id, waduk_id)
                                         VALUES
                                             {$values}");
 

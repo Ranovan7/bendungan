@@ -17,7 +17,7 @@
     </section>
     <div class="row">
         <div class="col-md-6">
-            <form method="POST" action="{{ path_for('keamanan.vnotch.add', {'id': waduk.id}) }}">
+            <form method="POST" action="{{ path_for('keamanan.vnotch.add', {'id': waduk.id}, {'sampling': sampling}) }}">
                 <div class="form-control">
                     <span id="datepicker"><i class="fas fa-calendar mr-2 text-right"></i> {{ sampling }}</span>
                 </div>
