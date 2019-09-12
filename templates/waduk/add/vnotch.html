@@ -1,0 +1,47 @@
+{% extends 'layouts/master.html' %}
+
+{% set title = "Waduk" %}
+
+{% block css %}
+
+{% endblock %}
+
+{% block content %}
+    <section class="content-header">
+        <h1>Waduk </h1>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <li class="breadcrumb-item"><a href="/waduk">Home</a></li>
+            <li class="breadcrumb-item"><a href="{{ path_for('waduk.detail', {'id': waduk.id}) }}">{{ waduk.nama }}</a></li>
+            <li class="breadcrumb-item">Add VNotch</li>
+        </ol>
+    </section>
+    <div class="row">
+        <div class="col-md-6">
+            <form method="POST" action="{{ path_for('waduk.add.vnotch', {'id': waduk.id}) }}">
+                <div class="form-group">
+                    <label for="nama">Nama</label>
+                    <input id="nama" name="nama" autofocus required class="form-control" type="text" value="">
+                </div>
+                <div class="form-group">
+                    <label for="pjg_sal">Panjang Saluran</label>
+                    <input id="pjg_sal" name="pjg_sal" autofocus required class="form-control" type="number" step="0.1" value="">
+                </div>
+                <div class="form-group">
+                    <label for="bts_remb">Batas Rembesan</label>
+                    <input id="bts_remb" name="bts_remb" autofocus required class="form-control" type="number" step="0.1" value="">
+                </div>
+              <div class="form-group">
+                <input type="submit" class="btn btn-primary">
+              </div>
+            </form>
+        </div>
+        <div class="col-md-6">
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+
+{% endblock %}

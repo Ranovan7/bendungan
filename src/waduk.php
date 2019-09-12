@@ -57,21 +57,25 @@ $app->group('/waduk', function() use ($loggedinMiddleware, $adminAuthorizationMi
             $this->flash->addMessage('messages', 'Berhasil Menambah Waduk');
             return $this->response->withRedirect('/waduk');
         })->setName('waduk.add');
+
     });
 
     $this->group('/{id}', function() {
 
         // change password
-        $this->get('/detail', function(Request $request, Response $response, $args) {
+        $this->get('[/]', function(Request $request, Response $response, $args) {
             $id = $request->getAttribute('id');
             $waduk = $this->db->query("SELECT * FROM waduk WHERE id={$id}")->fetch();
+
+            $vnotch = $this->db->query("SELECT * FROM vnotch WHERE waduk_id={$id}")->fetch();
+            $piezometer = $this->db->query("SELECT * FROM piezometer WHERE waduk_id={$id}")->fetch();
 
             return $this->view->render($response, 'waduk/detail.html', [
                 'waduk' => $waduk
             ]);
         })->setName('waduk.detail');
 
-        $this->post('/detail', function(Request $request, Response $response, $args) {
+        $this->post('[/]', function(Request $request, Response $response, $args) {
             $id = $request->getAttribute('id');
             $form = $request->getParams();
 
@@ -120,6 +124,71 @@ $app->group('/waduk', function() use ($loggedinMiddleware, $adminAuthorizationMi
             // die("User {$user['username']} dihapus!"); // change to redirect next
             return $this->response->withRedirect('/waduk');
         })->setName('waduk.delete');
+
+        # adding vnotch and piezometer
+        $this->group('/add', function() {
+
+            $this->get('/vnotch', function(Request $request, Response $response, $args) {
+                $id = $request->getAttribute('id');
+                $waduk = $this->db->query("SELECT * FROM waduk WHERE id={$id}")->fetch();
+
+                return $this->view->render($response, 'waduk/add/vnotch.html', [
+                    'waduk' => $waduk
+                ]);
+            })->setName('waduk.add.vnotch');
+
+            $this->post('/vnotch', function(Request $request, Response $response, $args) {
+                $id = $request->getAttribute('id');
+                $waduk = $this->db->query("SELECT * FROM waduk WHERE id={$id}")->fetch();
+
+                $form = $request->getParams();
+
+                $stmt = $this->db->prepare("INSERT INTO vnotch
+                                        (nama, panjang_saluran, bts_rembesan, waduk_id)
+                                        VALUES
+                                        (:nama, :panjang_saluran, :bts_rembesan, :waduk_id)");
+                $stmt->execute([
+                    ':nama' => $form['nama'],
+                    ':waduk_id' => $id,
+                    ':panjang_saluran' => empty($form['panjang_saluran']) ? 0 : $form['panjang_saluran'],
+                    ':bts_rembesan' => empty($form['bts_rembesan']) ? 0 : $form['bts_rembesan'],
+                ]);
+
+                $this->flash->addMessage('messages', 'VNotch Berhasil Ditambahkan');
+                $this->response->withRedirect($this->router->pathFor('waduk.detail', ['id'=>$id]));
+            })->setName('waduk.add.vnotch');
+
+            $this->get('/piezometer', function(Request $request, Response $response, $args) {
+                $id = $request->getAttribute('id');
+                $waduk = $this->db->query("SELECT * FROM waduk WHERE id={$id}")->fetch();
+
+                return $this->view->render($response, 'waduk/add/piezometer.html', [
+                    'waduk' => $waduk
+                ]);
+            })->setName('waduk.add.piezometer');
+
+            $this->post('/piezometer', function(Request $request, Response $response, $args) {
+                $id = $request->getAttribute('id');
+                $waduk = $this->db->query("SELECT * FROM waduk WHERE id={$id}")->fetch();
+
+                $form = $request->getParams();
+
+                $stmt = $this->db->prepare("INSERT INTO piezometer
+                                        (nama, elev_dasar_pipa, panjang_pipa, bts_tekanan_pori, waduk_id)
+                                        VALUES
+                                        (:nama, :elev_dasar_pipa, :panjang_pipa, :bts_tekanan_pori, :waduk_id)");
+                $stmt->execute([
+                    ':nama' => $form['nama'],
+                    ':waduk_id' => $id,
+                    ':elev_dasar_pipa' => empty($form['elev_dasar_pipa']) ? 0 : $form['elev_dasar_pipa'],
+                    ':panjang_pipa' => empty($form['panjang_pipa']) ? 0 : $form['panjang_pipa'],
+                    ':bts_tekanan_pori' => empty($form['bts_tekanan_pori']) ? 0 : $form['bts_tekanan_pori'],
+                ]);
+
+                $this->flash->addMessage('messages', 'Piezometer Berhasil Ditambahkan');
+                $this->response->withRedirect($this->urlFor('waduk.detail', $id));
+            })->setName('waduk.add.piezometer');
+        });
     });
 
 })->add($adminAuthorizationMiddleware)->add($loggedinMiddleware);
