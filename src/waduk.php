@@ -67,11 +67,13 @@ $app->group('/waduk', function() use ($loggedinMiddleware, $adminAuthorizationMi
             $id = $request->getAttribute('id');
             $waduk = $this->db->query("SELECT * FROM waduk WHERE id={$id}")->fetch();
 
-            $vnotch = $this->db->query("SELECT * FROM vnotch WHERE waduk_id={$id}")->fetch();
-            $piezometer = $this->db->query("SELECT * FROM piezometer WHERE waduk_id={$id}")->fetch();
+            $vnotch = $this->db->query("SELECT * FROM vnotch WHERE waduk_id={$id}")->fetchAll();
+            $piezometer = $this->db->query("SELECT * FROM piezometer WHERE waduk_id={$id}")->fetchAll();
 
             return $this->view->render($response, 'waduk/detail.html', [
-                'waduk' => $waduk
+                'waduk' => $waduk,
+                'vnotch' => $vnotch,
+                'piezometer' => $piezometer
             ]);
         })->setName('waduk.detail');
 
@@ -125,21 +127,22 @@ $app->group('/waduk', function() use ($loggedinMiddleware, $adminAuthorizationMi
             return $this->response->withRedirect('/waduk');
         })->setName('waduk.delete');
 
-        # adding vnotch and piezometer
-        $this->group('/add', function() {
+        // vnotch
+        $this->group('/vnotch', function() {
 
-            $this->get('/vnotch', function(Request $request, Response $response, $args) {
+            $this->get('/add', function(Request $request, Response $response, $args) {
                 $id = $request->getAttribute('id');
+                $vnotch_id = $request->getAttribute('vnotch_id');
                 $waduk = $this->db->query("SELECT * FROM waduk WHERE id={$id}")->fetch();
 
                 return $this->view->render($response, 'waduk/add/vnotch.html', [
                     'waduk' => $waduk
                 ]);
-            })->setName('waduk.add.vnotch');
+            })->setName('waduk.vnotch.add');
 
-            $this->post('/vnotch', function(Request $request, Response $response, $args) {
+            $this->post('/add', function(Request $request, Response $response, $args) {
                 $id = $request->getAttribute('id');
-                $waduk = $this->db->query("SELECT * FROM waduk WHERE id={$id}")->fetch();
+                // $waduk = $this->db->query("SELECT * FROM waduk WHERE id={$id}")->fetch();
 
                 $form = $request->getParams();
 
@@ -155,19 +158,38 @@ $app->group('/waduk', function() use ($loggedinMiddleware, $adminAuthorizationMi
                 ]);
 
                 $this->flash->addMessage('messages', 'VNotch Berhasil Ditambahkan');
-                $this->response->withRedirect($this->router->pathFor('waduk.detail', ['id'=>$id]));
-            })->setName('waduk.add.vnotch');
+                return $this->response->withRedirect($this->router->pathFor('waduk.detail', ['id' => $id]));
+            })->setName('waduk.vnotch.add');
 
-            $this->get('/piezometer', function(Request $request, Response $response, $args) {
+            $this->group('/{vnotch_id}', function() {
+
+                $this->get('/del', function(Request $request, Response $response, $args) {
+                    $id = $request->getAttribute('id');
+                    $vnotch_id = $request->getAttribute('vnotch_id');
+                    $user = $user = $this->db->query("SELECT * FROM vnotch WHERE id={$vnotch_id}")->fetch();
+                    $stmt = $this->db->prepare("DELETE FROM vnotch WHERE id=:id");
+                    $stmt->execute([
+                        ':id' => $vnotch_id
+                    ]);
+
+                    $this->flash->addMessage('messages', 'VNotch Berhasil Dihapus');
+                    return $this->response->withRedirect($this->router->pathFor('waduk.detail', ['id' => $id]));
+                })->setName('waduk.vnotch.delete');
+            });
+        });
+
+        $this->group('/piezometer', function() {
+
+            $this->get('/add', function(Request $request, Response $response, $args) {
                 $id = $request->getAttribute('id');
                 $waduk = $this->db->query("SELECT * FROM waduk WHERE id={$id}")->fetch();
 
                 return $this->view->render($response, 'waduk/add/piezometer.html', [
                     'waduk' => $waduk
                 ]);
-            })->setName('waduk.add.piezometer');
+            })->setName('waduk.piezometer.add');
 
-            $this->post('/piezometer', function(Request $request, Response $response, $args) {
+            $this->post('/add', function(Request $request, Response $response, $args) {
                 $id = $request->getAttribute('id');
                 $waduk = $this->db->query("SELECT * FROM waduk WHERE id={$id}")->fetch();
 
@@ -186,8 +208,8 @@ $app->group('/waduk', function() use ($loggedinMiddleware, $adminAuthorizationMi
                 ]);
 
                 $this->flash->addMessage('messages', 'Piezometer Berhasil Ditambahkan');
-                $this->response->withRedirect($this->urlFor('waduk.detail', $id));
-            })->setName('waduk.add.piezometer');
+                return $this->response->withRedirect($this->router->pathFor('waduk.detail', ['id' => $id], []));
+            })->setName('waduk.piezometer.add');
         });
     });
 

@@ -14,15 +14,4 @@ $app->group('/operasi', function() use ($loggedinMiddleware, $petugasAuthorizati
         return $this->view->render($response, 'admin.html');
     })->setName('operasi');
 
-    $this->group('/add', function() {
-
-        $this->get('/curahhujan', function(Request $request, Response $response, $args) {
-            // get user yg didapat dari middleware
-            // $user = $request->getAttribute('user');
-
-            return $this->view->render($response, 'operasi/add.html');
-        })->setName('operasi.add');
-
-    })->add($petugasAuthorizationMiddleware);
-
 })->add($loggedinMiddleware);

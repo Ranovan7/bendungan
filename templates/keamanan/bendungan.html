@@ -1,0 +1,42 @@
+{% extends 'layouts/master.html' %}
+
+{% block content %}
+    <h3>{{ waduk.nama }}</h3>
+    <h5>VNotch</h5>
+    <table>
+        <thead>
+            <tr>
+                {% for v in vnotch %}
+                    <td>{{ v.nama }}-{{ v.id }}</td>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for v in v_periodik %}
+                <tr>
+                    <td>{{ v.keamanan_id }}-{{ v.keamanan_type }}: {{ v.tma }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <hr>
+
+    <h5>Piezometer</h5>
+    <table>
+        <thead>
+            <tr>
+                {% for p in piezometer %}
+                    <td>{{ p.nama }}-{{ p.id }}</td>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in p_periodik %}
+                <tr>
+                    <td>{{ p.keamanan_id }}-{{ p.keamanan_type }}: {{ p.tma }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

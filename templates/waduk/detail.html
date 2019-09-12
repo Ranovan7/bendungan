@@ -92,7 +92,7 @@
             </section>
             <div class="row container">
                 <div class="collapse" id="form-add-vnotch">
-                    <form method="POST" action="{{ path_for('waduk.add.vnotch', {'id': waduk.id}) }}">
+                    <form method="POST" action="{{ path_for('waduk.vnotch.add', {'id': waduk.id}) }}">
                         <div class="form-group">
                             <label for="nama">Nama</label>
                             <input id="nama" name="nama" autofocus required class="form-control" type="text" value="">
@@ -128,7 +128,7 @@
                             <a href="#" class="small">
                                 Detail
                             </a>
-                            <a href="#" class="float-right text-danger" title="DELETE">
+                            <a href="{{ path_for('waduk.vnotch.delete', {'id': waduk.id, 'vnotch_id': v.id}) }}" class="float-right text-danger" title="DELETE">
                                 &times;
                             </a>
                         </td>
@@ -149,7 +149,7 @@
             </section>
             <div class="row container">
                 <div class="collapse" id="form-add-piezometer">
-                    <form method="POST" action="{{ path_for('waduk.add.piezometer', {'id': waduk.id}) }}">
+                    <form method="POST" action="{{ path_for('waduk.piezometer.add', {'id': waduk.id}) }}">
                         <div class="form-group">
                             <label for="nama">Nama</label>
                             <input id="nama" name="nama" autofocus required class="form-control" type="text" value="">
