@@ -25,7 +25,7 @@ $app->group('/keamanan', function() use ($loggedinMiddleware, $petugasAuthorizat
 
             $month = $prev_date = date('m', strtotime($request->getParam('sampling', date('Y-m-d'))));
             $year = $prev_date = date('Y', strtotime($request->getParam('sampling', date('Y-m-d'))));
-            $periodik = $this->db->query("SELECT * FROM periodik_keamanan
+            $keamanan = $this->db->query("SELECT * FROM periodik_keamanan
                                             WHERE waduk_id={$id}
                                                 AND EXTRACT(MONTH FROM sampling)={$month}
                                                 AND EXTRACT(YEAR FROM sampling)={$year}")->fetchAll();
@@ -41,30 +41,32 @@ $app->group('/keamanan', function() use ($loggedinMiddleware, $petugasAuthorizat
             }
 
             # prepare preview data
-            $v_periodik = [];
-            $p_periodik = [];
-            foreach ($periodik as $per) {
-                $tanggal = tanggal_format(strtotime($per['sampling']));
-                if ($per['keamanan_type'] == 'vnotch') {
-                    $v_periodik[$tanggal][] = [
-                        'nama' => $vnotch_q[$per['keamanan_id']],
-                        'tma' => $per['tma'],
-                        'debit' => $per['debit']
+            $periodik = [];
+            foreach ($keamanan as $i => $k) {
+                $tanggal = date('d M Y', strtotime($k['sampling']));
+                if (!$periodik[$tanggal]['id']) {
+                $periodik[$tanggal]['id'] = $i;
+                }
+
+                if ($k['keamanan_type'] == 'vnotch') {
+                    $periodik[$tanggal]['vnotch'][] = [
+                        'nama' => $vnotch_q[$k['keamanan_id']],
+                        'tma' => $k['tma'],
+                        'debit' => $k['debit']
                     ];
                 } else {
-                    $p_periodik[$tanggal][] = [
-                        'nama' => $piezometer_q[$per['keamanan_id']],
-                        'tma' => $per['tma']
+                    $periodik[$tanggal]['piezometer'][] = [
+                        'nama' => $piezometer_q[$k['keamanan_id']],
+                        'tma' => $k['tma']
                     ];
                 }
             }
-
+            krsort($periodik);
             return $this->view->render($response, 'keamanan/bendungan.html', [
                 'waduk' => $waduk,
                 'vnotch' => $vnotch,
                 'piezometer' => $piezometer,
-                'v_periodik' => $v_periodik,
-                'p_periodik' => $p_periodik,
+                'periodik' => $periodik,
                 'sampling' => tanggal_format(strtotime($hari)),
             ]);
         })->setName('keamanan.bendungan');

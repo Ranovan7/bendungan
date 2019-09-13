@@ -1,7 +1,37 @@
 {% extends 'layouts/master.html' %}
 
+{% set title = "Keamanan" %}
+
+{% block css %}
+<style media="screen">
+    a[aria-expanded=true] .fa-chevron-down {
+       display: none;
+    }
+    a[aria-expanded=false] .fa-chevron-up {
+       display: none;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-    <h3>{{ waduk.nama }}</h3>
+    <!-- Computer View -->
+    <section class="content-header d-none d-sm-block">
+        <h1>{{ waduk.nama }} Keamanan</h1>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <li class="breadcrumb-item">{{ waduk.nama }}</li>
+        </ol>
+    </section>
+
+    <!-- Mobile View -->
+    <section class="content-header d-block d-sm-none">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <li class="breadcrumb-item">{{ waduk.nama }}</li>
+        </ol>
+        <h3>{{ waduk.nama }} Keamanan</h3>
+    </section>
+    <hr>
     <div class="row">
         <div class="col-md-6">
             <section class="content-header">
@@ -39,18 +69,6 @@
                   </div>
                 </form>
             </div>
-            {% for t, v_per in v_periodik %}
-                <div>
-                    <h5>{{ t }}</h5>
-                    <div class="container">
-                        {% for v in v_per %}
-                            <div>
-                                <p><b>{{ v.nama }}</b> : {{ v.tma }} (TMA), {{ v.debit }} (Debit)</p>
-                            </div>
-                        {% endfor %}
-                    </div>
-                </div>
-            {% endfor %}
         </div>
         <div class="col-md-6">
             <section class="content-header">
@@ -84,20 +102,62 @@
                   </div>
                 </form>
             </div>
-            {% for t, p_per in p_periodik %}
-                <div>
-                    <h5>{{ t }}</h5>
-                    <div class="container">
-                        {% for p in p_per %}
-                            <div>
-                                <p><b>{{ p.nama }}</b> : {{ p.tma }} (TMA)</p>
-                            </div>
-                        {% endfor %}
-                    </div>
-                </div>
-            {% endfor %}
         </div>
     </div>
+    <hr>
+    {% for t, per in periodik %}
+        <h6>
+            <b>{{ t }}</b>
+            <span>|</span>
+            <span style="color: {% if per.vnotch %}blue{% else %}red{% endif %};">VNotch</span>
+            <span>|</span>
+            <span style="color: {% if per.piezometer %}blue{% else %}red{% endif %};">Piezometer</span>
+            <a class="ml-3"
+                data-toggle="collapse" href="#periodik-{{ per.id }}"
+                role="button" aria-expanded="false"
+                aria-controls="">
+                <i class="fa fa-chevron-up pull-right"></i>
+                <i class="fa fa-chevron-down pull-right"></i>
+            </a>
+        </h6>
+        <div class="row container collapse" id="periodik-{{ per.id }}">
+            <div class="col-md-6">
+                <h5>VNotch</h5>
+                <div class="ml-3">
+                    {% if per.vnotch %}
+                        {% for v in per.vnotch %}
+                            <p><b>{{ v.nama }}</b></p>
+                            <div class="row ml-3">
+                                <div class="col-md-6">
+                                    <p>TMA : {{ v.tma }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p>Debit : {{ v.debit }}</p>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p style="color: red;"><b>Belum Ada Data</b></p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-md-6">
+                <h5>Piezometer</h5>
+                <div class="ml-3">
+                    {% if per.piezometer %}
+                        {% for p in per.piezometer %}
+                            <p><b>{{ p.nama }}</b></p>
+                            <div class="ml-3">
+                            <p>TMA : {{ p.tma }}</p>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p style="color: red;"><b>Belum Ada Data</b></p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% endfor %}
 {% endblock %}
 
 {% block js %}

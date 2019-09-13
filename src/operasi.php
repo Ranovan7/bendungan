@@ -34,8 +34,8 @@ $app->group('/operasi', function() use ($loggedinMiddleware, $petugasAuthorizati
 
             // save into periodik
             $periodik = [];
-            foreach ($daily as $d) {
-                $periodik[date('Y-m-d', strtotime($d['sampling']))] = [
+            foreach ($daily as $i => $d) {
+                $periodik[date('d M Y', strtotime($d['sampling']))] = [
                     'ch' => $d['curahhujan'],
                     'inflow' => [
                         'debit' => $d['inflow_deb'],
@@ -47,12 +47,27 @@ $app->group('/operasi', function() use ($loggedinMiddleware, $petugasAuthorizati
                         'spill_deb' => $d['spillway_deb'],
                         'spill_vol' => $d['spillway_vol']
                     ],
-                    'tma' => []
+                    'tma' => [
+                        '06' => [],
+                        '12' => [],
+                        '18' => []
+                    ],
+                    'id' => $i
                 ];
             }
             foreach ($tma as $t) {
-                $periodik[date('Y-m-d', strtotime($t['sampling']))]['tma'][] = [
-                    'jam' => date('H', strtotime($t['sampling'])),
+                $jam = date('H', strtotime($t['sampling']));
+                $tanggal = date('d M Y', strtotime($t['sampling']));
+
+                // initiate tma if not exist
+                if (!$periodik[$tanggal]['tma']) {
+                    $periodik[$tanggal]['tma'] = [
+                        '06' => [],
+                        '12' => [],
+                        '18' => []
+                    ];
+                }
+                $periodik[$tanggal]['tma'][$jam] = [
                     'tma' => $t['manual'],
                     'volume' => $t['volume']
                 ];

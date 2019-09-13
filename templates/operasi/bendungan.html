@@ -1,5 +1,18 @@
 {% extends 'layouts/master.html' %}
 
+{% set title = "Operasi" %}
+
+{% block css %}
+<style media="screen">
+    a[aria-expanded=true] .fa-chevron-down {
+       display: none;
+    }
+    a[aria-expanded=false] .fa-chevron-up {
+       display: none;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
     <!-- Computer View -->
     <section class="content-header d-none d-sm-block">
@@ -138,33 +151,42 @@
     <hr>
     {% for t, per in periodik %}
         <div>
-            <h5>
+            <h6>
                 <b>{{ t | date('d M Y') }}</b>
-                <a class="ml-5 btn-sm btn btn-outline-primary"
-                    data-toggle="collapse" href="#form-add-{{ t }}"
+                <span>|</span>
+                <span style="color: {% if per.ch %}blue{% else %}red{% endif %};">Daily</span>
+                <span>|</span>
+                <span style="color: {% if per.tma %}blue{% else %}red{% endif %};">TMA</span>
+                <a class="ml-3"
+                    data-toggle="collapse" href="#periodik-{{ per.id }}"
                     role="button" aria-expanded="false"
                     aria-controls="">
-                    Lihat
+                    <i class="fa fa-chevron-up pull-right"></i>
+                    <i class="fa fa-chevron-down pull-right"></i>
                 </a>
-            </h5>
+            </h6>
         </div>
-        <div class="row container collapse" id="form-add-{{ t }}">
+        <div class="row container collapse" id="periodik-{{ per.id }}">
             <div class="col-md-4">
                 <h5>Tinggi Muka Air</h5>
                 {% if per.tma %}
-                    {% for t in per.tma %}
+                    {% for j, t in per.tma %}
                     <div class="row container">
                         <div class="col-md-4">
-                            <p>Jam {{ t.jam }}</p>
+                            <p>Jam {{ j }}</p>
                         </div>
                         <div class="col-md-8 ml-3">
-                            <p>TMA : {{ t.tma }}</p>
-                            <p>Volume : {{ t.volume }}</p>
+                            {% if t %}
+                                <p>TMA : {{ t.tma }}</p>
+                                <p>Volume : {{ t.volume }}</p>
+                            {% else %}
+                                <p style="color: red;"><b>Belum ada Data</b></p>
+                            {% endif %}
                         </div>
                     </div>
                     {% endfor %}
                 {% else %}
-                    <p>Belum ada Data</p>
+                    <p style="color: red;"><b>Belum ada Data</b></p>
                 {% endif %}
 
             </div>
@@ -175,7 +197,7 @@
                         <p>Volume : {{ per.inflow.volume }}</p>
                         <p>Debit : {{ per.inflow.debit }}</p>
                     {% else %}
-                        <p>Belum ada Data</p>
+                        <p style="color: red;"><b>Belum ada Data</b></p>
                     {% endif %}
                 </div>
 
@@ -184,7 +206,7 @@
                     {% if per.ch %}
                         <p>CH : {{ per.ch }}</p>
                     {% else %}
-                        <p>Belum ada Data</p>
+                        <p style="color: red;"><b>Belum ada Data</b></p>
                     {% endif %}
                 </div>
             </div>
@@ -199,7 +221,7 @@
                     </div>
                 {% else %}
                 <div class="container">
-                    <p>Belum ada Data</p>
+                    <p style="color: red;"><b>Belum ada Data</b></p>
                 </div>
                 {% endif %}
             </div>
