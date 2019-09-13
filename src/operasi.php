@@ -23,17 +23,84 @@ $app->group('/operasi', function() use ($loggedinMiddleware, $petugasAuthorizati
 
             $month = $prev_date = date('m', strtotime($hari));
             $year = $prev_date = date('Y', strtotime($hari));
-            $periodik = $this->db->query("SELECT * FROM periodik_daily
+            $daily = $this->db->query("SELECT * FROM periodik_daily
+                                            WHERE waduk_id={$id}
+                                                AND EXTRACT(MONTH FROM sampling)={$month}
+                                                AND EXTRACT(YEAR FROM sampling)={$year}")->fetchAll();
+            $tma = $this->db->query("SELECT * FROM tma
                                             WHERE waduk_id={$id}
                                                 AND EXTRACT(MONTH FROM sampling)={$month}
                                                 AND EXTRACT(YEAR FROM sampling)={$year}")->fetchAll();
 
+            // save into periodik
+            $periodik = [];
+            foreach ($daily as $d) {
+                $periodik[date('Y-m-d', strtotime($d['sampling']))] = [
+                    'ch' => $d['curahhujan'],
+                    'inflow' => [
+                        'debit' => $d['inflow_deb'],
+                        'volume' => $d['inflow_vol']
+                    ],
+                    'outflow' => [
+                        'debit' => $d['outflow_deb'],
+                        'volume' => $d['outflow_vol'],
+                        'spill_deb' => $d['spillway_deb'],
+                        'spill_vol' => $d['spillway_vol']
+                    ],
+                    'tma' => []
+                ];
+            }
+            foreach ($tma as $t) {
+                $periodik[date('Y-m-d', strtotime($t['sampling']))]['tma'][] = [
+                    'jam' => date('H', strtotime($t['sampling'])),
+                    'tma' => $t['manual'],
+                    'volume' => $t['volume']
+                ];
+            }
+            krsort($periodik);
             return $this->view->render($response, 'operasi/bendungan.html', [
                 'waduk' => $waduk,
                 'periodik' => $periodik,
                 'sampling' => $hari
             ]);
         })->setName('operasi.bendungan');
+
+        $this->group('/tma', function() {
+
+            $this->get('/add', function(Request $request, Response $response, $args) {
+                $hari = $request->getParam('sampling', date('Y-m-d'));
+                $id = $request->getAttribute('id');
+                $waduk = $this->db->query("SELECT * FROM waduk WHERE id={$id}")->fetch();
+
+                return $this->view->render($response, 'operasi/tma/add.html', [
+                    'waduk' => $waduk,
+                    'sampling' => $hari
+                ]);
+            })->setName('operasi.tma.add');
+
+            $this->post('/add', function(Request $request, Response $response, $args) {
+                $hari = date('Y-m-d');
+                $id = $request->getAttribute('id');
+                $waduk = $this->db->query("SELECT * FROM waduk WHERE id={$id}")->fetch();
+
+                $form = $request->getParams();
+
+                $stmt = $this->db->prepare("INSERT INTO tma
+                                        (sampling, manual, volume, waduk_id)
+                                        VALUES
+                                        (:sampling, :manual, :volume, :waduk_id)");
+                $stmt->execute([
+                    ':sampling' => $form['sampling'] ." {$form['jam']}",
+                    ':manual' => $form['tma'],
+                    ':volume' => $form['vol'],
+                    ':waduk_id' => $id,
+                ]);
+
+                $this->flash->addMessage('messages', 'Periodik Daily berhasil ditambahkan');
+                return $this->response->withRedirect($this->router->pathFor('operasi.bendungan', ['id' => $id], []));
+            })->setName('operasi.tma.add');
+
+        });
 
         $this->group('/daily', function() {
 
