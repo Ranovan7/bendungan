@@ -1,0 +1,42 @@
+{% extends 'layouts/master.html' %}
+
+{% set title = "Asset" %}
+
+{% block css %}
+
+{% endblock %}
+
+{% block content %}
+    <!-- Computer View -->
+    <section class="content-header d-none d-sm-block">
+        <h1>{{ waduk.nama }} Asset</h1>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <!-- <li class="breadcrumb-item"><a href="/asset">Asset</a></li> -->
+            <li class="breadcrumb-item">{{ waduk.nama }}</li>
+        </ol>
+    </section>
+
+    <!-- Mobile View -->
+    <section class="content-header d-block d-sm-none">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <!-- <li class="breadcrumb-item"><a href="/asset">Asset</a></li> -->
+            <li class="breadcrumb-item">{{ waduk.nama }}</li>
+        </ol>
+        <h3>{{ waduk.nama }} Asset</h3>
+    </section>
+    <hr>
+    <h3>Asset</h3>
+    <div class="row">
+        {% for as in asset %}
+            <div>
+                <h5>{{ loop.index }}. {{ as.nama }} ({{ as.kategori }})</h5>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
+
+{% block js %}
+
+{% endblock %}

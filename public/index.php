@@ -212,10 +212,13 @@ $loggedinMiddleware = function(Request $request, Response $response, $next) {
 $petugasAuthorizationMiddleware = function(Request $request, Response $response, $next) {
     // get user yg didapat dari middleware
     $user = $request->getAttribute('user');
-
     if ($user['role'] != '2') {
         return $this->response->withRedirect('/forbidden');
     }
+
+    // $route = $request->getAttribute('route');
+    // $route_name = $route->getName();
+    // echo $route_name;
 
     return $next($request, $response);
 };
