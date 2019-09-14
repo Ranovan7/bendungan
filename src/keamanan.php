@@ -9,7 +9,13 @@ $app->group('/keamanan', function() use ($loggedinMiddleware, $petugasAuthorizat
 
     $this->get('[/]', function(Request $request, Response $response, $args) {
         // get user yg didapat dari middleware
-        // $user = $request->getAttribute('user');
+        $user = $request->getAttribute('user');
+
+        // if user is petugas, redirect to their spesific waduk/bendungan
+        if ($user['role'] == '2') {
+            $waduk_id = $user['waduk_id'];
+            return $this->response->withRedirect($this->router->pathFor('keamanan.bendungan', ['id' => $waduk_id], []));
+        }
 
         return $this->view->render($response, 'keamanan.html');
     })->setName('keamanan');

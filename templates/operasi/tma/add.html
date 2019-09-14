@@ -35,12 +35,22 @@
                 <hr>
                 <div class="row">
                     <div class="form-group col-md-6">
-                        <label for="tma">TMA</label>
-                        <input id="tma" name="tma" required class="form-control" type="number" step="0.1" value="">
+                        <label for="tma">TMA <span style="color: red;">*</span></label>
+                        <div class="input-group">
+                            <input id="tma" name="tma" required class="form-control" type="number" step="0.1" value="">
+                            <div class="input-group-append">
+                                <span class="input-group-text" id="tma-append">m</span>
+                            </div>
+                        </div>
                     </div>
                     <div class="form-group col-md-6">
-                        <label for="vol">Volume</label>
-                        <input id="vol" name="vol" required class="form-control" type="number" step="0.1" value="">
+                        <label for="vol">Volume <span style="color: red;">*</span></label>
+                        <div class="input-group">
+                            <input id="vol" name="vol" required class="form-control" type="number" step="0.1" value="">
+                            <div class="input-group-append">
+                                <span class="input-group-text" id="vol-append">m<sup>3</sup></span>
+                            </div>
+                        </div>
                     </div>
                 </div>
               <div class="form-group">

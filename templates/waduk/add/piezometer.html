@@ -10,33 +10,47 @@
     <section class="content-header">
         <h1>Waduk </h1>
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/">Home</a></li>
-            <li class="breadcrumb-item"><a href="/waduk">Home</a></li>
+            <li class="breadcrumb-item"><a href="/waduk">Waduk Dashboard</a></li>
             <li class="breadcrumb-item"><a href="{{ path_for('waduk.detail', {'id': waduk.id}) }}">{{ waduk.nama }}</a></li>
             <li class="breadcrumb-item">Add Piezometer</li>
         </ol>
     </section>
     <div class="row">
         <div class="col-md-6">
-            <form method="POST" action="{{ path_for('waduk.add.piezometer', {'id': waduk.id}) }}">
+            <form method="POST" action="{{ path_for('waduk.piezometer.add', {'id': waduk.id}) }}">
                 <div class="form-group">
                     <label for="nama">Nama</label>
                     <input id="nama" name="nama" autofocus required class="form-control" type="text" value="">
                 </div>
                 <div class="form-group">
                     <label for="elev_dasar_pipa">Elevasi Dasar Pipa</label>
-                    <input id="elev_dasar_pipa" name="elev_dasar_pipa" autofocus required class="form-control" type="number" step="0.1" value="">
+                    <div class="input-group">
+                        <input id="elev_dasar_pipa" name="elev_dasar_pipa" autofocus required class="form-control" type="number" step="0.1" value="">
+                        <div class="input-group-append">
+                            <span class="input-group-text" id="elev-append">m</span>
+                        </div>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="pjg_pipa">Panjang Pipa</label>
-                    <input id="pjg_pipa" name="pjg_pipa" autofocus required class="form-control" type="number" step="0.1" value="">
+                    <div class="input-group">
+                        <input id="pjg_pipa" name="pjg_pipa" autofocus required class="form-control" type="number" step="0.1" value="">
+                        <div class="input-group-append">
+                            <span class="input-group-text" id="pjg-append">cm</span>
+                        </div>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="bts_tkn_pori">Batas Tekanan Pori</label>
-                    <input id="bts_tkn_pori" name="bts_tkn_pori" autofocus required class="form-control" type="number" step="0.1" value="">
+                    <div class="input-group">
+                        <input id="bts_tkn_pori" name="bts_tkn_pori" autofocus required class="form-control" type="number" step="0.1" value="">
+                        <div class="input-group-append">
+                            <span class="input-group-text" id="bts-append">cm</span>
+                        </div>
+                    </div>
                 </div>
               <div class="form-group">
-                <input type="submit" class="btn btn-primary">
+                <input type="submit" class="btn btn-primary" value="Tambah">
               </div>
             </form>
         </div>

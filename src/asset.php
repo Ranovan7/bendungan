@@ -58,6 +58,7 @@ $app->group('/asset', function() use ($loggedinMiddleware, $petugasAuthorization
             $asset = $this->db->query("SELECT * FROM asset WHERE waduk_id={$id}")->fetchAll();
 
             return $this->view->render($response, 'asset/bendungan.html', [
+                'waduk' => $waduk,
                 'kategori' => $kategori,
                 'asset' => $asset
             ]);

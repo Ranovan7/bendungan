@@ -36,11 +36,11 @@
         <div class="col-md-6">
             <h4>
                 <b>Periodik Daily</b>
-                <a class="ml-5 mr-5 btn-sm btn btn-outline-primary float-right"
+                <a class="ml-5 mr-5 float-right"
                     data-toggle="collapse" href="#form-add-daily"
                     role="button" aria-expanded="false"
                     aria-controls="">
-                    Tambah
+                    <i class="fas fa-plus mr-2"></i>
                 </a>
             </h4>
             <div class="container collapse" id="form-add-daily">
@@ -53,47 +53,82 @@
                     <h3>Curah Hujan</h3>
                     <div class="row">
                         <div class="form-group col-md-8">
-                            <!-- <label for="ch">CH</label> -->
-                            <input id="ch" name="ch" autofocus required class="form-control" type="number" step="0.1" value="">
+                            <label for="ch">Curah Hujan <span style="color: red;">*</span></label>
+                            <div class="input-group">
+                                <input id="ch" name="ch" autofocus required class="form-control" type="number" step="0.1" value="">
+                                <div class="input-group-append">
+                                    <span class="input-group-text" id="ch-append">m</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <hr>
                     <h3>Inflow</h3>
                     <div class="row">
                         <div class="form-group col-md-6">
-                            <label for="debit">Debit</label>
-                            <input id="debit" name="debit" required class="form-control" type="number" step="0.1" value="">
+                            <label for="debit">Debit <span style="color: red;">*</span></label>
+                            <div class="input-group">
+                                <input id="debit" name="debit" required class="form-control" type="number" step="0.1" value="">
+                                <div class="input-group-append">
+                                    <span class="input-group-text" id="debit-append">m<sup>3</sup>/detik</span>
+                                </div>
+                            </div>
                         </div>
                         <div class="form-group col-md-6">
-                            <label for="volume">Volume</label>
-                            <input id="volume" name="volume" required class="form-control" type="number" step="0.1" value="">
+                            <label for="volume">Volume <span style="color: red;">*</span></label>
+                            <div class="input-group">
+                                <input id="volume" name="volume" required class="form-control" type="number" step="0.1" value="">
+                                <div class="input-group-append">
+                                    <span class="input-group-text" id="volume-append">m<sup>3</sup></span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <hr>
                     <h3>Outflow</h3>
                     <div class="row">
                         <div class="form-group col-md-6">
-                            <label for="deb-in">Debit Intake</label>
-                            <input id="deb-in" name="deb-in" required class="form-control" type="number" step="0.1" value="">
+                            <label for="deb-in">Debit Intake <span style="color: red;">*</span></label>
+                            <div class="input-group">
+                                <input id="deb-in" name="deb-in" required class="form-control" type="number" step="0.1" value="">
+                                <div class="input-group-append">
+                                    <span class="input-group-text" id="deb-in-append">m<sup>3</sup>/detik</span>
+                                </div>
+                            </div>
                         </div>
                         <div class="form-group col-md-6">
-                            <label for="vol-in">Volume Intake</label>
-                            <input id="vol-in" name="vol-in" required class="form-control" type="number" step="0.1" value="">
+                            <label for="vol-in">Volume Intake <span style="color: red;">*</span></label>
+                            <div class="input-group">
+                                <input id="vol-in" name="vol-in" required class="form-control" type="number" step="0.1" value="">
+                                <div class="input-group-append">
+                                    <span class="input-group-text" id="vol-in-append">m<sup>3</sup></span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <hr>
                     <div class="row">
                         <div class="form-group col-md-6">
-                            <label for="deb-spill">Debit Spillway</label>
-                            <input id="deb-spill" name="deb-spill" required class="form-control" type="number" step="0.1" value="">
+                            <label for="deb-spill">Debit Spillway <span style="color: red;">*</span></label>
+                            <div class="input-group">
+                                <input id="deb-spill" name="deb-spill" required class="form-control" type="number" step="0.1" value="">
+                                <div class="input-group-append">
+                                    <span class="input-group-text" id="deb-spill-append">m<sup>3</sup>/detik</span>
+                                </div>
+                            </div>
                         </div>
                         <div class="form-group col-md-6">
-                            <label for="vol-spill">Volume Spillway</label>
-                            <input id="vol-spill" name="vol-spill" required class="form-control" type="number" step="0.1" value="">
+                            <label for="vol-spill">Volume Spillway <span style="color: red;">*</span></label>
+                            <div class="input-group">
+                                <input id="vol-spill" name="vol-spill" required class="form-control" type="number" step="0.1" value="">
+                                <div class="input-group-append">
+                                    <span class="input-group-text" id="vol-spill-append">m<sup>3</sup></span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                   <div class="form-group">
-                    <input type="submit" class="btn btn-primary">
+                    <input type="submit" class="btn btn-primary" value="Tambah">
                   </div>
                 </form>
             </div>
@@ -101,11 +136,11 @@
         <div class="col-md-6">
             <h4>
                 <b>TMA</b>
-                <a class="ml-5 mr-5 btn-sm btn btn-outline-primary float-right"
+                <a class="ml-5 mr-5 float-right"
                     data-toggle="collapse" href="#form-add-tma"
                     role="button" aria-expanded="false"
                     aria-controls="">
-                    Tambah
+                    <i class="fas fa-plus mr-2"></i>
                 </a>
             </h4>
             <div class="container collapse" id="form-add-tma">
@@ -127,12 +162,22 @@
                     <hr>
                     <div class="row">
                         <div class="form-group col-md-6">
-                            <label for="tma">TMA</label>
-                            <input id="tma" name="tma" required class="form-control" type="number" step="0.1" value="">
+                            <label for="tma">TMA <span style="color: red;">*</span></label>
+                            <div class="input-group">
+                                <input id="tma" name="tma" required class="form-control" type="number" step="0.1" value="">
+                                <div class="input-group-append">
+                                    <span class="input-group-text" id="tma-append">m</span>
+                                </div>
+                            </div>
                         </div>
                         <div class="form-group col-md-6">
-                            <label for="vol">Volume</label>
-                            <input id="vol" name="vol" required class="form-control" type="number" step="0.1" value="">
+                            <label for="vol">Volume <span style="color: red;">*</span></label>
+                            <div class="input-group">
+                                <input id="vol" name="vol" required class="form-control" type="number" step="0.1" value="">
+                                <div class="input-group-append">
+                                    <span class="input-group-text" id="vol-append">m<sup>3</sup></span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                   <div class="form-group">
@@ -156,7 +201,7 @@
                 <span>|</span>
                 <span style="color: {% if per.ch %}blue{% else %}red{% endif %};">Daily</span>
                 <span>|</span>
-                <span style="color: {% if per.tma %}blue{% else %}red{% endif %};">TMA</span>
+                <span style="color: {% if per.tma['06'] and per.tma.12 and per.tma.18 %}blue{% else %}red{% endif %};">TMA</span>
                 <a class="ml-3"
                     data-toggle="collapse" href="#periodik-{{ per.id }}"
                     role="button" aria-expanded="false"
@@ -177,8 +222,8 @@
                         </div>
                         <div class="col-md-8 ml-3">
                             {% if t %}
-                                <p>TMA : {{ t.tma }}</p>
-                                <p>Volume : {{ t.volume }}</p>
+                                <p>TMA : {{ t.tma }} <span>m</span></p>
+                                <p>Volume : {{ t.volume }} <span>m<sup>3</sup></span></p>
                             {% else %}
                                 <p style="color: red;"><b>Belum ada Data</b></p>
                             {% endif %}
@@ -194,8 +239,8 @@
                 <h5>Inflow</h5>
                 <div class="container">
                     {% if per.inflow %}
-                        <p>Volume : {{ per.inflow.volume }}</p>
-                        <p>Debit : {{ per.inflow.debit }}</p>
+                        <p>Volume : {{ per.inflow.volume }} <span>m<sup>3</sup></span></p>
+                        <p>Debit : {{ per.inflow.debit }} <span>m<sup>3</sup>/detik</span></p>
                     {% else %}
                         <p style="color: red;"><b>Belum ada Data</b></p>
                     {% endif %}
@@ -204,25 +249,25 @@
                 <h5>Curah Hujan</h5>
                 <div class="container">
                     {% if per.ch %}
-                        <p>CH : {{ per.ch }}</p>
+                        <p>CH : {{ per.ch }} <span>mm</span></p>
                     {% else %}
                         <p style="color: red;"><b>Belum ada Data</b></p>
                     {% endif %}
                 </div>
             </div>
             <div class="col-md-4">
+                <h5>Outflow</h5>
                 {% if per.outflow %}
-                    <h5>Outflow</h5>
                     <div class="container">
-                        <p>Volume : {{ per.outflow.volume }}</p>
-                        <p>Debit : {{ per.outflow.debit }}</p>
-                        <p>Spillway Volume : {{ per.outflow.spill_vol }}</p>
-                        <p>Spillway Debit : {{ per.outflow.spill_deb }}</p>
+                        <p>Volume : {{ per.outflow.volume }} <span>m<sup>3</sup></span></p>
+                        <p>Debit : {{ per.outflow.debit }} <span>m<sup>3</sup>/detik</span></p>
+                        <p>Spillway Volume : {{ per.outflow.spill_vol }} <span>m<sup>3</sup></span></p>
+                        <p>Spillway Debit : {{ per.outflow.spill_deb }} <span>m<sup>3</sup>/detik</span></p>
                     </div>
                 {% else %}
-                <div class="container">
-                    <p style="color: red;"><b>Belum ada Data</b></p>
-                </div>
+                    <div class="container">
+                        <p style="color: red;"><b>Belum ada Data</b></p>
+                    </div>
                 {% endif %}
             </div>
         </div>

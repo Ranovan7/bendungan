@@ -27,14 +27,26 @@
         <h3>{{ waduk.nama }} Asset</h3>
     </section>
     <hr>
-    <h3>Asset</h3>
-    <div class="row">
-        {% for as in asset %}
-            <div>
-                <h5>{{ loop.index }}. {{ as.nama }} ({{ as.kategori }})</h5>
+    {% for as in asset %}
+        <div class="row">
+            <div class="col-md-3">
+                <h5>{{ loop.index }}. {{ as.nama }}</h5>
             </div>
-        {% endfor %}
-    </div>
+            <div class="col-md-3 ml-3">
+                <p>BMN :{{ as.bmn }}</p>
+                <p>Merk :{{ as.merk }}</p>
+                <p>Model :{{ as.model }}</p>
+            </div>
+            <div class="col-md-3 ml-3">
+                <p>Status : <span style="color: red;">Rusak</span></p>
+            </div>
+            <div class="col-md-2 ml-3">
+                <a href="#" class="btn btn-sm btn-outline-primary">Lapor Rusak</a>
+                <a href="#"><i class="fas fa-trash ml-3"></i></a>
+            </div>
+        </div>
+        <hr>
+    {% endfor %}
 {% endblock %}
 
 {% block js %}
