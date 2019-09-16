@@ -38,6 +38,7 @@ $settings = [
         'displayErrorDetails' => env('APP_ENV', 'local') != 'production',
         'addContentLengthHeader' => false, // Allow the web server to send the content-length header
         'debugMode' => env('APP_DEBUG', 'true') == 'true',
+        'upload_directory' => __DIR__ . '/uploads', // upload directory
 
         // Renderer settings
         'renderer' => [
