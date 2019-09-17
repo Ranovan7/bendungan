@@ -102,6 +102,95 @@ $app->group('/asset', function() use ($loggedinMiddleware, $petugasAuthorization
             return $this->response->withRedirect($this->router->pathFor('asset.bendungan', ['id' => $id], []));
         })->setName('asset.add');
 
+        $this->group('/rusak', function() {
+
+            $this->get('[/]', function(Request $request, Response $response, $args) use ($kategori) {
+                $id = $request->getAttribute('id');
+                $waduk = $this->db->query("SELECT * FROM waduk WHERE id={$id}")->fetch();
+
+                return $this->view->render($response, 'asset/rusak/index.html', [
+                    'waduk' => $waduk
+                ]);
+            })->setName('asset.rusak');
+
+            $this->group('/{asset_id}', function() {
+
+                $this->get('/add', function(Request $request, Response $response, $args) {
+                    $id = $request->getAttribute('id');
+                    $asset_id = $request->getAttribute('asset_id');
+                    $waduk = $this->db->query("SELECT * FROM waduk WHERE id={$id}")->fetch();
+
+                    return $this->view->render($response, 'asset/rusak/add.html', [
+                        'waduk' => $waduk,
+                        'asset_id' => $asset_id
+                    ]);
+                })->setName('asset.rusak.add');
+
+                $this->post('/add', function(Request $request, Response $response, $args) {
+                    $id = $request->getAttribute('id');
+                    $asset_id = $request->getAttribute('asset_id');
+                    $form = $request->getParams();
+
+                    // save kerusakan data in database
+                    $stmt = $this->db->prepare("INSERT INTO kerusakan
+                                            (tgl_lapor, uraian_kerusakan, kategori, asset_id, waduk_id)
+                                            VALUES
+                                            (:tgl_lapor, :uraian_kerusakan, :kategori, :asset_id, :waduk_id)");
+                    $stmt->execute([
+                        ':tgl_lapor' => date("Y-m-d"),
+                        ':uraian_kerusakan' => $form['uraian'],
+                        ':kategori' => $form['kategori'],
+                        ':asset_id' => $asset_id,
+                        ':waduk_id' => $id
+                    ]);
+
+                    // convert base64 to image file
+                    $data = explode( ',', $form['data'] );
+                    $image = base64_decode($data[1]);
+
+                    // create new directory to save the image
+                    $directory = $this->get('settings')['upload_directory'];
+                    $date = date("Y-m-d-H-i");  // to make it unique
+                    $public_url = "kerusakan" . DIRECTORY_SEPARATOR . $date . "_" . $form['filename'];   // for url in database
+                    $img_dir = $directory . DIRECTORY_SEPARATOR . $public_url;  // for saving file
+
+                    // check if file exist, if not create new
+                    $folder = $directory . DIRECTORY_SEPARATOR . "kerusakan";
+                    if (!file_exists($folder)) {
+                        mkdir($folder, 0775, true);
+                    }
+
+                    // save foto data in database
+                    $stmt_foto = $this->db->prepare("INSERT INTO foto
+                                            (url, keterangan, obj_type, obj_id)
+                                            VALUES
+                                            (:url, :keterangan, :obj_type, :obj_id)");
+                    $stmt_foto->execute([
+                        ':url' => "uploads" . DIRECTORY_SEPARATOR . $public_url,
+                        ':keterangan' => $form['keterangan'],
+                        ':obj_type' => "kerusakan",
+                        ':obj_id' => $asset_id
+                    ]);
+
+                    // save image in designated directory
+                    $file = fopen($img_dir, "wb");
+                    fwrite($file, $image);
+                    fclose($file);
+
+                    return $response->withJson([
+                        "status" => "nani",
+                        "data" => $img_url,
+                        "filename" => $form['filename'],
+                        "keterangan" => $form['keterangan'],
+                        "tgl_lapor" => $form['sampling'],
+                        "uraian" => $form['uraian']
+                    ], 200);
+                })->setName('asset.rusak.add');
+
+            });
+
+        });
+
     })->add($petugasAuthorizationMiddleware);
 
 })->add($loggedinMiddleware);

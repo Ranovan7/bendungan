@@ -122,6 +122,14 @@ $app->group('/kegiatan', function() use ($loggedinMiddleware, $petugasAuthorizat
                 ':waduk_id' => $id
             ]);
 
+            // update obj_id in foto
+            $kegiatan_id = $this->db->lastInsertId();
+            $stmt_foto = $this->db->prepare("UPDATE foto SET obj_id=:obj_id WHERE id=:id");
+            $stmt_foto->execute([
+                ':obj_id' => $kegiatan_id,
+                ':id' => $foto_id
+            ]);
+
             return $response->withJson([
                 "status" => "nani",
                 "data" => $foto_id,

@@ -41,7 +41,7 @@
                 <p>Status : <span style="color: red;">Rusak</span></p>
             </div>
             <div class="col-md-2 ml-3">
-                <a href="#" class="btn btn-sm btn-outline-primary">Lapor Rusak</a>
+                <a href="{{ path_for('asset.rusak.add', {'id': waduk.id, 'asset_id': as.id}) }}" class="btn btn-sm btn-outline-primary">Lapor Rusak</a>
                 <a href="#"><i class="fas fa-trash ml-3"></i></a>
             </div>
         </div>
