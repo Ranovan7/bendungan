@@ -67,7 +67,7 @@
                             <input type="file" class="custom-file-input" id="fotoFile">
                             <label class="custom-file-label" for="customFile">Choose file</label>
                             <div>
-                                <img id="blah" src="{{ asset('img/null.jpg') }}" class="img-fluid" class="img-fluid" style="width: 100%;border: solid 1px #ccc" alt=" pra tinjau gambar">
+                                <img id="blah" src="{{ asset('img/null.jpg') }}" class="img-fluid" style="width: 100%;border: solid 1px #ccc" alt=" pra tinjau gambar">
                             </div>
                         </div>
                     </div>
@@ -177,7 +177,7 @@
                     data: enc_img,
                     filename: file_name,
                     keterangan: $('input[name="keterangan"]').val(),
-                    waktu: $('input[name="sampling"]').val(),
+                    sampling: $('input[name="sampling"]').val(),
                     petugas: $('select[name="petugas"]').val()
                 };
                 console.log("Posting Photo");

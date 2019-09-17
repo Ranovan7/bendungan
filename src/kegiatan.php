@@ -37,9 +37,24 @@ $app->group('/kegiatan', function() use ($loggedinMiddleware, $petugasAuthorizat
             // $hari = $request->getParam('sampling', date('Y-m-d'));
             $id = $request->getAttribute('id');
             $waduk = $this->db->query("SELECT * FROM waduk WHERE id={$id}")->fetch();
+            $kegiatan_raw = $this->db->query("SELECT kegiatan.*, foto.url AS foto_url
+                                            FROM kegiatan LEFT JOIN foto ON kegiatan.foto_id=foto.id
+                                            WHERE waduk_id={$id}
+                                            ORDER BY sampling DESC")->fetchAll();
+
+            $kegiatan = [];
+            foreach ($kegiatan_raw as $raw) {
+                $kegiatan[$raw['sampling']][] = [
+                    'id' => $raw['id'],
+                    'petugas' => $raw['petugas'],
+                    'uraian' => $raw['uraian'],
+                    'foto_url' => $raw['foto_url'],
+                ];
+            }
 
             return $this->view->render($response, 'kegiatan/bendungan.html', [
                 'waduk' =>  $waduk,
+                'kegiatan' => $kegiatan,
                 'petugas' => $petugas
             ]);
         })->setName('kegiatan.bendungan');
@@ -66,26 +81,53 @@ $app->group('/kegiatan', function() use ($loggedinMiddleware, $petugasAuthorizat
 
             // create new directory to save the image
             $directory = $this->get('settings')['upload_directory'];
-            $date = date("Y-m-d_H-i");  // to make it unique
-            $folder = $directory . DIRECTORY_SEPARATOR . "kegiatan";
-            $img_dir = $folder . DIRECTORY_SEPARATOR . $date . "-" . $form['filename'];
+            $date = date("Y-m-d-H-i");  // to make it unique
+            $public_url = "kegiatan" . DIRECTORY_SEPARATOR . $date . "_" . $form['filename'];   // for url in database
+            $img_dir = $directory . DIRECTORY_SEPARATOR . $public_url;  // for saving file
 
             // check if file exist, if not create new
+            $folder = $directory . DIRECTORY_SEPARATOR . "kegiatan";
             if (!file_exists($folder)) {
-                mkdir($folder, 0777, true);
+                mkdir($folder, 0775, true);
             }
+
+            // save foto data in database
+            $stmt_foto = $this->db->prepare("INSERT INTO foto
+                                    (url, keterangan, obj_type)
+                                    VALUES
+                                    (:url, :keterangan, :obj_type)");
+            $stmt_foto->execute([
+                ':url' => "uploads" . DIRECTORY_SEPARATOR . $public_url,
+                ':keterangan' => $form['keterangan'],
+                ':obj_type' => "kegiatan"
+            ]);
 
             // save image in designated directory
             $file = fopen($img_dir, "wb");
             fwrite($file, $image);
             fclose($file);
 
+            $foto_id = $this->db->lastInsertId();
+
+            // save kegiatan data in database
+            $stmt = $this->db->prepare("INSERT INTO kegiatan
+                                    (sampling, petugas, uraian, foto_id, waduk_id)
+                                    VALUES
+                                    (:sampling, :petugas, :uraian, :foto_id, :waduk_id)");
+            $stmt->execute([
+                ':sampling' => $form['sampling'],
+                ':petugas' => $form['petugas'],
+                ':uraian' => $form['keterangan'],
+                ':foto_id' => $foto_id,
+                ':waduk_id' => $id
+            ]);
+
             return $response->withJson([
                 "status" => "nani",
-                "data" => gettype($image),
+                "data" => $foto_id,
                 "filename" => $form['filename'],
                 "keterangan" => $form['keterangan'],
-                "waktu" => $form['waktu'],
+                "sampling" => $form['sampling'],
                 "petugas" => $form['petugas']
             ], 200);
         })->setName('kegiatan.add');
