@@ -90,6 +90,12 @@
                 readURL(event);
             });
 
+            // to make radio input change it's value
+            $('.form-check-input').on('click', function(){
+                 console.log($('input[name="kategori"]:checked').val());
+                 return true;
+            });
+
 
             // $('.gotomonth').datepicker({
             //     format: 'yyyy-mm-dd',
@@ -145,6 +151,8 @@
                 let formData = {
                     data: enc_img,
                     filename: file_name,
+                    uraian: $('input[name="uraian"]').val(),
+                    kategori: $('input[name="kategori"]:checked').val(),
                     keterangan: $('input[name="keterangan"]').val(),
                     sampling: $('input[name="sampling"]').val(),
                     petugas: $('select[name="petugas"]').val()
@@ -154,7 +162,6 @@
                     function (res) {
                         console.log(res);
                         window.location.href = "{{ path_for('asset.rusak', {'id': waduk.id}) }}";
-                        // location.href("{{ path_for('asset.rusak', {'id': waduk.id}) }}");
                     }
                 );
             }

@@ -55,7 +55,20 @@ $app->group('/asset', function() use ($loggedinMiddleware, $petugasAuthorization
             $id = $request->getAttribute('id');
             $waduk = $this->db->query("SELECT * FROM waduk WHERE id={$id}")->fetch();
 
-            $asset = $this->db->query("SELECT * FROM asset WHERE waduk_id={$id}")->fetchAll();
+            $asset_raw = $this->db->query("SELECT asset.*, kerusakan.kategori as rusak_kat
+                                        FROM asset LEFT JOIN kerusakan ON asset.id = kerusakan.asset_id
+                                        WHERE asset.waduk_id={$id}
+                                        ORDER BY asset.id, kerusakan.id DESC")->fetchAll();
+
+            // sort asset so only latest kerusakan is included
+            $check = [];
+            $asset = [];
+            foreach ($asset_raw as $a) {
+                if (!in_array($a['id'], $check)) {
+                    $asset[] = $a;
+                    $check[] = $a['id'];
+                }
+            }
 
             return $this->view->render($response, 'asset/bendungan.html', [
                 'waduk' => $waduk,
@@ -107,9 +120,32 @@ $app->group('/asset', function() use ($loggedinMiddleware, $petugasAuthorization
             $this->get('[/]', function(Request $request, Response $response, $args) use ($kategori) {
                 $id = $request->getAttribute('id');
                 $waduk = $this->db->query("SELECT * FROM waduk WHERE id={$id}")->fetch();
+                $kerusakan_raw = $this->db->query("SELECT kerusakan.*, asset.nama as nama_asset
+                                                    FROM kerusakan LEFT JOIN asset ON kerusakan.asset_id = asset.id
+                                                    WHERE kerusakan.waduk_id={$id}
+                                                    ORDER BY kerusakan.id DESC")->fetchAll();
+
+                // sort kerusakan so only newest report got included
+                $kerusakan = [];
+                $check = [];
+                foreach ($kerusakan_raw as $k) {
+                    if (!in_array($k['asset_id'], $check)) {
+                        $kerusakan[] = $k;
+                        $check[] = $k['asset_id'];
+                    }
+                }
+
+                // get photos
+                $fotos = $this->db->query("SELECT * FROM foto WHERE obj_type='kerusakan'")->fetchAll();
+                $foto = [];
+                foreach ($fotos as $f) {
+                    $foto[$f['obj_id']][] = $f;
+                }
 
                 return $this->view->render($response, 'asset/rusak/index.html', [
-                    'waduk' => $waduk
+                    'waduk' => $waduk,
+                    'kerusakan' => $kerusakan,
+                    'foto' => $foto
                 ]);
             })->setName('asset.rusak');
 
@@ -143,6 +179,7 @@ $app->group('/asset', function() use ($loggedinMiddleware, $petugasAuthorization
                         ':asset_id' => $asset_id,
                         ':waduk_id' => $id
                     ]);
+                    $kerusakan_id = $this->db->lastInsertId();
 
                     // convert base64 to image file
                     $data = explode( ',', $form['data'] );
@@ -169,7 +206,7 @@ $app->group('/asset', function() use ($loggedinMiddleware, $petugasAuthorization
                         ':url' => "uploads" . DIRECTORY_SEPARATOR . $public_url,
                         ':keterangan' => $form['keterangan'],
                         ':obj_type' => "kerusakan",
-                        ':obj_id' => $asset_id
+                        ':obj_id' => $kerusakan_id
                     ]);
 
                     // save image in designated directory
@@ -182,10 +219,71 @@ $app->group('/asset', function() use ($loggedinMiddleware, $petugasAuthorization
                         "data" => $img_url,
                         "filename" => $form['filename'],
                         "keterangan" => $form['keterangan'],
+                        "kategori" => $form['kategori'],
                         "tgl_lapor" => $form['sampling'],
                         "uraian" => $form['uraian']
                     ], 200);
                 })->setName('asset.rusak.add');
+
+                $this->post('/uraian', function(Request $request, Response $response, $args) {
+                    $id = $request->getAttribute('id');
+                    $form = $request->getParams();
+
+                    // update uraian
+                    $stmt_foto = $this->db->prepare("UPDATE kerusakan SET uraian_kerusakan=:uraian_kerusakan WHERE id=:id");
+                    $stmt_foto->execute([
+                        ':uraian_kerusakan' => $form["uraian-{$form['kerusakan_id']}"],
+                        ':id' => $form['kerusakan_id']
+                    ]);
+
+                    return $this->response->withRedirect($this->router->pathFor('asset.rusak', ['id' => $id]));
+                })->setName('asset.rusak.uraian');
+
+                $this->post('/foto', function(Request $request, Response $response, $args) {
+                    $id = $request->getAttribute('id');
+                    $asset_id = $request->getAttribute('asset_id');
+
+                    $form = $request->getParams();
+
+                    // convert base64 to image file
+                    $data = explode( ',', $form['data'] );
+                    $image = base64_decode($data[1]);
+
+                    // create new directory to save the image
+                    $directory = $this->get('settings')['upload_directory'];
+                    $date = date("Y-m-d-H-i");  // to make it unique
+                    $public_url = "kerusakan" . DIRECTORY_SEPARATOR . $date . "_" . $form['filename'];   // for url in database
+                    $img_dir = $directory . DIRECTORY_SEPARATOR . $public_url;  // for saving file
+
+                    // check if file exist, if not create new
+                    $folder = $directory . DIRECTORY_SEPARATOR . "kerusakan";
+                    if (!file_exists($folder)) {
+                        mkdir($folder, 0775, true);
+                    }
+
+                    // save foto data in database
+                    $stmt_foto = $this->db->prepare("INSERT INTO foto
+                                            (url, keterangan, obj_type, obj_id)
+                                            VALUES
+                                            (:url, :keterangan, :obj_type, :obj_id)");
+                    $stmt_foto->execute([
+                        ':url' => "uploads" . DIRECTORY_SEPARATOR . $public_url,
+                        ':keterangan' => $form['keterangan'],
+                        ':obj_type' => "kerusakan",
+                        ':obj_id' => $form['kerusakan_id']
+                    ]);
+
+                    // save image in designated directory
+                    $file = fopen($img_dir, "wb");
+                    fwrite($file, $image);
+                    fclose($file);
+
+                    return $response->withJson([
+                        "status" => "Success",
+                        "uraian" => form['keterangan'],
+                        "kerusakan_id" => $form['kerusakan_id']
+                    ], 200);
+                })->setName('asset.rusak.foto');
 
             });
 
