@@ -117,7 +117,7 @@ $app->group('/asset', function() use ($loggedinMiddleware, $petugasAuthorization
 
         $this->group('/rusak', function() {
 
-            $this->get('[/]', function(Request $request, Response $response, $args) use ($kategori) {
+            $this->get('[/]', function(Request $request, Response $response, $args) {
                 $id = $request->getAttribute('id');
                 $waduk = $this->db->query("SELECT * FROM waduk WHERE id={$id}")->fetch();
                 $kerusakan_raw = $this->db->query("SELECT kerusakan.*, asset.nama as nama_asset

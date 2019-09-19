@@ -1,103 +1,97 @@
-<!-- <div class="container mt-2 mb-2 d-none d-sm-block">
-    <div class="row">
-        <div class="col flex-1 d-flex flex-row align-items-center">
-            <div class="flex-1">
-                <a href="/">
-                    <img class="mr-2" src="/img/logo-sda.jpg" alt="" width="40">
-                </a>
-            </div>
-            <div class="flex-1">
-                <a href="/">
-                    <h2 class="h6 font-weight-normal small mb-0">KEMENTRIAN PEKERJAAN UMUM DAN PERUMAHAN RAKYAT</h2>
-                    <h2 class="h6 font-weight-bold mb-0">DIREKTORAT JENDERAL SUMBER DAYA AIR</h2>
-                </a>
-            </div>
-        </div>
-        <div class="col flex-1 text-right">
-            <a href="/">
-                <h2 class="h6 font-weight-normal small mb-0">BALAI WILAYAH SUNGAI</h2>
-                <h2 class="h6 font-weight-bold mb-0">BENGAWAN SOLO</h2>
-            </a>
-        </div>
-    </div>
-</div> -->
-<nav class="navbar navbar-expand-md navbar-dark bg-secondary sticky-top">
+<nav class="navbar-fixed-top navbar navbar-default">
     <div class="container">
         {# <a href="/dashboard" class="navbar-brand">{{ env('APP_NAME', 'App') }}</a> #}
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-main" aria-expanded="false" aria-label="Toggle navigation">
+        <!-- <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-main" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="text-right d-block d-sm-none">
             <a class="navbar-brand" href="/"><span>BBWS Bengawan Solo</span> </a>
+        </div> -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-main" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">UPB BBWS BSOLO</a>
         </div>
 
         <div class="collapse navbar-collapse" id="navbar-main">
-            <a class="navbar-brand" href="/">Unit Pengelola Bendungan</a>
             <!-- Sidebar -->
-            <ul class="navbar-nav ml-auto">
-
-                <li class="nav-item {% if title == 'Home'%}active{% endif %}">
-                    <a class="nav-link" href="/operasi">
-                        <!-- <i class="fas fa-home mr-2"></i> -->
-                        Operasi
-                        <span class="sr-only">(current)</span>
-                    </a>
-                </li>
-
-                <li class="nav-item {% if title == 'Home'%}active{% endif %}">
-                    <a class="nav-link" href="/keamanan">
-                        <!-- <i class="fas fa-home mr-2"></i> -->
-                        Keamanan
-                        <span class="sr-only">(current)</span>
-                    </a>
-                </li>
-
-                <li class="nav-item {% if title == 'Home'%}active{% endif %}">
-                    <a class="nav-link" href="/kegiatan">
-                        <!-- <i class="fas fa-home mr-2"></i> -->
-                        Kegiatan
-                        <span class="sr-only">(current)</span>
-                    </a>
-                </li>
-
-                <li class="nav-item {% if title == 'Home'%}active{% endif %}">
-                    <a class="nav-link" href="/asset">
-                        <!-- <i class="fas fa-home mr-2"></i> -->
-                        Asset
-                        <span class="sr-only">(current)</span>
-                    </a>
-                </li>
-
-                {% if user().role == '1' %}
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
-                          role="button" data-toggle="dropdown" aria-haspopup="true"
-                          aria-expanded="false">
-                          <i class="fas fa-user ml-2 mr-2"></i>
-                          Admin
+            <ul class="nav navbar-nav navbar-center">
+                {% if user().role == "2" %}
+                    <li class="nav-item {% if title == 'Operasi' %}active{% endif %}">
+                        <a class="nav-link" href="/operasi">
+                            <!-- <i class="fas fa-home mr-2"></i> -->
+                            <span class="h4">Operasi</span>
+                            <div><small>TMA, Vol, Debit</small></div>
                         </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                          <div class="dropdown-divider"></div>
-                          <a class="dropdown-item" href="/user">User</a>
-                          <div class="dropdown-divider"></div>
-                          <a class="dropdown-item" href="/waduk">Waduk</a>
-                        </div>
+                    </li>
+
+                    <li class="nav-item {% if title == 'Keamanan' %}active{% endif %}">
+                        <a class="nav-link" href="/keamanan">
+                            <!-- <i class="fas fa-home mr-2"></i> -->
+                            <span class="h4">Keamanan</span>
+                            <div><small>VNotch, Piezometer</small></div>
+                        </a>
+                    </li>
+
+                    <li class="nav-item {% if title == 'Kegiatan' %}active{% endif %}">
+                        <a class="nav-link" href="/kegiatan">
+                            <!-- <i class="fas fa-home mr-2"></i> -->
+                            <span class="h4">Kegiatan</span>
+                            <div><small>Foto kegiatan</small></div>
+                        </a>
+                    </li>
+
+                    <li class="nav-item {% if title == 'Asset' %}active{% endif %}">
+                        <a class="nav-link" href="/asset">
+                            <!-- <i class="fas fa-home mr-2"></i> -->
+                            <span class="h4">Asset</span>
+                            <div><small>Asset Bendungan</small></div>
+                        </a>
+                    </li>
+                {% elseif user().role == '1' %}
+                    <li class="nav-item {% if title == 'User' %}active{% endif %}">
+                        <a class="nav-link" href="/user">
+                            User
+                        </a>
+                    </li>
+                    <li class="nav-item {% if title == 'Harian' %}active{% endif %}">
+                        <a class="nav-link" href="/waduk/harian">
+                            Bendungan
+                        </a>
+                    </li>
+                    <li class="nav-item {% if title == 'Harian' %}active{% endif %}">
+                        <a class="nav-link" href="/waduk">
+                            Data Teknis
+                        </a>
+                    </li>
+                    <li class="nav-item {% if title == 'Harian' %}active{% endif %}">
+                        <a class="nav-link" href="/rtow">
+                            RTOW
+                        </a>
+                    </li>
+                    <li class="nav-item {% if title == 'Harian' %}active{% endif %}">
+                        <a class="nav-link" href="/kegiatan">
+                            Foto Kegiatan
+                        </a>
+                    </li>
+                    <li class="nav-item {% if title == 'Harian' %}active{% endif %}">
+                        <a class="nav-link" href="/asset">
+                            Asset
+                        </a>
                     </li>
                 {% endif %}
-
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <a class="nav-link disabled" href="#">{{ user().username }}</a>
                 {% if user() %}
                     <a class="nav-link" href="/logout">Logout</a>
                 {% else %}
         			<a class="nav-link" href="/login"><i class="fas fa-key ml-2 mr-2"></i> Login</a>
                 {% endif %}
-
-                {# <!-- Nav Item - Logout -->
-                <li class="nav-item">
-                    <form action="/logout" method="post" id="form-logout"></form>
-                    <a class="nav-link" href="#" onclick="$('#form-logout').submit()">
-                        Logout
-                    </a>
-                </li> #}
 
             </ul>
             <!-- End of Sidebar -->

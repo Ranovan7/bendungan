@@ -11,31 +11,32 @@
        display: none;
     }
 </style>
+<link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/>
 {% endblock %}
 
 {% block content %}
     <!-- Computer View -->
     <section class="content-header d-none d-sm-block">
         <h1>{{ waduk.nama }} Daily</h1>
-        <ol class="breadcrumb">
+        <!-- <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="/">Home</a></li>
             <li class="breadcrumb-item">{{ waduk.nama }}</li>
-        </ol>
+        </ol> -->
     </section>
 
     <!-- Mobile View -->
     <section class="content-header d-block d-sm-none">
-        <ol class="breadcrumb">
+        <!-- <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="/">Home</a></li>
             <li class="breadcrumb-item">{{ waduk.nama }}</li>
-        </ol>
-        <h3>{{ waduk.nama }} Daily</h3>
+        </ol> -->
+        <h2>{{ waduk.nama }}</h2>
     </section>
     <hr>
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-6 mb-3 border-bottom">
             <h4>
-                <b>Periodik Daily</b>
+                Form Data Harian
                 <a class="ml-5 mr-5 float-right"
                     data-toggle="collapse" href="#form-add-daily"
                     role="button" aria-expanded="false"
@@ -133,9 +134,9 @@
                 </form>
             </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-6 mb-3 border-bottom">
             <h4>
-                <b>TMA</b>
+                Form TMA
                 <a class="ml-5 mr-5 float-right"
                     data-toggle="collapse" href="#form-add-tma"
                     role="button" aria-expanded="false"
@@ -187,94 +188,96 @@
             </div>
         </div>
     </div>
+    <h3>
+        Data Harian
+        <span id="datepicker" style="color: #18bc9c"><i class="fas fa-calendar mr-2 text-right"></i>{{ sampling | date('M Y') }}</span>
+    </h3>
     <hr>
-    <div class="container">
-        <div class="form-control col-md-3">
-            <span id="datepicker"><i class="fas fa-calendar mr-2 text-right"></i> {{ sampling }}</span>
-        </div>
-    </div>
-    <hr>
-    {% for t, per in periodik %}
-        <div>
-            <h6>
-                <b>{{ t | date('d M Y') }}</b>
-                <span>|</span>
-                <span style="color: {% if per.ch %}blue{% else %}red{% endif %};">Daily</span>
-                <span>|</span>
-                <span style="color: {% if per.tma['06'] and per.tma.12 and per.tma.18 %}blue{% else %}red{% endif %};">TMA</span>
-                <a class="ml-3"
-                    data-toggle="collapse" href="#periodik-{{ per.id }}"
-                    role="button" aria-expanded="false"
-                    aria-controls="">
-                    <i class="fa fa-chevron-up pull-right"></i>
-                    <i class="fa fa-chevron-down pull-right"></i>
-                </a>
-            </h6>
-        </div>
-        <div class="row container collapse" id="periodik-{{ per.id }}">
-            <div class="col-md-4">
-                <h5>Tinggi Muka Air</h5>
-                {% if per.tma %}
-                    {% for j, t in per.tma %}
-                    <div class="row container">
-                        <div class="col-md-4">
-                            <p>Jam {{ j }}</p>
-                        </div>
-                        <div class="col-md-8 ml-3">
-                            {% if t %}
-                                <p>TMA : {{ t.tma }} <span>m</span></p>
-                                <p>Volume : {{ t.volume }} <span>m<sup>3</sup></span></p>
-                            {% else %}
-                                <p style="color: red;"><b>Belum ada Data</b></p>
-                            {% endif %}
-                        </div>
-                    </div>
-                    {% endfor %}
-                {% else %}
-                    <p style="color: red;"><b>Belum ada Data</b></p>
-                {% endif %}
-
-            </div>
-            <div class="col-md-4">
-                <h5>Inflow</h5>
-                <div class="container">
-                    {% if per.inflow %}
-                        <p>Volume : {{ per.inflow.volume }} <span>m<sup>3</sup></span></p>
-                        <p>Debit : {{ per.inflow.debit }} <span>m<sup>3</sup>/detik</span></p>
-                    {% else %}
-                        <p style="color: red;"><b>Belum ada Data</b></p>
-                    {% endif %}
-                </div>
-
-                <h5>Curah Hujan</h5>
-                <div class="container">
-                    {% if per.ch %}
-                        <p>CH : {{ per.ch }} <span>mm</span></p>
-                    {% else %}
-                        <p style="color: red;"><b>Belum ada Data</b></p>
-                    {% endif %}
-                </div>
-            </div>
-            <div class="col-md-4">
-                <h5>Outflow</h5>
-                {% if per.outflow %}
-                    <div class="container">
-                        <p>Volume : {{ per.outflow.volume }} <span>m<sup>3</sup></span></p>
-                        <p>Debit : {{ per.outflow.debit }} <span>m<sup>3</sup>/detik</span></p>
-                        <p>Spillway Volume : {{ per.outflow.spill_vol }} <span>m<sup>3</sup></span></p>
-                        <p>Spillway Debit : {{ per.outflow.spill_deb }} <span>m<sup>3</sup>/detik</span></p>
-                    </div>
-                {% else %}
-                    <div class="container">
-                        <p style="color: red;"><b>Belum ada Data</b></p>
-                    </div>
-                {% endif %}
-            </div>
-        </div>
-    {% endfor %}
+    <table class="table table-bordered table-stripped">
+        <thead>
+            <tr>
+              <th rowspan="2">Tanggal</th>
+              <th rowspan="2">Curah hujan</th>
+              <th colspan="2">Jam 6</th>
+              <th colspan="2">Jam 12</th>
+              <th colspan="2">Jam 18</th>
+              <th colspan="2">Inflow</th>
+              <th colspan="4">Outflow</th>
+            </tr>
+            <tr>
+              <th>TMA</th>
+              <th>Vol</th>
+              <th>TMA</th>
+              <th>Vol</th>
+              <th>TMA</th>
+              <th>Vol</th>
+              <th>Debit</th>
+              <th>Volume</th>
+              <th>Q Intake</th>
+              <th>V Intake</th>
+              <th>Q Spillway</th>
+              <th>V Spillway</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for t, per in periodik %}
+            <tr>
+                <td>{{ t | date('d M Y') }}</td>
+                <td>
+                    <a data-url="/operasi/{{ waduk.id }}/daily/update" class="editable" data-name="curahhujan" data-type="number" data-pk="{{ per.id }}">
+                        {% if per.ch %}{{ per.ch }}{% else %} - {% endif %}
+                    </a>
+                </td>
+                {% for t in per.tma %}
+                    <td>
+                        <a href="#" data-url="#" class="editable" id="tma-tma-{{ t.id }}" data-type="number" data-pk="{{ t.id }}">
+                            {% if t.tma %}{{ t.tma }}{% else %} - {% endif %}
+                        </a>
+                    </td>
+                    <td>
+                        <a href="#" data-url="#" class="editable" id="tma-vol-{{ t.id }}" data-type="number" data-pk="{{ t.id }}">
+                            {% if t.volume %}{{ t.volume }}{% else %} - {% endif %}
+                        </a>
+                    </td>
+                {% endfor %}
+                <td>
+                    <a href="#" data-url="#" class="editable" id="inflow-deb-{{ per.id }}" data-type="number" data-pk="{{ per.id }}">
+                        {% if per.inflow.debit %}{{ per.inflow.debit }}{% else %} - {% endif %}
+                    </a>
+                </td>
+                <td>
+                    <a href="#" data-url="#" class="editable" id="inflow-vol-{{ per.id }}" data-type="number" data-pk="{{ per.id }}">
+                        {% if per.inflow.volume %}{{ per.inflow.volume }}{% else %} - {% endif %}
+                    </a>
+                </td>
+                <td>
+                    <a href="#" data-url="#" class="editable" id="outflow-deb-{{ per.id }}" data-type="number" data-pk="{{ per.id }}">
+                        {% if per.outflow.debit %}{{ per.outflow.debit }}{% else %} - {% endif %}
+                    </a>
+                </td>
+                <td>
+                    <a href="#" data-url="#" class="editable" id="outflow-vol-{{ per.id }}" data-type="number" data-pk="{{ per.id }}">
+                        {% if per.outflow.volume %}{{ per.outflow.volume }}{% else %} - {% endif %}
+                    </a>
+                </td>
+                <td>
+                    <a href="#" data-url="#" class="editable" id="spillway-deb-{{ per.id }}" data-type="number" data-pk="{{ per.id }}">
+                        {% if per.outflow.spill_deb %}{{ per.outflow.spill_deb }}{% else %} - {% endif %}
+                    </a>
+                </td>
+                <td>
+                    <a href="#" data-url="#" class="editable" id="spillway-vol-{{ per.id }}" data-type="number" data-pk="{{ per.id }}">
+                        {% if per.outflow.spill_vol %}{{ per.outflow.spill_vol }}{% else %} - {% endif %}
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}
 
 {% block js %}
+    <script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js" type="text/javascript"></script>
     <script>
         $('#datepicker').datepicker({
@@ -295,6 +298,12 @@
             todayHighlight: true,
             autoclose: true,
             format:  'yyyy-mm-dd'
+        });
+
+        //turn to inline mode
+        $.fn.editable.defaults.mode = 'popup';
+        $(document).ready(function() {
+            $('.editable').editable();
         });
 
     </script>

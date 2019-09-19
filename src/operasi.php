@@ -58,7 +58,7 @@ $app->group('/operasi', function() use ($loggedinMiddleware, $petugasAuthorizati
                         '12' => [],
                         '18' => []
                     ],
-                    'id' => $i
+                    'id' => $d['id']
                 ];
             }
             foreach ($tma as $t) {
@@ -74,6 +74,7 @@ $app->group('/operasi', function() use ($loggedinMiddleware, $petugasAuthorizati
                     ];
                 }
                 $periodik[$tanggal]['tma'][$jam] = [
+                    'id' => $t['id'],
                     'tma' => $t['manual'],
                     'volume' => $t['volume']
                 ];
@@ -166,6 +167,24 @@ $app->group('/operasi', function() use ($loggedinMiddleware, $petugasAuthorizati
                 $this->flash->addMessage('messages', 'Periodik Daily berhasil ditambahkan');
                 return $this->response->withRedirect($this->router->pathFor('operasi.bendungan', ['id' => $id], []));
             })->setName('operasi.daily.add');
+
+            $this->post('/update', function(Request $request, Response $response, $args) {
+                $id = $request->getAttribute('id');
+
+                $form = $request->getParams();
+                dump($form);
+                $column = $form['nama'];
+                $value = $form['value'];
+                $pk = $form['pk'];
+
+                $stmt = $this->db->execute("UPDATE daily SET {$column}={$value} WHERE id={$pk}");
+
+                return $response->withJson([
+                    "name" => $form['name'],
+                    "pk" => $form['pk'],
+                    "value" => $form['value']
+                ], 200);
+            })->setName('operasi.daily.update');
 
         });
 
