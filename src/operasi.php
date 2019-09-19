@@ -172,12 +172,13 @@ $app->group('/operasi', function() use ($loggedinMiddleware, $petugasAuthorizati
                 $id = $request->getAttribute('id');
 
                 $form = $request->getParams();
-                dump($form);
-                $column = $form['nama'];
-                $value = $form['value'];
-                $pk = $form['pk'];
 
-                $stmt = $this->db->execute("UPDATE daily SET {$column}={$value} WHERE id={$pk}");
+                $stmt = $this->db->prepare("UPDATE periodik_daily SET {$form['name']}=:value WHERE id=:id");
+                $stmt->execute([
+                    ':value' => $form['value'],
+                    ':id' => $form['pk']
+                ]);
+                dump($form);
 
                 return $response->withJson([
                     "name" => $form['name'],
