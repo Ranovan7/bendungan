@@ -49,25 +49,26 @@ $app->group('/keamanan', function() use ($loggedinMiddleware, $petugasAuthorizat
             # prepare preview data
             $periodik = [];
             foreach ($keamanan as $i => $k) {
-                $tanggal = date('d M Y', strtotime($k['sampling']));
+                $tanggal = $k['sampling'];
                 if (!$periodik[$tanggal]['id']) {
-                $periodik[$tanggal]['id'] = $i;
+                    $periodik[$tanggal]['id'] = $k['id'];
                 }
 
                 if ($k['keamanan_type'] == 'vnotch') {
-                    $periodik[$tanggal]['vnotch'][] = [
-                        'nama' => $vnotch_q[$k['keamanan_id']],
+                    $periodik[$tanggal]['vnotch'][$vnotch_q[$k['keamanan_id']]] = [
+                        'id' => $k['id'],
                         'tma' => $k['tma'],
                         'debit' => $k['debit']
                     ];
                 } else {
-                    $periodik[$tanggal]['piezometer'][] = [
-                        'nama' => $piezometer_q[$k['keamanan_id']],
+                    $periodik[$tanggal]['piezometer'][$piezometer_q[$k['keamanan_id']]] = [
+                        'id' => $k['id'],
                         'tma' => $k['tma']
                     ];
                 }
             }
             krsort($periodik);
+            // dump($periodik);
             return $this->view->render($response, 'keamanan/bendungan.html', [
                 'waduk' => $waduk,
                 'vnotch' => $vnotch,
@@ -116,6 +117,45 @@ $app->group('/keamanan', function() use ($loggedinMiddleware, $petugasAuthorizat
 
                 return $this->response->withRedirect($this->router->pathFor('keamanan.bendungan', ['id' => $id], []));
             })->setName('keamanan.vnotch.add');
+
+            $this->post('/update', function(Request $request, Response $response, $args) {
+                $id = $request->getAttribute('id');
+
+                $form = $request->getParams();
+
+                $info = explode("_", $form['name']);
+                $column = $info[0];
+                $sampling = $info[1];
+                $keamanan_id = $info[2];
+
+                if ($form['pk']) {
+                    // update keamanan
+                    $stmt = $this->db->prepare("UPDATE periodik_keamanan SET {$column}=:value WHERE id=:id");
+                    $stmt->execute([
+                        ':value' => $form['value'],
+                        ':id' => $form['pk']
+                    ]);
+                } else {
+                    // insert new keamanan
+                    $stmt = $this->db->prepare("INSERT INTO periodik_keamanan
+                                                    (sampling, {$column}, keamanan_type, keamanan_id, waduk_id)
+                                                VALUES
+                                                    (:sampling, :value, 'vnotch', :keamanan_id, :waduk_id)");
+                    $stmt->execute([
+                        ':sampling' => $sampling,
+                        ':value' => $form['value'],
+                        ':keamanan_id' => $keamanan_id,
+                        ':waduk_id' => $id
+                    ]);
+                }
+
+                return $response->withJson([
+                    "name" => $form['name'],
+                    "pk" => $form['pk'],
+                    "value" => $form['value']
+                ], 200);
+            })->setName('keamanan.vnotch.update');
+
         });
 
         $this->group('/piezometer', function() {
@@ -156,6 +196,44 @@ $app->group('/keamanan', function() use ($loggedinMiddleware, $petugasAuthorizat
 
                 return $this->response->withRedirect($this->router->pathFor('keamanan.bendungan', ['id' => $id], []));
             })->setName('keamanan.piezometer.add');
+
+            $this->post('/update', function(Request $request, Response $response, $args) {
+                $id = $request->getAttribute('id');
+
+                $form = $request->getParams();
+
+                $info = explode("_", $form['name']);
+                $column = $info[0];
+                $sampling = $info[1];
+                $keamanan_id = $info[2];
+
+                if ($form['pk']) {
+                    // update keamanan
+                    $stmt = $this->db->prepare("UPDATE periodik_keamanan SET {$column}=:value WHERE id=:id");
+                    $stmt->execute([
+                        ':value' => $form['value'],
+                        ':id' => $form['pk']
+                    ]);
+                } else {
+                    // insert new keamanan
+                    $stmt = $this->db->prepare("INSERT INTO periodik_keamanan
+                                                    (sampling, {$column}, keamanan_type, keamanan_id, waduk_id)
+                                                VALUES
+                                                    (:sampling, :value, 'piezometer', :keamanan_id, :waduk_id)");
+                    $stmt->execute([
+                        ':sampling' => $sampling,
+                        ':value' => $form['value'],
+                        ':keamanan_id' => $keamanan_id,
+                        ':waduk_id' => $id
+                    ]);
+                }
+
+                return $response->withJson([
+                    "name" => $form['name'],
+                    "pk" => $form['pk'],
+                    "value" => $form['value']
+                ], 200);
+            })->setName('keamanan.piezometer.update');
         });
 
     })->add($petugasAuthorizationMiddleware);

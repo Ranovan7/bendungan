@@ -15,21 +15,8 @@
 {% endblock %}
 
 {% block content %}
-    <!-- Computer View -->
-    <section class="content-header d-none d-sm-block">
-        <h1>{{ waduk.nama }} Daily</h1>
-        <!-- <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/">Home</a></li>
-            <li class="breadcrumb-item">{{ waduk.nama }}</li>
-        </ol> -->
-    </section>
-
-    <!-- Mobile View -->
-    <section class="content-header d-block d-sm-none">
-        <!-- <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/">Home</a></li>
-            <li class="breadcrumb-item">{{ waduk.nama }}</li>
-        </ol> -->
+    <div style="height: 85px;"></div>
+    <section class="content-header">
         <h2>{{ waduk.nama }}</h2>
     </section>
     <hr>
@@ -57,10 +44,8 @@
                             <div class="form-group col-md-8">
                                 <label for="ch">Curah Hujan <span style="color: red;">*</span></label>
                                 <div class="input-group">
-                                    <input id="ch" name="ch" autofocus required class="form-control" type="number" step="0.1" value="0">
-                                    <div class="input-group-append">
-                                        <span class="input-group-text" id="ch-append">m</span>
-                                    </div>
+                                    <input id="ch" name="ch" autofocus required class="form-control" type="number" step="0.01" value="0" aria-describedby="ch_addon">
+                                    <span class="input-group-addon" id="ch_addon">m</span>
                                 </div>
                             </div>
                         </div>
@@ -70,19 +55,15 @@
                             <div class="form-group col-md-6">
                                 <label for="debit">Debit <span style="color: red;">*</span></label>
                                 <div class="input-group">
-                                    <input id="debit" name="debit" required class="form-control" type="number" step="0.1" value="0">
-                                    <div class="input-group-append">
-                                        <span class="input-group-text" id="debit-append">m<sup>3</sup>/detik</span>
-                                    </div>
+                                    <input id="debit" name="debit" required class="form-control" type="number" step="0.01" value="0" aria-describedby="deb_addon">
+                                    <span class="input-group-addon" id="deb_addon">m<sup>3</sup>/detik</span>
                                 </div>
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="volume">Volume <span style="color: red;">*</span></label>
                                 <div class="input-group">
-                                    <input id="volume" name="volume" required class="form-control" type="number" step="0.1" value="0">
-                                    <div class="input-group-append">
-                                        <span class="input-group-text" id="volume-append">m<sup>3</sup></span>
-                                    </div>
+                                    <input id="volume" name="volume" required class="form-control" type="number" step="0.01" value="0" aria-describedby="tma_addon">
+                                    <span class="input-group-addon" id="vol_addon">m<sup>3</sup></span>
                                 </div>
                             </div>
                         </div>
@@ -92,19 +73,15 @@
                             <div class="form-group col-md-6">
                                 <label for="deb-in">Debit Intake <span style="color: red;">*</span></label>
                                 <div class="input-group">
-                                    <input id="deb-in" name="deb-in" required class="form-control" type="number" step="0.1" value="0">
-                                    <div class="input-group-append">
-                                        <span class="input-group-text" id="deb-in-append">m<sup>3</sup>/detik</span>
-                                    </div>
+                                    <input id="deb-in" name="deb-in" required class="form-control" type="number" step="0.01" value="0" aria-describedby="deb_addon">
+                                    <span class="input-group-addon" id="deb_addon">m<sup>3</sup>/detik</span>
                                 </div>
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="vol-in">Volume Intake <span style="color: red;">*</span></label>
                                 <div class="input-group">
-                                    <input id="vol-in" name="vol-in" required class="form-control" type="number" step="0.1" value="0">
-                                    <div class="input-group-append">
-                                        <span class="input-group-text" id="vol-in-append">m<sup>3</sup></span>
-                                    </div>
+                                    <input id="vol-in" name="vol-in" required class="form-control" type="number" step="0.01" value="0" aria-describedby="tma_addon">
+                                    <span class="input-group-addon" id="vol_addon">m<sup>3</sup></span>
                                 </div>
                             </div>
                         </div>
@@ -113,19 +90,15 @@
                             <div class="form-group col-md-6">
                                 <label for="deb-spill">Debit Spillway <span style="color: red;">*</span></label>
                                 <div class="input-group">
-                                    <input id="deb-spill" name="deb-spill" required class="form-control" type="number" step="0.1" value="0">
-                                    <div class="input-group-append">
-                                        <span class="input-group-text" id="deb-spill-append">m<sup>3</sup>/detik</span>
-                                    </div>
+                                    <input id="deb-spill" name="deb-spill" required class="form-control" type="number" step="0.01" value="0" aria-describedby="deb_addon">
+                                    <span class="input-group-addon" id="deb_addon">m<sup>3</sup>/detik</span>
                                 </div>
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="vol-spill">Volume Spillway <span style="color: red;">*</span></label>
                                 <div class="input-group">
-                                    <input id="vol-spill" name="vol-spill" required class="form-control" type="number" step="0.1" value="0">
-                                    <div class="input-group-append">
-                                        <span class="input-group-text" id="vol-spill-append">m<sup>3</sup></span>
-                                    </div>
+                                    <input id="vol-spill" name="vol-spill" required class="form-control" type="number" step="0.01" value="0" aria-describedby="tma_addon">
+                                    <span class="input-group-addon" id="vol_addon">m<sup>3</sup></span>
                                 </div>
                             </div>
                         </div>
@@ -166,19 +139,15 @@
                             <div class="form-group col-md-6">
                                 <label for="tma">TMA <span style="color: red;">*</span></label>
                                 <div class="input-group">
-                                    <input id="tma" name="tma" required class="form-control" type="number" step="0.1" value="0">
-                                    <div class="input-group-append">
-                                        <span class="input-group-text" id="tma-append">m</span>
-                                    </div>
+                                    <input id="tma" name="tma" required class="form-control" type="number" step="0.01" value="0" aria-describedby="tma_addon">
+                                    <span class="input-group-addon" id="tma_addon">m</span>
                                 </div>
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="vol">Volume <span style="color: red;">*</span></label>
                                 <div class="input-group">
-                                    <input id="vol" name="vol" required class="form-control" type="number" step="0.1" value="0">
-                                    <div class="input-group-append">
-                                        <span class="input-group-text" id="vol-append">m<sup>3</sup></span>
-                                    </div>
+                                    <input id="vol" name="vol" required class="form-control" type="number" step="0.01" value="0" aria-describedby="vol_addon">
+                                    <span class="input-group-addon" id="vol_addon">m<sup>3</sup></span>
                                 </div>
                             </div>
                         </div>
@@ -199,7 +168,7 @@
         <thead>
             <tr>
               <th rowspan="2">Tanggal</th>
-              <th rowspan="2">Curah hujan</th>
+              <th rowspan="2">Curah Hujan</th>
               <th colspan="2">Jam 6</th>
               <th colspan="2">Jam 12</th>
               <th colspan="2">Jam 18</th>
@@ -225,51 +194,51 @@
             {% for t, per in periodik %}
             <tr>
                 <td>{{ t | date('d M Y') }}</td>
-                <td>
-                    <a data-url="/operasi/{{ waduk.id }}/daily/update" class="editable" data-name="curahhujan_{{ t }}" data-type="number" data-pk="{{ per.id }}">
-                        {% if per.ch %}{{ per.ch }}{% else %} - {% endif %}
+                <td align="right">
+                    <a data-url="/operasi/{{ waduk.id }}/daily/update" class="editable" data-name="curahhujan_{{ t }}" data-type="number" data-step="any" data-step="any" data-pk="{{ per.id }}">
+                        {% if per.ch %}{{ per.ch }}{% else %}<span style="color: red;">Empty</span>{% endif %}
                     </a>
                 </td>
                 {% for j, tma in per.tma %}
-                    <td>
-                        <a href="#" data-url="/operasi/{{ waduk.id }}/tma/update" class="editable" id="manual_{{ t }}_{{ j }}" data-type="number" data-pk="{{ tma.id }}">
-                            {% if tma.tma %}{{ tma.tma }}{% else %} - {% endif %}
+                    <td align="right">
+                        <a href="#" data-url="/operasi/{{ waduk.id }}/tma/update" class="editable" id="manual_{{ t }}_{{ j }}" data-type="number" data-step="any" data-pk="{{ tma.id }}">
+                            {% if tma.tma %}{{ tma.tma }}{% else %}<span style="color: red;">Empty</span>{% endif %}
                         </a>
                     </td>
-                    <td>
-                        <a href="#" data-url="/operasi/{{ waduk.id }}/tma/update" class="editable" id="volume_{{ t }}_{{ j }}" data-type="number" data-pk="{{ tma.id }}">
-                            {% if tma.volume %}{{ tma.volume }}{% else %} - {% endif %}
+                    <td align="right">
+                        <a href="#" data-url="/operasi/{{ waduk.id }}/tma/update" class="editable" id="volume_{{ t }}_{{ j }}" data-type="number" data-step="any" data-pk="{{ tma.id }}">
+                            {% if tma.volume %}{{ tma.volume }}{% else %}<span style="color: red;">Empty</span>{% endif %}
                         </a>
                     </td>
                 {% endfor %}
-                <td>
-                    <a href="#" data-url="#" class="editable" id="inflow-deb-{{ per.id }}" data-type="number" data-pk="{{ per.id }}">
-                        {% if per.inflow.debit %}{{ per.inflow.debit }}{% else %} - {% endif %}
+                <td align="right">
+                    <a href="#" data-url="#" class="editable" id="inflow-deb-{{ per.id }}" data-type="number" data-step="any" data-pk="{{ per.id }}">
+                        {% if per.inflow.debit %}{{ per.inflow.debit }}{% else %}<span style="color: red;">Empty</span>{% endif %}
                     </a>
                 </td>
-                <td>
-                    <a href="#" data-url="#" class="editable" id="inflow-vol-{{ per.id }}" data-type="number" data-pk="{{ per.id }}">
-                        {% if per.inflow.volume %}{{ per.inflow.volume }}{% else %} - {% endif %}
+                <td align="right">
+                    <a href="#" data-url="#" class="editable" id="inflow-vol-{{ per.id }}" data-type="number" data-step="any" data-pk="{{ per.id }}">
+                        {% if per.inflow.volume %}{{ per.inflow.volume }}{% else %}<span style="color: red;">Empty</span>{% endif %}
                     </a>
                 </td>
-                <td>
-                    <a href="#" data-url="#" class="editable" id="outflow-deb-{{ per.id }}" data-type="number" data-pk="{{ per.id }}">
-                        {% if per.outflow.debit %}{{ per.outflow.debit }}{% else %} - {% endif %}
+                <td align="right">
+                    <a href="#" data-url="#" class="editable" id="outflow-deb-{{ per.id }}" data-type="number" data-step="any" data-pk="{{ per.id }}">
+                        {% if per.outflow.debit %}{{ per.outflow.debit }}{% else %}<span style="color: red;">Empty</span>{% endif %}
                     </a>
                 </td>
-                <td>
-                    <a href="#" data-url="#" class="editable" id="outflow-vol-{{ per.id }}" data-type="number" data-pk="{{ per.id }}">
-                        {% if per.outflow.volume %}{{ per.outflow.volume }}{% else %} - {% endif %}
+                <td align="right">
+                    <a href="#" data-url="#" class="editable" id="outflow-vol-{{ per.id }}" data-type="number" data-step="any" data-pk="{{ per.id }}">
+                        {% if per.outflow.volume %}{{ per.outflow.volume }}{% else %}<span style="color: red;">Empty</span>{% endif %}
                     </a>
                 </td>
-                <td>
-                    <a href="#" data-url="#" class="editable" id="spillway-deb-{{ per.id }}" data-type="number" data-pk="{{ per.id }}">
-                        {% if per.outflow.spill_deb %}{{ per.outflow.spill_deb }}{% else %} - {% endif %}
+                <td align="right">
+                    <a href="#" data-url="#" class="editable" id="spillway-deb-{{ per.id }}" data-type="number" data-step="any" data-pk="{{ per.id }}">
+                        {% if per.outflow.spill_deb %}{{ per.outflow.spill_deb }}{% else %}<span style="color: red;">Empty</span>{% endif %}
                     </a>
                 </td>
-                <td>
-                    <a href="#" data-url="#" class="editable" id="spillway-vol-{{ per.id }}" data-type="number" data-pk="{{ per.id }}">
-                        {% if per.outflow.spill_vol %}{{ per.outflow.spill_vol }}{% else %} - {% endif %}
+                <td align="right">
+                    <a href="#" data-url="#" class="editable" id="spillway-vol-{{ per.id }}" data-type="number" data-step="any" data-pk="{{ per.id }}">
+                        {% if per.outflow.spill_vol %}{{ per.outflow.spill_vol }}{% else %}<span style="color: red;">Empty</span>{% endif %}
                     </a>
                 </td>
             </tr>
@@ -306,7 +275,7 @@
             format:  'yyyy-mm-dd'
         });
 
-        //turn to inline mode
+        //turn to popup mode
         $.fn.editable.defaults.mode = 'popup';
         $(document).ready(function() {
             $('.editable').editable();
