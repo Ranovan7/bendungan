@@ -33,164 +33,166 @@
         <h2>{{ waduk.nama }}</h2>
     </section>
     <hr>
-    <div class="row">
-        <div class="col-md-6 mb-3 border-bottom">
-            <h4>
-                Form Data Harian
-                <a class="ml-5 mr-5 float-right"
-                    data-toggle="collapse" href="#form-add-daily"
-                    role="button" aria-expanded="false"
-                    aria-controls="">
-                    <i class="fas fa-plus mr-2"></i>
-                </a>
-            </h4>
-            <div class="container collapse" id="form-add-daily">
-                <form method="POST" action="{{ path_for('operasi.daily.add', {'id': waduk.id}, {'sampling': sampling}) }}">
-                    <div class="form-group">
-                        <label class="form-text" for="sampling">Tanggal</label>
-                        <input class="form-control" type="text" name="sampling" id="sampling-daily" required value="{{ sampling | date('Y-m-d') }}">
-                    </div>
-                    <br>
-                    <h3>Curah Hujan</h3>
-                    <div class="row">
-                        <div class="form-group col-md-8">
-                            <label for="ch">Curah Hujan <span style="color: red;">*</span></label>
-                            <div class="input-group">
-                                <input id="ch" name="ch" autofocus required class="form-control" type="number" step="0.1" value="">
-                                <div class="input-group-append">
-                                    <span class="input-group-text" id="ch-append">m</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <hr>
-                    <h3>Inflow</h3>
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <label for="debit">Debit <span style="color: red;">*</span></label>
-                            <div class="input-group">
-                                <input id="debit" name="debit" required class="form-control" type="number" step="0.1" value="">
-                                <div class="input-group-append">
-                                    <span class="input-group-text" id="debit-append">m<sup>3</sup>/detik</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label for="volume">Volume <span style="color: red;">*</span></label>
-                            <div class="input-group">
-                                <input id="volume" name="volume" required class="form-control" type="number" step="0.1" value="">
-                                <div class="input-group-append">
-                                    <span class="input-group-text" id="volume-append">m<sup>3</sup></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <hr>
-                    <h3>Outflow</h3>
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <label for="deb-in">Debit Intake <span style="color: red;">*</span></label>
-                            <div class="input-group">
-                                <input id="deb-in" name="deb-in" required class="form-control" type="number" step="0.1" value="">
-                                <div class="input-group-append">
-                                    <span class="input-group-text" id="deb-in-append">m<sup>3</sup>/detik</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label for="vol-in">Volume Intake <span style="color: red;">*</span></label>
-                            <div class="input-group">
-                                <input id="vol-in" name="vol-in" required class="form-control" type="number" step="0.1" value="">
-                                <div class="input-group-append">
-                                    <span class="input-group-text" id="vol-in-append">m<sup>3</sup></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <label for="deb-spill">Debit Spillway <span style="color: red;">*</span></label>
-                            <div class="input-group">
-                                <input id="deb-spill" name="deb-spill" required class="form-control" type="number" step="0.1" value="">
-                                <div class="input-group-append">
-                                    <span class="input-group-text" id="deb-spill-append">m<sup>3</sup>/detik</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label for="vol-spill">Volume Spillway <span style="color: red;">*</span></label>
-                            <div class="input-group">
-                                <input id="vol-spill" name="vol-spill" required class="form-control" type="number" step="0.1" value="">
-                                <div class="input-group-append">
-                                    <span class="input-group-text" id="vol-spill-append">m<sup>3</sup></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                  <div class="form-group">
-                    <input type="submit" class="btn btn-primary" value="Tambah">
-                  </div>
-                </form>
-            </div>
-        </div>
-        <div class="col-md-6 mb-3 border-bottom">
-            <h4>
-                Form TMA
-                <a class="ml-5 mr-5 float-right"
-                    data-toggle="collapse" href="#form-add-tma"
-                    role="button" aria-expanded="false"
-                    aria-controls="">
-                    <i class="fas fa-plus mr-2"></i>
-                </a>
-            </h4>
-            <div class="container collapse" id="form-add-tma">
-                <form method="POST" action="{{ path_for('operasi.tma.add', {'id': waduk.id}, {'sampling': sampling}) }}">
-                    <div class="row">
-                        <div class="form-group col-md-9">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6 col-xs-12">
+                <h4>
+                    Form Data Harian
+                    <a class="ml-5 mr-5 float-right"
+                        data-toggle="collapse" href="#form-add-daily"
+                        role="button" aria-expanded="false"
+                        aria-controls="">
+                        <i class="fas fa-plus mr-2"></i>
+                    </a>
+                </h4>
+                <div class="collapse" id="form-add-daily">
+                    <form method="POST" action="{{ path_for('operasi.daily.add', {'id': waduk.id}, {'sampling': sampling}) }}">
+                        <div class="form-group">
                             <label class="form-text" for="sampling">Tanggal</label>
-                            <input class="form-control" type="text" name="sampling" id="sampling-tma" required value="{{ sampling | date('Y-m-d') }}">
+                            <input class="form-control" type="text" name="sampling" id="sampling-daily" required value="{{ sampling | date('Y-m-d') }}">
                         </div>
-                        <div class="form-group col-md-3">
-                            <label for="jam">Jam</label>
-                            <select name="jam" id="jam" class="form-control" required>
-                                <option value="06:00" {{ inputjam == "06:00" ? 'selected' : '' }}>6</option>
-                                <option value="12:00" {{ inputjam == "12:00" ? 'selected' : '' }}>12</option>
-                                <option value="18:00" {{ inputjam == "18:00" ? 'selected' : '' }}>18</option>
-                            </select>
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <label for="tma">TMA <span style="color: red;">*</span></label>
-                            <div class="input-group">
-                                <input id="tma" name="tma" required class="form-control" type="number" step="0.1" value="">
-                                <div class="input-group-append">
-                                    <span class="input-group-text" id="tma-append">m</span>
+                        <br>
+                        <h3>Curah Hujan</h3>
+                        <div class="row">
+                            <div class="form-group col-md-8">
+                                <label for="ch">Curah Hujan <span style="color: red;">*</span></label>
+                                <div class="input-group">
+                                    <input id="ch" name="ch" autofocus required class="form-control" type="number" step="0.1" value="0">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text" id="ch-append">m</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group col-md-6">
-                            <label for="vol">Volume <span style="color: red;">*</span></label>
-                            <div class="input-group">
-                                <input id="vol" name="vol" required class="form-control" type="number" step="0.1" value="">
-                                <div class="input-group-append">
-                                    <span class="input-group-text" id="vol-append">m<sup>3</sup></span>
+                        <hr>
+                        <h3>Inflow</h3>
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label for="debit">Debit <span style="color: red;">*</span></label>
+                                <div class="input-group">
+                                    <input id="debit" name="debit" required class="form-control" type="number" step="0.1" value="0">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text" id="debit-append">m<sup>3</sup>/detik</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="volume">Volume <span style="color: red;">*</span></label>
+                                <div class="input-group">
+                                    <input id="volume" name="volume" required class="form-control" type="number" step="0.1" value="0">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text" id="volume-append">m<sup>3</sup></span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                  <div class="form-group">
-                    <input type="submit" class="btn btn-primary" value="Tambah">
-                  </div>
-                </form>
+                        <hr>
+                        <h3>Outflow</h3>
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label for="deb-in">Debit Intake <span style="color: red;">*</span></label>
+                                <div class="input-group">
+                                    <input id="deb-in" name="deb-in" required class="form-control" type="number" step="0.1" value="0">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text" id="deb-in-append">m<sup>3</sup>/detik</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="vol-in">Volume Intake <span style="color: red;">*</span></label>
+                                <div class="input-group">
+                                    <input id="vol-in" name="vol-in" required class="form-control" type="number" step="0.1" value="0">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text" id="vol-in-append">m<sup>3</sup></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label for="deb-spill">Debit Spillway <span style="color: red;">*</span></label>
+                                <div class="input-group">
+                                    <input id="deb-spill" name="deb-spill" required class="form-control" type="number" step="0.1" value="0">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text" id="deb-spill-append">m<sup>3</sup>/detik</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="vol-spill">Volume Spillway <span style="color: red;">*</span></label>
+                                <div class="input-group">
+                                    <input id="vol-spill" name="vol-spill" required class="form-control" type="number" step="0.1" value="0">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text" id="vol-spill-append">m<sup>3</sup></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                      <div class="form-group">
+                        <input type="submit" class="btn btn-primary" value="Tambah">
+                      </div>
+                    </form>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <h4>
+                    Form TMA
+                    <a class="ml-5 mr-5 float-right"
+                        data-toggle="collapse" href="#form-add-tma"
+                        role="button" aria-expanded="false"
+                        aria-controls="">
+                        <i class="fas fa-plus mr-2"></i>
+                    </a>
+                </h4>
+                <div class="collapse" id="form-add-tma">
+                    <form method="POST" action="{{ path_for('operasi.tma.add', {'id': waduk.id}, {'sampling': sampling}) }}">
+                        <div class="row">
+                            <div class="form-group col-md-9">
+                                <label class="form-text" for="sampling">Tanggal</label>
+                                <input class="form-control" type="text" name="sampling" id="sampling-tma" required value="{{ sampling | date('Y-m-d') }}">
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="jam">Jam</label>
+                                <select name="jam" id="jam" class="form-control" required>
+                                    <option value="06:00" {{ inputjam == "06:00" ? 'selected' : '' }}>6</option>
+                                    <option value="12:00" {{ inputjam == "12:00" ? 'selected' : '' }}>12</option>
+                                    <option value="18:00" {{ inputjam == "18:00" ? 'selected' : '' }}>18</option>
+                                </select>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label for="tma">TMA <span style="color: red;">*</span></label>
+                                <div class="input-group">
+                                    <input id="tma" name="tma" required class="form-control" type="number" step="0.1" value="0">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text" id="tma-append">m</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="vol">Volume <span style="color: red;">*</span></label>
+                                <div class="input-group">
+                                    <input id="vol" name="vol" required class="form-control" type="number" step="0.1" value="0">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text" id="vol-append">m<sup>3</sup></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                      <div class="form-group">
+                        <input type="submit" class="btn btn-primary" value="Tambah">
+                      </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
     <h3>
         Data Harian
-        <span id="datepicker" style="color: #18bc9c"><i class="fas fa-calendar mr-2 text-right"></i>{{ sampling | date('M Y') }}</span>
+        <span id="datepicker" style="color: #18bc9c"> {{ sampling | date('M Y') }}</span>
     </h3>
     <hr>
     <table class="table table-bordered table-stripped">
@@ -224,19 +226,19 @@
             <tr>
                 <td>{{ t | date('d M Y') }}</td>
                 <td>
-                    <a data-url="/operasi/{{ waduk.id }}/daily/update" class="editable" data-name="curahhujan" data-type="number" data-pk="{{ per.id }}">
+                    <a data-url="/operasi/{{ waduk.id }}/daily/update" class="editable" data-name="curahhujan_{{ t }}" data-type="number" data-pk="{{ per.id }}">
                         {% if per.ch %}{{ per.ch }}{% else %} - {% endif %}
                     </a>
                 </td>
-                {% for t in per.tma %}
+                {% for j, tma in per.tma %}
                     <td>
-                        <a href="#" data-url="#" class="editable" id="tma-tma-{{ t.id }}" data-type="number" data-pk="{{ t.id }}">
-                            {% if t.tma %}{{ t.tma }}{% else %} - {% endif %}
+                        <a href="#" data-url="/operasi/{{ waduk.id }}/tma/update" class="editable" id="manual_{{ t }}_{{ j }}" data-type="number" data-pk="{{ tma.id }}">
+                            {% if tma.tma %}{{ tma.tma }}{% else %} - {% endif %}
                         </a>
                     </td>
                     <td>
-                        <a href="#" data-url="#" class="editable" id="tma-vol-{{ t.id }}" data-type="number" data-pk="{{ t.id }}">
-                            {% if t.volume %}{{ t.volume }}{% else %} - {% endif %}
+                        <a href="#" data-url="/operasi/{{ waduk.id }}/tma/update" class="editable" id="volume_{{ t }}_{{ j }}" data-type="number" data-pk="{{ tma.id }}">
+                            {% if tma.volume %}{{ tma.volume }}{% else %} - {% endif %}
                         </a>
                     </td>
                 {% endfor %}
@@ -280,6 +282,10 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js" type="text/javascript"></script>
     <script>
+        // resolve package confict
+        let datepicker = $.fn.datepicker.noConflict();
+        $.fn.bootstrapDP = datepicker;
+
         $('#datepicker').datepicker({
             todayHighlight: true,
             autoclose: true,

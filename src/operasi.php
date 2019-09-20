@@ -41,7 +41,7 @@ $app->group('/operasi', function() use ($loggedinMiddleware, $petugasAuthorizati
             // save into periodik
             $periodik = [];
             foreach ($daily as $i => $d) {
-                $periodik[date('d M Y', strtotime($d['sampling']))] = [
+                $periodik[date('Y-m-d', strtotime($d['sampling']))] = [
                     'ch' => $d['curahhujan'],
                     'inflow' => [
                         'debit' => $d['inflow_deb'],
@@ -63,7 +63,7 @@ $app->group('/operasi', function() use ($loggedinMiddleware, $petugasAuthorizati
             }
             foreach ($tma as $t) {
                 $jam = date('H', strtotime($t['sampling']));
-                $tanggal = date('d M Y', strtotime($t['sampling']));
+                $tanggal = date('Y-m-d', strtotime($t['sampling']));
 
                 // initiate tma if not exist
                 if (!$periodik[$tanggal]['tma']) {
@@ -107,20 +107,80 @@ $app->group('/operasi', function() use ($loggedinMiddleware, $petugasAuthorizati
 
                 $form = $request->getParams();
 
-                $stmt = $this->db->prepare("INSERT INTO tma
-                                        (sampling, manual, volume, waduk_id)
-                                        VALUES
-                                        (:sampling, :manual, :volume, :waduk_id)");
-                $stmt->execute([
-                    ':sampling' => $form['sampling'] ." {$form['jam']}",
-                    ':manual' => $form['tma'],
-                    ':volume' => $form['vol'],
-                    ':waduk_id' => $id,
-                ]);
+                // check if row exist
+                $sampling = $form['sampling'] . " " . $form['jam'];
+                $tma = $this->db->query("SELECT * FROM tma WHERE sampling='$sampling'")->fetch();
+
+                if ($tma) {
+                    // update
+                    $stmt = $this->db->prepare("UPDATE tma SET
+                                                    manual=:manual,
+                                                    volume=:volume
+                                                WHERE
+                                                    id=:id");
+                    $stmt->execute([
+                        ':manual' => $form['tma'],
+                        ':volume' => $form['vol'],
+                        ':id' => $tma['id'],
+                    ]);
+                } else {
+                    // insert
+                    $stmt = $this->db->prepare("INSERT INTO tma
+                                                (sampling, manual, volume, waduk_id)
+                                                VALUES
+                                                (:sampling, :manual, :volume, :waduk_id)");
+                    $stmt->execute([
+                        ':sampling' => $sampling,
+                        ':manual' => $form['tma'],
+                        ':volume' => $form['vol'],
+                        ':waduk_id' => $id,
+                    ]);
+                }
 
                 $this->flash->addMessage('messages', 'Periodik Daily berhasil ditambahkan');
                 return $this->response->withRedirect($this->router->pathFor('operasi.bendungan', ['id' => $id], []));
             })->setName('operasi.tma.add');
+
+            $this->post('/update', function(Request $request, Response $response, $args) {
+                $id = $request->getAttribute('id');
+
+                $form = $request->getParams();
+                // dump($form);
+
+                $info = explode("_", $form['name']);
+                $column = $info[0];
+                $sampling = $info[1];
+                $jam = $info[2];
+
+                // check if id exist
+                $daily = $this->db->query("SELECT * FROM tma WHERE sampling='{$sampling} {$jam}:00:00'")->fetch();
+
+                if ($daily) {
+                    // update tma
+                    $stmt = $this->db->prepare("UPDATE tma SET {$column}=:value WHERE id=:id");
+                    $stmt->execute([
+                        ':value' => $form['value'],
+                        ':id' => $form['pk']
+                    ]);
+                } else {
+                    // insert new tma
+                    $stmt = $this->db->prepare("INSERT INTO tma
+                                                    (sampling, {$column}, waduk_id)
+                                                VALUES
+                                                    (:sampling, :value, :waduk_id)");
+                    $stmt->execute([
+                        ':sampling' => $sampling . " " . $jam . ":00:00",
+                        ':value' => $form['value'],
+                        ':waduk_id' => $id
+                    ]);
+                }
+
+                return $response->withJson([
+                    "name" => $form['name'],
+                    "pk" => $form['pk'],
+                    "value" => $form['value']
+                ], 200);
+            })->setName('operasi.tma.update');
 
         });
 
@@ -144,25 +204,55 @@ $app->group('/operasi', function() use ($loggedinMiddleware, $petugasAuthorizati
 
                 $form = $request->getParams();
 
-                $stmt = $this->db->prepare("INSERT INTO periodik_daily
-                                        (sampling, curahhujan, inflow_deb, inflow_vol,
-                                            outflow_deb, outflow_vol, spillway_deb, spillway_vol,
-                                            waduk_id)
-                                        VALUES
-                                        (:sampling, :curahhujan, :inflow_deb, :inflow_vol,
-                                            :outflow_deb, :outflow_vol, :spillway_deb, :spillway_vol,
-                                            :waduk_id)");
-                $stmt->execute([
-                    ':sampling' => $form['sampling'],
-                    ':curahhujan' => $form['ch'],
-                    ':inflow_deb' => $form['debit'],
-                    ':inflow_vol' => $form['volume'],
-                    ':outflow_deb' => $form['deb-in'],
-                    ':outflow_vol' => $form['vol-in'],
-                    ':spillway_deb' => $form['deb-spill'],
-                    ':spillway_vol' => $form['vol-spill'],
-                    ':waduk_id' => $id,
-                ]);
+                // check if periodik with requested sampling exist
+                $sampling = $form['sampling'];
+                $daily = $this->db->query("SELECT * FROM periodik_daily WHERE sampling='{$sampling}'")->fetch();
+                // dump($daily);
+                // die();
+
+                if ($daily) {
+                    // update the periodik
+                    $stmt = $this->db->prepare("UPDATE periodik_daily SET
+                                                    curahhujan=:curahhujan,
+                                                    inflow_deb=:inflow_deb,
+                                                    inflow_vol=:inflow_vol,
+                                                    outflow_deb=:outflow_deb,
+                                                    outflow_vol=:outflow_vol,
+                                                    spillway_deb=:spillway_deb,
+                                                    spillway_vol=:spillway_vol
+                                                WHERE id=:id");
+                    $stmt->execute([
+                        ':curahhujan' => $form['ch'],
+                        ':inflow_deb' => $form['debit'],
+                        ':inflow_vol' => $form['volume'],
+                        ':outflow_deb' => $form['deb-in'],
+                        ':outflow_vol' => $form['vol-in'],
+                        ':spillway_deb' => $form['deb-spill'],
+                        ':spillway_vol' => $form['vol-spill'],
+                        ':id' => $daily['id'],
+                    ]);
+                } else {
+                    // insert new periodik
+                    $stmt = $this->db->prepare("INSERT INTO periodik_daily
+                                            (sampling, curahhujan, inflow_deb, inflow_vol,
+                                                outflow_deb, outflow_vol, spillway_deb, spillway_vol,
+                                                waduk_id)
+                                            VALUES
+                                            (:sampling, :curahhujan, :inflow_deb, :inflow_vol,
+                                                :outflow_deb, :outflow_vol, :spillway_deb, :spillway_vol,
+                                                :waduk_id)");
+                    $stmt->execute([
+                        ':sampling' => $form['sampling'],
+                        ':curahhujan' => $form['ch'],
+                        ':inflow_deb' => $form['debit'],
+                        ':inflow_vol' => $form['volume'],
+                        ':outflow_deb' => $form['deb-in'],
+                        ':outflow_vol' => $form['vol-in'],
+                        ':spillway_deb' => $form['deb-spill'],
+                        ':spillway_vol' => $form['vol-spill'],
+                        ':waduk_id' => $id,
+                    ]);
+                }
 
                 $this->flash->addMessage('messages', 'Periodik Daily berhasil ditambahkan');
                 return $this->response->withRedirect($this->router->pathFor('operasi.bendungan', ['id' => $id], []));
@@ -173,12 +263,33 @@ $app->group('/operasi', function() use ($loggedinMiddleware, $petugasAuthorizati
 
                 $form = $request->getParams();
 
-                $stmt = $this->db->prepare("UPDATE periodik_daily SET {$form['name']}=:value WHERE id=:id");
-                $stmt->execute([
-                    ':value' => $form['value'],
-                    ':id' => $form['pk']
-                ]);
-                dump($form);
+                $info = explode("_", $form['name']);
+                $column = $info[0];
+                $sampling = $info[1];
+
+                // check if id exist
+                $daily = $this->db->query("SELECT * FROM periodik_daily WHERE sampling='{$sampling}'")->fetch();
+                // dump($form);
+
+                if ($daily) {
+                    // update periodik
+                    $stmt = $this->db->prepare("UPDATE periodik_daily SET {$column}=:value WHERE id=:id");
+                    $stmt->execute([
+                        ':value' => $form['value'],
+                        ':id' => $form['pk']
+                    ]);
+                } else {
+                    // insert new periodik
+                    $stmt = $this->db->prepare("INSERT INTO periodik_daily
+                                                    (sampling, {$column}, waduk_id)
+                                                VALUES
+                                                    (:sampling, :value, :waduk_id)");
+                    $stmt->execute([
+                        ':sampling' => $sampling,
+                        ':value' => $form['value'],
+                        ':waduk_id' => $id
+                    ]);
+                }
 
                 return $response->withJson([
                     "name" => $form['name'],
