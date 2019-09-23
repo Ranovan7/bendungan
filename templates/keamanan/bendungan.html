@@ -24,7 +24,7 @@
         <div class="col-md-6">
             <section class="content-header">
                 <h4>
-                    <b>VNotch</b>
+                    VNotch
                     <a class="ml-5"
                         data-toggle="collapse" href="#form-add-vnotch"
                         role="button" aria-expanded="false"
@@ -33,14 +33,14 @@
                     </a>
                 </h4>
             </section>
-            <div class="row collapse" id="form-add-vnotch">
+            <div class="row collapse" id="form-add-vnotch" style="padding-left: 25px; padding-right: 25px;">
                 <form method="POST" action="{{ path_for('keamanan.vnotch.add', {'id': waduk.id}, {'sampling': sampling}) }}">
                     <div class="row">
                         <div class="form-group col-md-6">
                             <label class="form-text" for="sampling">Tanggal</label>
                             <div class="input-group">
                                 <span class="input-group-addon" id="calendar_addon"><i class="fas fa-calendar mr-2 text-right"></i></span>
-                                <input class="form-control" type="text" name="sampling" id="sampling" required value="{{ sampling | date('Y-m-d') }}" aria-describedby="calendar_addon">
+                                <input class="form-control" type="text" name="sampling" id="sampling" required value="{{ sampling }}" aria-describedby="calendar_addon">
                             </div>
                         </div>
                     </div>
@@ -74,7 +74,7 @@
         <div class="col-md-6">
             <section class="content-header">
                 <h4>
-                    <b>Piezometer</b>
+                    Piezometer
                     <a class="ml-5"
                         data-toggle="collapse" href="#form-add-piezometer"
                         role="button" aria-expanded="false"
@@ -83,14 +83,14 @@
                     </a>
                 </h4>
             </section>
-            <div class="row collapse" id="form-add-piezometer">
+            <div class="row collapse" id="form-add-piezometer"  style="padding-left: 25px; padding-right: 25px;">
                 <form method="POST" action="{{ path_for('keamanan.piezometer.add', {'id': waduk.id}, {'sampling': sampling}) }}">
                     <div class="row">
                         <div class="form-group col-md-6">
                             <label class="form-text" for="sampling">Tanggal</label>
                             <div class="input-group">
                                 <span class="input-group-addon" id="calendar_addon"><i class="fas fa-calendar mr-2 text-right"></i></span>
-                                <input class="form-control" type="text" name="sampling" id="sampling2" required value="{{ sampling | date('Y-m-d') }}" aria-describedby="calendar_addon">
+                                <input class="form-control" type="text" name="sampling" id="sampling2" required value="{{ sampling }}" aria-describedby="calendar_addon">
                             </div>
                         </div>
                     </div>

@@ -74,7 +74,7 @@ $app->group('/keamanan', function() use ($loggedinMiddleware, $petugasAuthorizat
                 'vnotch' => $vnotch,
                 'piezometer' => $piezometer,
                 'periodik' => $periodik,
-                'sampling' => tanggal_format(strtotime($hari)),
+                'sampling' => $hari,
             ]);
         })->setName('keamanan.bendungan');
 
@@ -89,31 +89,90 @@ $app->group('/keamanan', function() use ($loggedinMiddleware, $petugasAuthorizat
                 return $this->view->render($response, 'keamanan/vnotch/add.html', [
                     'waduk' => $waduk,
                     'vnotch' => $vnotch,
-                    'sampling' => tanggal_format(strtotime($hari)),
+                    'sampling' => $hari,
                 ]);
             })->setName('keamanan.vnotch.add');
 
             $this->post('/add', function(Request $request, Response $response, $args) {
-                $hari = $request->getParam('sampling', date('Y-m-d'));
                 $id = $request->getAttribute('id');
-                $vnotch = $this->db->query("SELECT * FROM vnotch WHERE waduk_id={$id}")->fetchAll();
                 $form = $request->getParams();
 
-                $values = '';
-                foreach ($vnotch as $i=>$v) {
-                    if ($i > 0) {
-                        $values .= ' ,';
+                // check if record in submitted sampling/time already existed
+                // if exists, insert/update record accordingly
+                $sampling = $form['sampling'];
+                $records = $this->db->query("SELECT id, keamanan_id FROM periodik_keamanan
+                                                WHERE
+                                                    keamanan_type='vnotch'
+                                                AND
+                                                    waduk_id={$id}
+                                                AND
+                                                    sampling='{$sampling}'")->fetchAll();
+
+                // get all form values, put into array with id as key
+                $values = [];
+                foreach ($form as $k => $v) {
+                    if ($k == 'sampling') {
+                        // sampling not included since it's form name
+                        // doesn't contain record id
+                        continue;
                     }
-                    $tma = $form["tma-{$v['id']}"];
-                    $debit = $form["debit-{$v['id']}"];
-                    $values .= "('{$hari}' ,{$tma}, {$debit}, 'vnotch', {$v['id']}, {$id})";
+                    $f = explode("-", $k);
+                    $values[$f[1]][$f[0]] = $v;
                 }
 
-                // echo $values;
-                $stmt = $this->db->query("INSERT INTO periodik_keamanan
-                                            (sampling, tma, debit, keamanan_type, keamanan_id, waduk_id)
-                                        VALUES
-                                            {$values}");
+                // checking existing record
+                $v_insert = '';
+                $v_update = '';
+                foreach ($values as $i => $v) {
+                    // check if form id exist
+                    $check = [];
+                    foreach ($records as $record) {
+                        if ($i == $record['keamanan_id']) {
+                            $check['id'] = $record['id'];
+                            $check['keamanan_id'] = $record['keamanan_id'];
+                            break;
+                        }
+                    }
+
+                    if ($check) {
+                        // updating existing records
+                        if ($v_update) {
+                            $v_update .= ' ,';
+                        }
+                        $tma = $v["tma"];
+                        $debit = $v["debit"];
+                        $v_update .= "({$check['id']}, {$tma}, {$debit})";
+                    } else {
+                        // insert new record
+                        if ($v_insert) {
+                            $v_insert .= ' ,';
+                        }
+                        $tma = $v["tma"];
+                        $debit = $v["debit"];
+                        $v_insert .= "('{$sampling}' ,{$tma}, {$debit}, 'vnotch', {$i}, {$id})";
+                    }
+                }
+
+                // use to check values string
+                // die($v_update);
+                // die($v_insert);
+
+                // insert query
+                if (!empty($v_insert)) {
+                    $stmt = $this->db->query("INSERT INTO periodik_keamanan
+                                                (sampling, tma, debit, keamanan_type, keamanan_id, waduk_id)
+                                            VALUES
+                                                {$v_insert}");
+                }
+
+                // update query
+                if (!empty($v_update)) {
+                    $stmt = $this->db->query("UPDATE periodik_keamanan AS m
+                                                SET tma = c.tma, debit = c.debit
+                                                FROM (VALUES {$v_update})
+                                                    AS c(id, tma, debit)
+                                                WHERE c.id = m.id");
+                }
 
                 return $this->response->withRedirect($this->router->pathFor('keamanan.bendungan', ['id' => $id], []));
             })->setName('keamanan.vnotch.add');
@@ -169,30 +228,84 @@ $app->group('/keamanan', function() use ($loggedinMiddleware, $petugasAuthorizat
                 return $this->view->render($response, 'keamanan/piezometer/add.html', [
                     'waduk' => $waduk,
                     'piezometer' => $piezometer,
-                    'sampling' => tanggal_format(strtotime($hari)),
+                    'sampling' => $hari,
                 ]);
             })->setName('keamanan.piezometer.add');
 
             $this->post('/add', function(Request $request, Response $response, $args) {
-                $hari = $request->getParam('sampling', date('Y-m-d'));
                 $id = $request->getAttribute('id');
-                $piezometer = $this->db->query("SELECT * FROM piezometer WHERE waduk_id={$id}")->fetchAll();
                 $form = $request->getParams();
 
-                $values = '';
-                foreach ($piezometer as $i=>$p) {
-                    if ($i > 0) {
-                        $values .= ' ,';
+                // check if record in submitted sampling/time already existed
+                // if exists, insert/update record accordingly
+                $sampling = $form['sampling'];
+                $records = $this->db->query("SELECT id, keamanan_id FROM periodik_keamanan
+                                                WHERE
+                                                    keamanan_type='piezometer'
+                                                AND
+                                                    waduk_id={$id}
+                                                AND
+                                                    sampling='{$sampling}'")->fetchAll();
+
+                // get all form values, put into array with id as key
+                $values = [];
+                foreach ($form as $k => $v) {
+                    if ($k == 'sampling') {
+                        continue;
                     }
-                    $tma = $form["tma-{$p['id']}"];
-                    $values .= "('{$hari}' ,{$tma}, 'piezometer', {$p['id']}, {$id})";
+                    $f = explode("-", $k);
+                    $values[$f[1]][$f[0]] = $v;
                 }
 
-                // die($values);
-                $stmt = $this->db->query("INSERT INTO periodik_keamanan
-                                            (sampling, tma, keamanan_type, keamanan_id, waduk_id)
-                                        VALUES
-                                            {$values}");
+                // checking existing record
+                $v_insert = '';
+                $v_update = '';
+                foreach ($values as $i => $v) {
+                    // check if form id exist
+                    $check = [];
+                    foreach ($records as $record) {
+                        if ($i == $record['keamanan_id']) {
+                            $check['id'] = $record['id'];
+                            $check['keamanan_id'] = $record['keamanan_id'];
+                            break;
+                        }
+                    }
+
+                    if ($check) {
+                        // updating existing records
+                        if ($v_update) {
+                            $v_update .= ' ,';
+                        }
+                        $tma = $v["tma"];
+                        $v_update .= "({$check['id']}, {$tma})";
+                    } else {
+                        // insert new record
+                        if ($v_insert) {
+                            $v_insert .= ' ,';
+                        }
+                        $tma = $v["tma"];
+                        $v_insert .= "('{$sampling}' ,{$tma}, 'piezometer', {$i}, {$id})";
+                    }
+                }
+
+                // die($v_update);
+                // die($v_insert);
+
+                // insert query
+                if (v_insert) {
+                    $stmt = $this->db->query("INSERT INTO periodik_keamanan
+                                                (sampling, tma, keamanan_type, keamanan_id, waduk_id)
+                                            VALUES
+                                                {$v_insert}");
+                }
+                // update query
+                if (v.update) {
+                    $stmt = $this->db->query("UPDATE periodik_keamanan AS m
+                                                SET tma = c.tma
+                                                FROM (VALUES {$v_update})
+                                                    AS c(id, tma)
+                                                WHERE c.id = m.id");
+                }
 
                 return $this->response->withRedirect($this->router->pathFor('keamanan.bendungan', ['id' => $id], []));
             })->setName('keamanan.piezometer.add');
