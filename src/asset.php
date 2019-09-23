@@ -115,6 +115,25 @@ $app->group('/asset', function() use ($loggedinMiddleware, $petugasAuthorization
             return $this->response->withRedirect($this->router->pathFor('asset.bendungan', ['id' => $id], []));
         })->setName('asset.add');
 
+        $this->post('/update', function(Request $request, Response $response, $args) use ($kategori) {
+            $id = $request->getAttribute('id');
+            $form = $request->getParams();
+
+            // no setup needed, just straight update data
+            $column = $form['name'];
+            $stmt = $this->db->prepare("UPDATE asset SET {$column}=:value WHERE id=:id");
+            $stmt->execute([
+                ':value' => $form['value'],
+                ':id' => $form['pk']
+            ]);
+
+            return $response->withJson([
+                "name" => $form['name'],
+                "pk" => $form['pk'],
+                "value" => $form['value']
+            ], 200);
+        })->setName('asset.add');
+
         $this->group('/rusak', function() {
 
             $this->get('[/]', function(Request $request, Response $response, $args) {

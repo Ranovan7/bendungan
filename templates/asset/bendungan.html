@@ -3,42 +3,73 @@
 {% set title = "Asset" %}
 
 {% block css %}
-
+<link href="{{ asset('css/bootstrap-editable.css') }}" rel="stylesheet"/>
+<style>
+    .foto-thumb {
+        border: solid 1px #ddd;
+        padding: 5px;
+    }
+    .img-fluid {
+            max-width: 100%;
+            height: auto;
+    }
+    .img-preview {
+            max-width: 100%;
+            height: auto;
+            padding: 5px;
+            border: solid 1px #ddd;
+    }
+    .btn-outline-primary {
+        color: #007bff;
+        background-color: transparent;
+        background-image: none;
+        border-color: #007bff;
+    }
+    .btn-outline-primary:hover {
+        color: #fff;
+        background-color: #007bff;
+        text-decoration: none;
+    }
+    .btn-outline-success {
+        color: #18bc9c;
+        background-color: transparent;
+        background-image: none;
+        border-color: #18bc9c;
+    }
+    .btn-outline-success:hover {
+        color: #fff;
+        background-color: #18bc9c;
+        text-decoration: none;
+    }
+    .btn-outline-danger {
+        color: #e74c3c;
+        background-color: transparent;
+        background-image: none;
+        border-color: #e74c3c;
+    }
+    .btn-outline-danger:hover {
+        color: #fff;
+        background-color: #e74c3c;
+        text-decoration: none;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
-    <!-- Computer View -->
-    <section class="content-header d-none d-sm-block">
-        <h1>{{ waduk.nama }} Asset</h1>
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/">Home</a></li>
-            <!-- <li class="breadcrumb-item"><a href="/asset">Asset</a></li> -->
-            <li class="breadcrumb-item">{{ waduk.nama }}</li>
-        </ol>
-    </section>
-
-    <!-- Mobile View -->
-    <section class="content-header d-block d-sm-none">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/">Home</a></li>
-            <!-- <li class="breadcrumb-item"><a href="/asset">Asset</a></li> -->
-            <li class="breadcrumb-item">{{ waduk.nama }}</li>
-        </ol>
-        <h3>{{ waduk.nama }} Asset</h3>
-    </section>
-    <hr>
+    <div style="height: 85px;"></div>
     <section class="content-header">
-        <h4>
-            <b>Asset Bendungan</b>
-            <a class="btn btn-sm btn-outline-info ml-1" href="{{ path_for('asset.rusak', {'id': waduk.id}) }}">
+        <h1>
+            Asset {{ waduk.nama }} ({{ asset | length }})
+            <a class="btn btn-outline-primary btn-sm" href="{{ path_for('asset.rusak', {'id': waduk.id}) }}">
                 Daftar Kerusakan
             </a>
-            <a class="btn btn-sm btn-outline-primary ml-1"
+            <a class="btn btn-outline-success btn-sm"
                 data-toggle="collapse" href="#form-add-asset"
                 role="button" aria-expanded="false"
                 aria-controls="">
                 Tambah Asset
             </a>
+        </h1>
     </section>
     <div class="row container collapse" id="form-add-asset">
         <div class="col-md-8">
@@ -52,10 +83,8 @@
                     <div class="form-group col-md-6">
                         <label class="form-text" for="perolehan">Tanggal</label>
                         <div class="input-group">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text" id="sampling-prepend"><i class="fas fa-calendar mr-2 text-right"></i></span>
-                            </div>
-                            <input class="form-control" type="text" name="perolehan" id="perolehan" required value="{{ sampling | date('Y-m-d') }}">
+                            <span class="input-group-addon" id="calendar_addon"><i class="fas fa-calendar mr-2 text-right"></i></span>
+                            <input class="form-control" type="text" name="perolehan" id="perolehan" required value="{{ sampling | date('Y-m-d') }}" aria-describedby="calendar_addon">
                         </div>
                     </div>
                 </div>
@@ -99,42 +128,72 @@
         </div>
     </div>
     <hr>
-    {% for as in asset %}
-        <div class="row">
-            <div class="col-md-3">
-                <h5>{{ loop.index }}. {{ as.nama }}</h5>
-            </div>
-            <div class="col-md-3 ml-3">
-                <p>BMN :{{ as.bmn }}</p>
-                <p>Merk :{{ as.merk }}</p>
-                <p>Model :{{ as.model }}</p>
-            </div>
-            <div class="col-md-3 ml-3">
-                <p>
-                    Status :
+    <table class="table table-bordered table-stripped">
+        <thead>
+            <tr class="active">
+              <th>No</th>
+              <th>Nama Asset</th>
+              <th>Status</th>
+              <th></th>
+              <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for as in asset %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>
+                        <a data-url="/asset/{{ waduk.id }}/update" class="editable" data-name="nama" data-type="text" data-pk="{{ as.id }}">{{ as.nama }}</a>
+                        <div class="text-muted" style="padding-left: 5px;">
+                            <p>
+                                BMN :
+                                <a data-url="/asset/{{ waduk.id }}/update" class="editable" data-name="bmn" data-type="text" data-pk="{{ as.id }}">
+                                    {{ as.bmn }}
+                                </a>,
+                                Merk :
+                                <a data-url="/asset/{{ waduk.id }}/update" class="editable" data-name="merk" data-type="text" data-pk="{{ as.id }}">
+                                    {{ as.merk }}
+                                </a>,
+                                Model :
+                                <a data-url="/asset/{{ waduk.id }}/update" class="editable" data-name="model" data-type="text" data-pk="{{ as.id }}">
+                                    {{ as.model }}
+                                </a>
+                            </p>
+                        </div>
+                    </td>
                     {% if as.rusak_kat %}
-                        <span style="color: red;">Rusak</span>
+                        <td class="danger">Rusak</td>
                     {% else %}
-                        <span style="color: green;">Baik</span>
+                        <td class="success">Baik</td>
                     {% endif %}
-                </p>
-            </div>
-            <div class="col-md-2 ml-3">
-                <a href="{{ path_for('asset.rusak.add', {'id': waduk.id, 'asset_id': as.id}) }}" class="btn btn-sm btn-outline-primary {% if as.rusak_kat %}disabled{% endif %}">Lapor Rusak</a>
-                <a href="#"><i class="fas fa-trash ml-3"></i></a>
-            </div>
-        </div>
-        <hr>
-    {% endfor %}
+                    <td align="center">
+                        <a href="{{ path_for('asset.rusak.add', {'id': waduk.id, 'asset_id': as.id}) }}" class="btn btn-sm btn-outline-primary {% if as.rusak_kat %}disabled{% endif %}">
+                            Lapor Rusak
+                        </a>
+                    </td>
+                    <td align="center">
+                        <a href="#"><i class="fas fa-trash ml-3"></i></a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}
 
 {% block js %}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js" type="text/javascript"></script>
-<script>
-    $('#perolehan').datepicker({
-        todayHighlight: true,
-        autoclose: true,
-        format:  'yyyy-mm-dd'
-    });
-</script>
+    <script src="{{ asset('js/bootstrap-editable.min.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js" type="text/javascript"></script>
+    <script>
+        $('#perolehan').datepicker({
+            todayHighlight: true,
+            autoclose: true,
+            format:  'yyyy-mm-dd'
+        });
+
+        //turn to popup mode
+        $.fn.editable.defaults.mode = 'popup';
+        $(document).ready(function() {
+            $('.editable').editable();
+        });
+    </script>
 {% endblock %}

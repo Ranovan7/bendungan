@@ -86,11 +86,17 @@
                 {% endif %}
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <a class="nav-link disabled" href="#">{{ user().username }}</a>
+                <li>
+                    <a class="nav-link disabled" href="#">{{ user().username }}</a>
+                </li>
                 {% if user() %}
-                    <a class="nav-link" href="/logout">Logout</a>
+                    <li>
+                        <a class="nav-link" href="/logout">Logout</a>
+                    </li>
                 {% else %}
-        			<a class="nav-link" href="/login"><i class="fas fa-key ml-2 mr-2"></i> Login</a>
+                    <li>
+                        <a class="nav-link" href="/login"><i class="fas fa-key ml-2 mr-2"></i> Login</a>
+                    </li>
                 {% endif %}
 
             </ul>

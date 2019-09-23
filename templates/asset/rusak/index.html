@@ -7,43 +7,40 @@
 {% endblock %}
 
 {% block content %}
+    <div style="height: 85px;"></div>
     <section class="content-header">
-        <h1>Kerusakan Asset</h1>
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/">Home</a></li>
-            <li class="breadcrumb-item"><a href="/asset/{{ waduk.id }}">{{ waduk.nama }}</a></li>
-            <li class="breadcrumb-item">Kerusakan Asset</li>
-        </ol>
+        <h1>Kerusakan Asset {{ waduk.nama }}</h1>
     </section>
-    <hr>
-    <div>
+    <div class="container">
         {% for k in kerusakan %}
             <div class="row">
-                <div class="card border-danger col-md-6">
-                    <div class="card-body">
-                        <h5 class="card-title">Nama Asset : {{ k.nama_asset }}</h5>
-                        <hr>
-                        <p>Uraian Kerusakan :</p>
-                        <div class="container">
-                            <h6 class="card-subtitle mb-2">
-                                {% if k.uraian_kerusakan %}
-                                    {{ k.uraian_kerusakan }}
-                                {% else %}
-                                    Belum ada Uraian
-                                {% endif %}
-                                <a class="ml-2"
-                                    data-toggle="modal" href="#form-edit-uraian-{{ k.id }}"
-                                    role="button" aria-expanded="false"
-                                    aria-controls="">
-                                    <i class="fas fa-edit mr-2"></i>
-                                </a>
-                            </h6>
-                            <p class="card-text"><small>{{ k.waduk_id }}, {{ k.tgl_lapor }}</small></p>
+                <div class="col-md-6">
+                    <div class="card" style="border: 1px solid red; padding: 20px;">
+                        <div class="card-body">
+                          <strong><p class="card-text">Nama Asset : {{ k.nama_asset }}</p></strong>
+                          <hr style="border-bottom: 1px solid red">
+                          <p class="card-text" style="font-size: 0.8em;">Uraian Kerusakan :</p>
+                          <p class="card-text" style="font-size: 1.5em;">
+                              {% if k.uraian_kerusakan %}
+                                  {{ k.uraian_kerusakan }}
+                              {% else %}
+                                  Belum ada Uraian
+                              {% endif %}
+                              <a class="ml-2"
+                                  data-toggle="modal" href="#form-edit-uraian-{{ k.id }}"
+                                  role="button" aria-expanded="false"
+                                  aria-controls="">
+                                  <i class="fas fa-edit mr-2"></i>
+                              </a>
+                          </p>
+                          <p class="card-text" style="margin-left: 1.5em;">{{ waduk.nama }}, {{ k.tgl_lapor | date('d M Y')}}</p>
+                          <hr style="border:1px solid rgba(0,0,0,0.3)">
+                          <strong>
+                            <p class="text-center" style="font-size: 2rem;">Belum ada tanggapan dari UPB</p>
+                          </strong>
+                          <br>
                         </div>
-                        <hr>
-                        <h5>Belum ada tanggapan dari UPB</h5>
-                        <hr>
-                        <div>
+                        <div class="card-footer">
                             {% for f in foto[k.id] %}
                                 <a data-toggle="modal" href="#preview-foto-{{ f.id }}"
                                     role="button" aria-expanded="false"
@@ -109,7 +106,7 @@
                       </div>
                       <div class="modal-footer">
                           <input type="submit" name="submit" value="Ubah" class="btn btn-primary">
-                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                          <button type="button" class="btn btn-danger" data-dismiss="modal">Batal</button>
                       </div>
                     </form>
                 </div>
@@ -144,7 +141,7 @@
                       </div>
                       <div class="modal-footer">
                           <input type="button" value="Tambah" onclick="upload_foto({{ waduk.id }}, {{ k.asset_id }}, {{ k.id }})" class="btn btn-primary">
-                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                          <button type="button" class="btn btn-danger" data-dismiss="modal">Batal</button>
                       </div>
                     </form>
                 </div>
