@@ -6,7 +6,7 @@ use Slim\Http\UploadedFile;
 
 // Manage Operasi Bendungan
 
-$app->group('/kegiatan', function() use ($loggedinMiddleware, $petugasAuthorizationMiddleware) {
+$app->group('/kegiatan', function() use ($loggedinMiddleware) {
 
     $this->get('[/]', function(Request $request, Response $response, $args) {
         // get user yg didapat dari middleware
@@ -18,7 +18,11 @@ $app->group('/kegiatan', function() use ($loggedinMiddleware, $petugasAuthorizat
             return $this->response->withRedirect($this->router->pathFor('kegiatan.bendungan', ['id' => $waduk_id], []));
         }
 
-        return $this->view->render($response, 'kegiatan.html');
+        $waduk = $this->db->query("SELECT * FROM waduk")->fetchAll();
+
+        return $this->view->render($response, 'kegiatan/index.html', [
+            'waduk' => $waduk
+        ]);
     })->setName('kegiatan');
 
     $this->group('/{id}', function() {
@@ -146,6 +150,6 @@ $app->group('/kegiatan', function() use ($loggedinMiddleware, $petugasAuthorizat
                 "petugas" => $form['petugas']
             ], 200);
         })->setName('kegiatan.add');
-    })->add($petugasAuthorizationMiddleware);
+    });
 
 })->add($loggedinMiddleware);

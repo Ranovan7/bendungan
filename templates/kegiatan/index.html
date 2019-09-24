@@ -1,0 +1,35 @@
+{% extends 'layouts/master.html' %}
+
+{% set title = "Kegiatan" %}
+
+{% block css %}
+
+{% endblock %}
+
+{% block content %}
+    <div style="height: 85px;"></div>
+    <section class="content-header">
+        <h2>Foto Kegiatan</h2>
+    </section>
+    <hr>
+    <table class="table table-bordered table-stripped table-responsive">
+        <thead>
+            <tr class="active">
+                <th>Bendungan</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for w in waduk %}
+                <tr>
+                    <td>
+                        <a href="/kegiatan/{{ w.id }}">{{ w.nama }}</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block js %}
+
+{% endblock %}

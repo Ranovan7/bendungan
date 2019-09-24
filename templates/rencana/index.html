@@ -1,0 +1,58 @@
+{% extends 'layouts/master.html' %}
+
+{% set title = "RTOW" %}
+
+{% block css %}
+
+{% endblock %}
+
+{% block content %}
+    <div style="height: 85px;"></div>
+    <section class="content-header">
+        <h2>RTOW</h2>
+    </section>
+    <hr>
+    <table class="table table-bordered table-stripped table-responsive">
+        <thead>
+            <tr class="active">
+                <th>Bendungan</th>
+                <th>1 Bulan 1</th>
+                <th>2 Bulan 1</th>
+                <th>1 Bulan 2</th>
+                <th>2 Bulan 2</th>
+                <th>1 Bulan 3</th>
+                <th>2 Bulan 3</th>
+                <th>1 Bulan 4</th>
+                <th>2 Bulan 4</th>
+                <th>1 Bulan 5</th>
+                <th>2 Bulan 5</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for w in waduk %}
+                <tr>
+                    <td>
+                        {{ w.nama }}
+                        <br>
+                        <a href="/rtow/{{ w.id }}/export">Export</a> |
+                        <a href="/rtow/{{ w.id }}/import">Import</a>
+                    </td>
+                    <td>1 Bulan 1</td>
+                    <td>2 Bulan 1</td>
+                    <td>1 Bulan 2</td>
+                    <td>2 Bulan 2</td>
+                    <td>1 Bulan 3</td>
+                    <td>2 Bulan 3</td>
+                    <td>1 Bulan 4</td>
+                    <td>2 Bulan 4</td>
+                    <td>1 Bulan 5</td>
+                    <td>2 Bulan 5</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block js %}
+
+{% endblock %}

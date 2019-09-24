@@ -329,6 +329,7 @@ require __DIR__ . '/../src/operasi.php';
 require __DIR__ . '/../src/asset.php';
 require __DIR__ . '/../src/keamanan.php';
 require __DIR__ . '/../src/kegiatan.php';
+require __DIR__ . '/../src/rencana.php';
 
 /**
  * # ROUTES BLOCK

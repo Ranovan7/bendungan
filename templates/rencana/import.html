@@ -1,0 +1,39 @@
+{% extends 'layouts/master.html' %}
+
+{% set title = "RTOW" %}
+
+{% block css %}
+
+{% endblock %}
+
+{% block content %}
+    <div style="height: 85px;"></div>
+    <section class="content-header">
+        <h2>Import RTOW</h2>
+    </section>
+    <hr>
+    <div class="">
+        <h3>{{ waduk.nama }}</h3>
+        <form action="/rtow/{{ waduk.id }}/import" method="POST" enctype="multipart/form-data">
+            <p>File berformat TAB separated value. Contoh file data <strong>bd_nawangan</strong> dapat diambil <a href="/adm/bendungan/bd_nawangan/rtow/export">di sini</a>.</p>
+            <p>Ketentuan file:</p>
+            <ol>
+                <li>Teks file</li>
+                <li>Baris pertama nama unik bendungan</li>
+                <li>Baris kedua nama-nama kolom</li>
+                <li>Baris ketiga hingga 24 baris berikutnya berisi data</li>
+            </ol>
+        <div class="custom-file" style="padding-bottom: 5px;">
+            <input type="file" name="upload" class="custom-file-input" id="upload">
+            <!-- <label class="custom-file-label" for="customFile">Choose file</label> -->
+        </div>
+        <div class="form-group">
+            <input class="btn btn-sm btn-primary" type="submit" name="submit" value="Import">
+        </div>
+        </form>
+    </div>
+{% endblock %}
+
+{% block js %}
+
+{% endblock %}
