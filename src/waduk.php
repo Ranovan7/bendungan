@@ -8,14 +8,37 @@ use Slim\Http\Response;
 $app->group('/waduk', function() use ($loggedinMiddleware, $adminAuthorizationMiddleware) {
 
     $this->get('[/]', function(Request $request, Response $response, $args) {
-        $waduk = $this->db->query("SELECT * FROM waduk")->fetchAll();
+        $bendungan = $this->db->query("SELECT * FROM waduk")->fetchAll();
+        $vnotch = $this->db->query("SELECT * FROM vnotch")->fetchAll();
+        $piezometer = $this->db->query("SELECT * FROM piezometer")->fetchAll();
 
+        $waduk = [];
+        foreach ($bendungan as $b) {
+            $waduk[$b['id']] = [
+                'waduk' => $b,
+                'vnotch' => [],
+                'piezometer' => []
+            ];
+        }
+        foreach ($vnotch as $v) {
+            $waduk[$v['waduk_id']]['vnotch'][] = $v;
+        }
+        foreach ($piezometer as $p) {
+            $waduk[$p['waduk_id']]['piezometer'][] = $p;
+        }
+        krsort($waduk);
         return $this->view->render($response, 'waduk/index.html', [
             'waduk' => $waduk
         ]);
-
-        return $this->view->render($response, 'waduk/index.html');
     })->setName('waduk');
+
+    $this->get('/harian', function(Request $request, Response $response, $args) {
+        $waduk = $this->db->query("SELECT * FROM waduk")->fetchAll();
+
+        return $this->view->render($response, 'waduk/harian.html', [
+            'waduk' => $waduk
+        ]);
+    })->setName('waduk.harian');
 
     $this->group('/add', function() {
 
@@ -62,7 +85,6 @@ $app->group('/waduk', function() use ($loggedinMiddleware, $adminAuthorizationMi
 
     $this->group('/{id}', function() {
 
-        // change password
         $this->get('[/]', function(Request $request, Response $response, $args) {
             $id = $request->getAttribute('id');
             $waduk = $this->db->query("SELECT * FROM waduk WHERE id={$id}")->fetch();
@@ -106,6 +128,25 @@ $app->group('/waduk', function() use ($loggedinMiddleware, $adminAuthorizationMi
             $this->flash->addMessage('messages', 'Berhasil Mengedit Waduk');
             return $this->response->withRedirect('/waduk');
         })->setName('waduk.detail');
+
+        // update per column
+        $this->post('/update', function(Request $request, Response $response, $args) {
+            $id = $request->getAttribute('id');
+            $form = $request->getParams();
+
+            $column = $form['name'];
+            $stmt = $this->db->prepare("UPDATE waduk SET {$column}=:value WHERE id=:id");
+            $stmt->execute([
+                ':value' => $form['value'],
+                ':id' => $form['pk']
+            ]);
+
+            return $response->withJson([
+                "name" => $form['name'],
+                "pk" => $form['pk'],
+                "value" => $form['value']
+            ], 200);
+        })->setName('waduk.update');
 
         // delete
         $this->get('/del', function(Request $request, Response $response, $args) {

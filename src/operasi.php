@@ -17,7 +17,7 @@ $app->group('/operasi', function() use ($loggedinMiddleware, $petugasAuthorizati
             return $this->response->withRedirect($this->router->pathFor('operasi.bendungan', ['id' => $waduk_id], []));
         }
 
-        return $this->view->render($response, 'admin.html');
+        return $this->response->withRedirect($this->router->pathFor('waduk.harian'));
     })->setName('operasi');
 
     $this->group('/{id}', function() {

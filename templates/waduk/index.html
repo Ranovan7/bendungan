@@ -3,24 +3,62 @@
 {% set title = "Waduk" %}
 
 {% block css %}
-
+<style media="screen">
+    a[aria-expanded=true] .fa-chevron-down {
+       display: none;
+    }
+    a[aria-expanded=false] .fa-chevron-up {
+       display: none;
+    }
+    .btn-outline-primary {
+        color: #007bff;
+        background-color: transparent;
+        background-image: none;
+        border-color: #007bff;
+    }
+    .btn-outline-primary:hover {
+        color: #fff;
+        background-color: #007bff;
+        text-decoration: none;
+    }
+    .btn-outline-success {
+        color: #18bc9c;
+        background-color: transparent;
+        background-image: none;
+        border-color: #18bc9c;
+    }
+    .btn-outline-success:hover {
+        color: #fff;
+        background-color: #18bc9c;
+        text-decoration: none;
+    }
+    .btn-outline-danger {
+        color: #e74c3c;
+        background-color: transparent;
+        background-image: none;
+        border-color: #e74c3c;
+    }
+    .btn-outline-danger:hover {
+        color: #fff;
+        background-color: #e74c3c;
+        text-decoration: none;
+    }
+</style>
+<link href="{{ asset('css/bootstrap-editable.css') }}" rel="stylesheet"/>
 {% endblock %}
 
 {% block content %}
+    <div style="height: 85px;"></div>
     <section class="content-header">
-        <h1>Waduk
+        <h2>
+            Bendungan
             <a class="ml-5 btn-sm btn btn-outline-primary"
                 data-toggle="collapse" href="#form-add"
                 role="button" aria-expanded="false"
                 aria-controls="">
                 Tambah
             </a>
-
-        </h1>
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/">Home</a></li>
-            <li class="breadcrumb-item">Waduk</li>
-        </ol>
+        </h2>
     </section>
     <div class="row collapse" id="form-add">
         <div class="col-md-8">
@@ -88,33 +126,158 @@
             </form>
         </div>
     </div>
+    <hr>
+    <h3>Data Teknis</h3>
     <table class="table table-bordered table-hover">
         <thead>
         <tr>
-          <th>No</th>
-          <th>Nama</th>
-          <th>Kabupaten</th>
-          <th>LBI</th>
-          <th>Volume</th>
-          <th></th>
+          <th rowspan="2">No</th>
+          <th rowspan="2">Nama</th>
+          <th rowspan="2">Kab</th>
+          <th rowspan="2">Tampungan (m<sup>3</sup>)</th>
+          <th rowspan="2">Irigasi (Ha)</th>
+          <th rowspan="2">Elev Puncak (m)</th>
+          <th rowspan="2">MAB (m)</th>
+          <th rowspan="2">MAN (m)</th>
+          <th rowspan="2">MAMin (m)</th>
+          <th rowspan="2">Sedimen (m)</th>
+          <th rowspan="2">Elev Awas (m)</th>
+          <th rowspan="2">Elev Siaga (m)</th>
+          <th rowspan="2">Elev Waspada (m)</th>
+          <!-- <th>VNotch</th>
+          <th>Piezometer</th> -->
         </tr>
+        <!-- <tr>
+            <th>VN1</th>
+            <th>VN2</th>
+            <th>Pie1</th>
+            <th>Pie2</th>
+        </tr> -->
         </thead>
         <tbody>
-        {% for l in waduk %}
+        {% for w in waduk %}
         <tr>
-            <td>{{ loop.index }}</td>
-            <td>{{ l.nama }}</td>
-            <td>{{ l.kab }}</td>
-            <td>{{ l.lbi }}</td>
-            <td>{{ l.volume }}</td>
             <td>
-                <a href="{{ path_for('waduk.detail', {id:l.id}) }}" class="small">
-                    Detail
-                </a>
-                <a href="{{ path_for('waduk.delete', {id:l.id}) }}" class="float-right text-danger" title="DELETE">
-                    &times;
+                {{ loop.index }}
+            </td>
+            <td>
+                {{ w.waduk.nama }}
+            </td>
+            <td>
+                {{ w.waduk.kab }}
+            </td>
+            <td>
+                <a data-url="/waduk/{{ w.waduk.id }}/update"
+                    class="editable"
+                    data-name="volume"
+                    data-type="number"
+                    data-title="{{ w.waduk.name }} Tampungan"
+                    data-step="any" data-step="any"
+                    data-pk="{{ w.waduk.id }}">
+                        {% if w.waduk.volume %}{{ w.waduk.volume }}{% else %}<span style="color: red;">Empty</span>{% endif %}
                 </a>
             </td>
+            <td>
+                <a data-url="/waduk/{{ w.waduk.id }}/update"
+                    class="editable"
+                    data-name="lbi"
+                    data-type="number"
+                    data-title="{{ w.waduk.name }} Irigasi"
+                    data-step="any" data-step="any"
+                    data-pk="{{ w.waduk.id }}">
+                        {% if w.waduk.lbi %}{{ w.waduk.lbi }}{% else %}<span style="color: red;">Empty</span>{% endif %}
+                </a>
+            </td>
+            <td>
+                <a data-url="/waduk/{{ w.waduk.id }}/update"
+                    class="editable"
+                    data-name="elev_puncak"
+                    data-type="number"
+                    data-title="{{ w.waduk.name }} Elev Puncak"
+                    data-step="any" data-step="any"
+                    data-pk="{{ w.waduk.id }}">
+                        {% if w.waduk.elev_puncak %}{{ w.waduk.elev_puncak }}{% else %}<span style="color: red;">Empty</span>{% endif %}
+                </a>
+            </td>
+            <td>
+                <a data-url="/waduk/{{ w.waduk.id }}/update"
+                    class="editable"
+                    data-name="muka_air_max"
+                    data-type="number"
+                    data-title="{{ w.waduk.name }} MAB"
+                    data-step="any" data-step="any"
+                    data-pk="{{ w.waduk.id }}">
+                        {% if w.waduk.muka_air_max %}{{ w.waduk.muka_air_max }}{% else %}<span style="color: red;">Empty</span>{% endif %}
+                </a>
+            </td>
+            <td>
+                <a data-url="/waduk/{{ w.waduk.id }}/update"
+                    class="editable"
+                    data-name="muka_air_normal"
+                    data-type="number"
+                    data-title="{{ w.waduk.name }} MAN"
+                    data-step="any" data-step="any"
+                    data-pk="{{ w.waduk.id }}">
+                        {% if w.waduk.muka_air_normal %}{{ w.waduk.muka_air_normal }}{% else %}<span style="color: red;">Empty</span>{% endif %}
+                </a>
+            </td>
+            <td>
+                <a data-url="/waduk/{{ w.waduk.id }}/update"
+                    class="editable"
+                    data-name="muka_air_min"
+                    data-type="number"
+                    data-title="{{ w.waduk.name }} MAMin"
+                    data-step="any" data-step="any"
+                    data-pk="{{ w.waduk.id }}">
+                        {% if w.waduk.muka_air_min %}{{ w.waduk.muka_air_min }}{% else %}<span style="color: red;">Empty</span>{% endif %}
+                </a>
+            </td>
+            <td>
+                <a data-url="/waduk/{{ w.waduk.id }}/update"
+                    class="editable"
+                    data-name="sedimen"
+                    data-type="number"
+                    data-title="{{ w.waduk.name }} Sedimen"
+                    data-step="any" data-step="any"
+                    data-pk="{{ w.waduk.id }}">
+                        {% if w.waduk.sedimen %}{{ w.waduk.sedimen }}{% else %}<span style="color: red;">Empty</span>{% endif %}
+                </a>
+            </td>
+            <td>
+                <a data-url="/waduk/{{ w.waduk.id }}/update"
+                    class="editable"
+                    data-name="bts_elev_awas"
+                    data-type="number"
+                    data-title="{{ w.waduk.name }} Elev Awas"
+                    data-step="any" data-step="any"
+                    data-pk="{{ w.waduk.id }}">
+                        {% if w.waduk.bts_elev_awas %}{{ w.waduk.bts_elev_awas }}{% else %}<span style="color: red;">Empty</span>{% endif %}
+                </a>
+            </td>
+            <td>
+                <a data-url="/waduk/{{ w.waduk.id }}/update"
+                    class="editable"
+                    data-name="bts_elev_siaga"
+                    data-type="number"
+                    data-title="{{ w.waduk.name }} Elev Siaga"
+                    data-step="any" data-step="any"
+                    data-pk="{{ w.waduk.id }}">
+                        {% if w.waduk.bts_elev_siaga %}{{ w.waduk.bts_elev_siaga }}{% else %}<span style="color: red;">Empty</span>{% endif %}
+                </a>
+            </td>
+            <td>
+                <a data-url="/waduk/{{ w.waduk.id }}/update"
+                    class="editable"
+                    data-name="bts_elev_waspada"
+                    data-type="number"
+                    data-title="{{ w.waduk.name }} Elev Waspada"
+                    data-step="any" data-step="any"
+                    data-pk="{{ w.waduk.id }}">
+                        {% if w.waduk.bts_elev_waspada %}{{ w.waduk.bts_elev_waspada }}{% else %}<span style="color: red;">Empty</span>{% endif %}
+                </a>
+            </td>
+            <!-- <td></td>
+            <td></td> -->
         </tr>
         {% endfor %}
         </tbody>
@@ -122,14 +285,12 @@
 {% endblock %}
 
 {% block js %}
-    <!-- <script src=""></script>
+    <script src="{{ asset('js/bootstrap-editable.min.js') }}"></script>
     <script>
-    $(document).ready(function() {
-        $('.editable').editable({
-            success: function(response, newValue) {
-                newValue = 'Atur Ulang Password';
-            }
+        // turn to popup mode
+        $.fn.editable.defaults.mode = 'popup';
+        $(document).ready(function() {
+            $('.editable').editable();
         });
-    })
-    </script> -->
+    </script>
 {% endblock %}

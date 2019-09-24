@@ -1,0 +1,91 @@
+{% extends 'layouts/master.html' %}
+
+{% set title = "Harian" %}
+
+{% block css %}
+
+{% endblock %}
+
+{% block content %}
+    <div style="height: 85px;"></div>
+    <section class="content-header">
+        <h2>Bendungan</h2>
+    </section>
+    <hr>
+    <h3>
+        <i class="fa fa-calendar"></i>
+        <span id="datepicker" style="color: #18bc9c"> {{ sampling | date('d M Y') }}</span>
+    </h3>
+    <table class="table table-bordered table-stripped table-responsive">
+        <thead>
+            <tr class="active">
+                <th rowspan="2" valign="middle">No</th>
+                <th rowspan="2">Nama</th>
+                <th rowspan="2">CH</th>
+                <th colspan="2">Pagi</th>
+                <th colspan="2">Siang</th>
+                <th colspan="2">Sore</th>
+                <th rowspan="2">Q Inflow</th>
+                <th colspan="2">Q Outflow</th>
+                <th colspan="2">VNotch</th>
+                <th colspan="2">Piezometer</th>
+            </tr>
+            <tr class="active">
+                <th>TMA</th>
+                <th>Vol</th>
+                <th>TMA</th>
+                <th>Vol</th>
+                <th>TMA</th>
+                <th>Vol</th>
+                <th>Intake</th>
+                <th>Spillway</th>
+                <th>Tinggi</th>
+                <th>Debit</th>
+                <th>1A</th>
+                <th>2B</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for w in waduk %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ w.nama }}</td>
+                    <td>ch</td>
+                    <td>tma06</td>
+                    <td>vol06</td>
+                    <td>tma12</td>
+                    <td>vol12</td>
+                    <td>tma18</td>
+                    <td>vol18</td>
+                    <td>inflow</td>
+                    <td>intake</td>
+                    <td>spillway</td>
+                    <td>tinggi</td>
+                    <td>debit</td>
+                    <td>A1</td>
+                    <td>B2</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block js %}
+
+<script src="{{ asset('js/bootstrap-datepicker.js') }}"></script>
+<script>
+    // resolve package confict
+    // let datepicker = $.fn.datepicker.noConflict();
+    // $.fn.bootstrapDP = datepicker;
+
+    $('#datepicker').datepicker({
+        todayHighlight: true,
+        autoclose: true,
+        format: 'yyyy-mm-dd'
+    });
+
+    $('#datepicker').on('changeDate', function () {
+        window.location = "{{ path_for('kegiatan.bendungan', {'id': waduk.id}) }}?sampling=" + $('#datepicker').datepicker('getFormattedDate')
+    });
+</script>
+{% endblock %}

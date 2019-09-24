@@ -34,7 +34,7 @@ $app->group('/kegiatan', function() use ($loggedinMiddleware, $petugasAuthorizat
         ];
 
         $this->get('[/]', function(Request $request, Response $response, $args) use ($petugas) {
-            // $hari = $request->getParam('sampling', date('Y-m-d'));
+            $hari = $request->getParam('sampling', date('Y-m-d'));
             $id = $request->getAttribute('id');
             $waduk = $this->db->query("SELECT * FROM waduk WHERE id={$id}")->fetch();
             $kegiatan_raw = $this->db->query("SELECT kegiatan.*, foto.url AS foto_url
@@ -44,18 +44,25 @@ $app->group('/kegiatan', function() use ($loggedinMiddleware, $petugasAuthorizat
 
             $kegiatan = [];
             foreach ($kegiatan_raw as $raw) {
-                $kegiatan[$raw['sampling']][] = [
-                    'id' => $raw['id'],
-                    'petugas' => $raw['petugas'],
-                    'uraian' => $raw['uraian'],
-                    'foto_url' => $raw['foto_url'],
-                ];
+                if (!array_key_exists($raw['sampling'], $kegiatan)) {
+                    $kegiatan[$raw['sampling']] = [
+                        'koordinator' => [],
+                        'keamanan' => [],
+                        'pemantauan' => [],
+                        'operasi' => [],
+                        'pemeliharaan' => []
+                    ];
+                }
+
+                $kegiatan[$raw['sampling']]['id'] = $raw['id'];
+                $kegiatan[$raw['sampling']][strtolower($raw['petugas'])][] = $raw['uraian'];
             }
 
             return $this->view->render($response, 'kegiatan/bendungan.html', [
                 'waduk' =>  $waduk,
                 'kegiatan' => $kegiatan,
-                'petugas' => $petugas
+                'petugas' => $petugas,
+                'sampling' => $hari
             ]);
         })->setName('kegiatan.bendungan');
 
