@@ -3,7 +3,7 @@
 {% set title = "RTOW" %}
 
 {% block css %}
-
+<link href="{{ asset('css/bootstrap-editable.css') }}" rel="stylesheet"/>
 {% endblock %}
 
 {% block content %}
@@ -16,16 +16,9 @@
         <thead>
             <tr class="active">
                 <th>Bendungan</th>
-                <th>1 Bulan 1</th>
-                <th>2 Bulan 1</th>
-                <th>1 Bulan 2</th>
-                <th>2 Bulan 2</th>
-                <th>1 Bulan 3</th>
-                <th>2 Bulan 3</th>
-                <th>1 Bulan 4</th>
-                <th>2 Bulan 4</th>
-                <th>1 Bulan 5</th>
-                <th>2 Bulan 5</th>
+                {% for date in date_range %}
+                    <th>{{ date | date('d M y') }}</th>
+                {% endfor %}
             </tr>
         </thead>
         <tbody>
@@ -37,7 +30,120 @@
                         <a href="/rtow/{{ w.id }}/export">Export</a> |
                         <a href="/rtow/{{ w.id }}/import">Import</a>
                     </td>
-                    <td>1 Bulan 1</td>
+                    {% for date in date_range %}
+                        {% if rencana[w.id][date] %}
+                            <td>
+                                <p>
+                                    T:<a href="#"
+                                        data-url="/rtow/{{ w.id }}/update"
+                                        class="editable"
+                                        id="po_tma"
+                                        data-type="number"
+                                        data-step="any"
+                                        data-pk="{{ rencana[w.id][date].id }}">
+                                        {% if rencana[w.id][date].po_tma != "" %}
+                                            {{ rencana[w.id][date].po_tma }}
+                                        {% else %}
+                                            <span style="color:red;">Empty</span>
+                                        {% endif %}
+                                    </a>
+                                </p>
+                                <p>
+                                    V:<a href="#"
+                                        data-url="/rtow/{{ w.id }}/update"
+                                        class="editable"
+                                        id="po_vol"
+                                        data-type="number"
+                                        data-step="any"
+                                        data-pk="{{ rencana[w.id][date].id }}">
+                                        {% if rencana[w.id][date].po_vol != "" %}
+                                            {{ rencana[w.id][date].po_vol }}
+                                        {% else %}
+                                            <span style="color:red;">Empty</span>
+                                        {% endif %}
+                                    </a>
+                                </p>
+                                <p>
+                                    Q:<a href="#"
+                                        data-url="/rtow/{{ w.id }}/update"
+                                        class="editable"
+                                        id="po_inflow_deb"
+                                        data-type="number"
+                                        data-step="any"
+                                        data-pk="{{ rencana[w.id][date].id }}">
+                                        {% if rencana[w.id][date].po_inflow_deb != "" %}
+                                            {{ rencana[w.id][date].po_inflow_deb }}
+                                        {% else %}
+                                            <span style="color:red;">Empty</span>
+                                        {% endif %}
+                                    </a>
+                                </p>
+                                <p>
+                                    BonA:<a href="#"
+                                        data-url="/rtow/{{ w.id }}/update"
+                                        class="editable"
+                                        id="po_bona"
+                                        data-type="number"
+                                        data-step="any"
+                                        data-pk="{{ rencana[w.id][date].id }}">
+                                        {% if rencana[w.id][date].po_bona != "" %}
+                                            {{ rencana[w.id][date].po_bona }}
+                                        {% else %}
+                                            <span style="color:red;">Empty</span>
+                                        {% endif %}
+                                    </a>
+                                </p>
+                                <p>
+                                    BonB:<a href="#"
+                                        data-url="/rtow/{{ w.id }}/update"
+                                        class="editable"
+                                        id="po_bonb"
+                                        data-type="number"
+                                        data-step="any"
+                                        data-pk="{{ rencana[w.id][date].id }}">
+                                        {% if rencana[w.id][date].po_bonb != "" %}
+                                            {{ rencana[w.id][date].po_bonb }}
+                                        {% else %}
+                                            <span style="color:red;">Empty</span>
+                                        {% endif %}
+                                    </a>
+                                </p>
+                                <p>
+                                    VolBonA:<a href="#"
+                                        data-url="/rtow/{{ w.id }}/update"
+                                        class="editable"
+                                        id="vol_bona"
+                                        data-type="number"
+                                        data-step="any"
+                                        data-pk="{{ rencana[w.id][date].id }}">
+                                        {% if rencana[w.id][date].vol_bona != "" %}
+                                            {{ rencana[w.id][date].vol_bona }}
+                                        {% else %}
+                                            <span style="color:red;">Empty</span>
+                                        {% endif %}
+                                    </a>
+                                </p>
+                                <p>
+                                    VolBonB:<a href="#"
+                                        data-url="/rtow/{{ w.id }}/update"
+                                        class="editable"
+                                        id="vol_bonb"
+                                        data-type="number"
+                                        data-step="any"
+                                        data-pk="{{ rencana[w.id][date].id }}">
+                                        {% if rencana[w.id][date].vol_bonb != "" %}
+                                            {{ rencana[w.id][date].vol_bonb }}
+                                        {% else %}
+                                            <span style="color:red;">Empty</span>
+                                        {% endif %}
+                                    </a>
+                                </p>
+                            </td>
+                        {% else %}
+                            <td>Belum Ada</td>
+                        {% endif %}
+                    {% endfor %}
+                    <!-- <td>1 Bulan 1</td>
                     <td>2 Bulan 1</td>
                     <td>1 Bulan 2</td>
                     <td>2 Bulan 2</td>
@@ -46,7 +152,7 @@
                     <td>1 Bulan 4</td>
                     <td>2 Bulan 4</td>
                     <td>1 Bulan 5</td>
-                    <td>2 Bulan 5</td>
+                    <td>2 Bulan 5</td> -->
                 </tr>
             {% endfor %}
         </tbody>
@@ -54,5 +160,12 @@
 {% endblock %}
 
 {% block js %}
-
+<script src="{{ asset('js/bootstrap-editable.min.js') }}"></script>
+<script>
+    //turn to popup mode
+    $.fn.editable.defaults.mode = 'popup';
+    $(document).ready(function() {
+        $('.editable').editable();
+    });
+</script>
 {% endblock %}

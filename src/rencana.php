@@ -9,13 +9,36 @@ $app->group('/rtow', function() use ($loggedinMiddleware, $adminAuthorizationMid
 
     $this->get('[/]', function(Request $request, Response $response, $args) {
         $waduk = $this->db->query("SELECT * FROM waduk")->fetchAll();
-        // $user = $this->db->query("SELECT users.*, waduk.nama AS waduk_nama, waduk.jenis AS waduk_jenis
-        //                             FROM users
-        //                             LEFT JOIN waduk ON users.waduk_id=waduk.id")->fetchAll();
-        $user = $this->db->query("SELECT * FROM users")->fetchAll();
+
+        // get date range for the data
+        $curr_month = "2018-12"; //  date("Y-m");
+        $date_range = [];
+        foreach (range(0,4) as $i) {
+            $date_range[] = "{$curr_month}-01";
+            $date_range[] = "{$curr_month}-16";
+
+            $curr_month = date('Y-m', strtotime($curr_month .' +1month'));
+        }
+        // dump($date_range);
+
+        $rencana_all = $this->db->query("SELECT * FROM rencana ORDER BY waktu")->fetchAll();
+        $rencana = [];
+        foreach ($rencana_all as $ren) {
+            $waktu = date('Y-m-d', strtotime($ren['waktu']));
+
+            if (in_array($waktu, $date_range)) {
+                $rencana[$ren['waduk_id']][$waktu] = $ren;
+            } else {
+                continue;
+            }
+        }
+
+        // dump($rencana);
+
         return $this->view->render($response, 'rencana/index.html', [
             'waduk' => $waduk,
-            'users' => $user
+            'date_range' => $date_range,
+            'rencana' => $rencana
         ]);
     })->setName('rencana');
 
@@ -116,6 +139,25 @@ $app->group('/rtow', function() use ($loggedinMiddleware, $adminAuthorizationMid
             // $this->flash->addMessage('messages', 'RTOW berhasil ditambahkan');
             return $this->response->withRedirect($this->router->pathFor('rencana'));
         })->setName('rencana.import');
+
+        // update data per column
+        $this->post('/update', function(Request $request, Response $response, $args) {
+            $id = $request->getAttribute('id');
+            $form = $request->getParams();
+
+            $column = $form['name'];
+            $stmt = $this->db->prepare("UPDATE rencana SET {$column}=:value WHERE id=:id");
+            $stmt->execute([
+                ':value' => $form['value'],
+                ':id' => $form['pk']
+            ]);
+
+            return $response->withJson([
+                "name" => $form['name'],
+                "pk" => $form['pk'],
+                "value" => $form['value']
+            ], 200);
+        })->setName('rencana.update');
 
     });
 
