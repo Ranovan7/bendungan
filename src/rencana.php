@@ -48,10 +48,31 @@ $app->group('/rtow', function() use ($loggedinMiddleware, $adminAuthorizationMid
         $this->get('/export', function(Request $request, Response $response, $args) {
             $id = $request->getAttribute('id');
             $waduk = $this->db->query("SELECT * FROM waduk WHERE id={$id}")->fetch();
+            $rencana = $this->db->query("SELECT * FROM rencana WHERE waduk_id={$id} ORDER BY waktu DESC LIMIT 10")->fetchAll();
 
-            return $this->view->render($response, 'rencana/import.html', [
-                'waduk' => $waduk,
-            ]);
+            $csv_str = "{$waduk['nama']},,,,,,,,\n";
+            $csv_str .= "waktu,po_tma,po_vol,po_outflow_deb,po_inflow_deb,po_bona,po_bonb,vol_bona,vol_bonb\n";
+            $csv_str .= "2018-07-16,219.49,,0,0.02,None,217.05,204,0\n";
+            foreach ($rencana as $ren) {
+                $waktu = date('Y-m-d', strtotime($ren['waktu']));
+                $csv_str .= "{$waktu}," .
+                            "{$ren['po_tma']}," .
+                            "{$ren['po_vol']}," .
+                            "{$ren['po_outflow_deb']}," .
+                            "{$ren['po_inflow_deb']}," .
+                            "{$ren['po_bona']}," .
+                            "{$ren['po_bonb']}," .
+                            "{$ren['vol_bona']}," .
+                            "{$ren['vol_bonb']}\n";
+            }
+            // dump($csv_str);
+
+            // $csv_file = new \Slim\Http\Stream($csv_str);
+            return $response->withHeader('Content-Type', 'application/force-download')
+                        ->withHeader('Content-Type', 'application/octet-stream')
+                        ->withHeader('Content-Type', 'application/download')
+                        ->withHeader('Content-Disposition', 'attachment; filename="rtow_template.csv"')
+                        ->write($csv_str);
         })->setName('rencana.export');
 
         // import, read csv file and insert it into database
@@ -127,7 +148,7 @@ $app->group('/rtow', function() use ($loggedinMiddleware, $adminAuthorizationMid
 
             // dump($columns);
             // dump($values);
-            // dump($rencana);
+            // dump($raw);
 
             // insert multiple row
             $stmt = $this->db->prepare("INSERT INTO rencana
