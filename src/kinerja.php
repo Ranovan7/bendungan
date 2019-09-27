@@ -46,7 +46,20 @@ $app->group('/kinerja', function() use ($loggedinMiddleware, $petugasAuthorizati
             return $this->response->withRedirect($this->router->pathFor('kinerja.bendungan', ['id' => $waduk_id], []));
         }
 
-        return $this->view->render($response, 'kinerja/index.html');
+        $waduk = $this->db->query("SELECT * FROM waduk")->fetchAll();
+        $kerusakan = $this->db->query("SELECT * FROM kerusakan ORDER BY tgl_lapor DESC")->fetchAll();
+
+        $kinerja = [];
+        foreach ($kerusakan as $ker) {
+            $kinerja[$ker['waduk_id']]['kerusakan'][] = $ker;
+        }
+        foreach ($waduk as $w) {
+            $kinerja[$w['id']]['waduk'] = $w;
+        }
+
+        return $this->view->render($response, 'kinerja/index.html', [
+            'kinerja' => $kinerja
+        ]);
     })->setName('kinerja');
 
     $this->get('/komponen', function(Request $request, Response $response, $args) use ($komponen) {

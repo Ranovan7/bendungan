@@ -3,18 +3,169 @@
 {% set title = "Kinerja" %}
 
 {% block css %}
+    <style>
+     .thumbnail {
+       box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5);
+       transition: 0.3s;
+       min-width: 40%;
+       border-radius: 5px;
+     }
 
+     .thumbnail-description {
+       min-height: 40px;
+     }
+
+     .thumbnail:hover {
+       cursor: pointer;
+       box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 1);
+     }
+     .btn-outline-primary {
+         color: #007bff;
+         background-color: transparent;
+         background-image: none;
+         border-color: #007bff;
+     }
+     .btn-outline-primary:hover {
+         color: #fff;
+         background-color: #007bff;
+         text-decoration: none;
+     }
+     .border-red {
+          border: 1px solid red;
+          padding: 20px;
+     }
+     .border-orange {
+          border: 1px solid orange;
+          padding: 20px;
+     }
+     .border-yellow {
+          border: 1px solid yellow;
+          padding: 20px;
+     }
+     .border-blue {
+          border: 1px solid blue;
+          padding: 20px;
+     }
+    </style>
 {% endblock %}
 
 {% block content %}
     <section class="content-header">
-        <h1>Kinerja Bendungan</h1>
+        <h1>
+            Kinerja Bendungan
+        </h1>
     </section>
-    <div class="container">
+    <hr>
+    {% for k in kinerja %}
+        {% if loop.index0 % 3 == 0 %}
+            <div class="container">
+                <div class="row">
+        {% endif %}
 
-    </div>
+            <div class="col-sm-4">
+              <div class="thumbnail border-{% if k.kerusakan %}red{% else %}blue{% endif %}">
+                <div class="caption">
+                    <h4>
+                        {{ k.waduk.nama }}
+                    </h4>
+                    <hr>
+                    <p class="card-text" style="font-size: 0.8em;">Kerusakan :</p>
+                    <div style="padding-left: 10px;">
+                        {% if k.kerusakan %}
+                            {% for ker in k.kerusakan %}
+                                <p class="card-text" style="font-size: 1em;">
+                                    <span style="color: {% if ker.kategori == 'berat' %}red{% elseif ker.kategori == 'sedang' %}orange{% else %}yellow{% endif %}">
+                                        {{ ker.komponen }}
+                                    </span>
+                                </p>
+                            {% endfor %}
+                        {% else %}
+                            <p>Tidak Ada</p>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="caption card-footer text-center">
+                  <ul class="list-inline">
+                      <li>
+                          <a class="btn btn-outline-primary" data-toggle="modal" href="/kinerja/{{ k.waduk.id }}">
+                              Lihat
+                          </a>
+                      </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+        {% if ((loop.index0 + 1) % 3 == 0) or (loop.last) %}
+                </div>
+            </div>
+        {% endif %}
+    {% endfor %}
+
 {% endblock %}
 
 {% block js %}
+    <script type="text/javascript" src="{{ asset('js/MinifyJpegAsync.js') }}"></script>
+    <script>
+        //turn to popup mode
+        $.fn.editable.defaults.mode = 'popup';
+        $(document).ready(function() {
+            $('.editable').editable();
+        });
+    </script>
+    <!-- <script>
+        $(document).ready(function () {
 
+            {% for k in kerusakan %}
+                $('#fotoFile-{{ k.id }}').on('change', function(event) {
+                    console.log("Input Change Detected");
+                    readURL(event, {{ k.id }});
+                });
+            {% endfor %}
+        });
+
+        let enc_img = '';
+        let file_name = '';
+        function readURL(event, id) {
+            let f = event.target.files[0];
+            file_name = f.name;
+            let reader = new FileReader();
+
+            reader.onloadend = function(e){
+                console.log(`onload function called, parameter : ${e}`);
+                MinifyJpegAsync.minify(e.target.result, 1280, function(data) {
+                    enc_img = "data:image/jpeg;base64," + btoa(data);
+                    let img = new Image();
+                    img.src = enc_img;
+
+                    document.getElementById(`blah-${id}`).src = enc_img;
+                    console.log('Hasil proses minify') ;
+                });
+            };  // (function(theFile))(f)
+            reader.readAsDataURL(f);
+        };
+
+        function upload_foto(waduk_id, asset_id, kerusakan_id) {
+            if ($(`input[name="keterangan-${kerusakan_id}"]`).val() == ''){
+                alert('Harap masukkan keterangan foto kegiatan');
+                $(`input[name="keterangan-${kerusakan_id}"]`).focus();
+            } else if ($(`#blah-${kerusakan_id}`).attr('src') == "{{ asset('img/null.jpg') }}"){
+                alert('Pilih foto terlebih dahulu');
+            } else {
+                let formData = {
+                    data: enc_img,
+                    filename: file_name,
+                    keterangan: $(`input[name="keterangan-${kerusakan_id}"]`).val(),
+                    kerusakan_id: kerusakan_id
+                };
+                console.log("Posting Photo");
+                $.post(`/asset/${waduk_id}/rusak/${asset_id}/foto`, formData,
+                    function (res) {
+                        console.log(res);
+                        location.reload();
+                    }
+                );
+            }
+        };
+    </script> -->
 {% endblock %}
