@@ -10,7 +10,6 @@
     <section class="content-header">
         <h2>Bendungan</h2>
     </section>
-    <hr>
     <h3>
         <i class="fa fa-calendar"></i>
         <span id="datepicker" style="color: #18bc9c"> {{ sampling | date('d M Y') }}</span>
@@ -27,7 +26,7 @@
                 <th rowspan="2">Q Inflow</th>
                 <th colspan="2">Q Outflow</th>
                 <th colspan="2">VNotch</th>
-                <th colspan="2">Piezometer</th>
+                <th colspan="15">Piezometer</th>
             </tr>
             <tr class="active">
                 <th>TMA</th>
@@ -40,29 +39,45 @@
                 <th>Spillway</th>
                 <th>Tinggi</th>
                 <th>Debit</th>
-                <th>1A</th>
-                <th>2B</th>
+                {% for i in range(1, 5) %}
+                    {% for j in ['A', 'B', 'C'] %}
+                        <th>{{ i }}{{ j }}</th>
+                    {% endfor %}
+                {% endfor %}
             </tr>
         </thead>
         <tbody>
-            {% for w in waduk %}
+            {% for w in waduk_daily %}
                 <tr>
                     <td>{{ loop.index }}</td>
-                    <td>{{ w.nama }}</td>
-                    <td>ch</td>
-                    <td>tma06</td>
-                    <td>vol06</td>
-                    <td>tma12</td>
-                    <td>vol12</td>
-                    <td>tma18</td>
-                    <td>vol18</td>
-                    <td>inflow</td>
-                    <td>intake</td>
-                    <td>spillway</td>
-                    <td>tinggi</td>
-                    <td>debit</td>
-                    <td>A1</td>
-                    <td>B2</td>
+                    <td>
+                        <a href="{{ path_for('operasi.bendungan', {'id': w.id}) }}">
+                            {{ w.nama }}
+                        </a>
+                    </td>
+                    {% if w.tma or w.operasi %}
+                        <td align="right">{{ w.operasi.curahhujan }}</td>
+                        <td align="right">{{ w.tma['06'].manual }}</td>
+                        <td align="right">{{ w.tma['06'].volume }}</td>
+                        <td align="right">{{ w.tma.12.manual }}</td>
+                        <td align="right">{{ w.tma.12.volume }}</td>
+                        <td align="right">{{ w.tma.18.manual }}</td>
+                        <td align="right">{{ w.tma.18.volume }}</td>
+                        <td align="right">{{ w.operasi.inflow_deb }}</td>
+                        <td align="right">{{ w.operasi.outflow_deb }}</td>
+                        <td align="right">{{ w.operasi.spillway_deb }}</td>
+                        {% for vn in w.vnotch %}
+                            {% if vn.nama_vn == "VNotch 1" %}
+                                <td align="right">{{ vn.tma }}</td>
+                                <td align="right">{{ vn.debit }}</td>
+                            {% endif %}
+                        {% endfor %}
+                        {% for pie in w.piezo %}
+                            <td align="right">{{ pie.tma }}</td>
+                        {% endfor %}
+                    {% else %}
+                        <td colspan="27">Tidak Ada Data</td>
+                    {% endif %}
                 </tr>
             {% endfor %}
         </tbody>
@@ -84,7 +99,7 @@
     });
 
     $('#datepicker').on('changeDate', function () {
-        window.location = "{{ path_for('kegiatan.bendungan', {'id': waduk.id}) }}?sampling=" + $('#datepicker').datepicker('getFormattedDate')
+        window.location = "{{ path_for('waduk.harian') }}?sampling=" + $('#datepicker').datepicker('getFormattedDate')
     });
 </script>
 {% endblock %}
