@@ -50,14 +50,14 @@
                             <div class="form-group col-md-6">
                                 <label for="tma-{{ v.id }}">Tinggi Muka Air</label>
                                 <div class="input-group">
-                                    <input id="tma-{{ v.id }}" name="tma-{{ v.id }}" autofocus required class="form-control" type="number" step="0.01" value="" aria-describedby="tma_addon">
+                                    <input id="tma-{{ v.id }}" name="tma-{{ v.id }}" autofocus required class="form-control" type="number" step="0.01" value="0" aria-describedby="tma_addon">
                                     <span class="input-group-addon" id="tma_addon">m</span>
                                 </div>
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="debit-{{ v.id }}">Debit Air</label>
                                 <div class="input-group">
-                                    <input id="debit-{{ v.id }}" name="debit-{{ v.id }}" autofocus required class="form-control" type="number" step="0.01" value="" aria-describedby="debit_addon">
+                                    <input id="debit-{{ v.id }}" name="debit-{{ v.id }}" autofocus required class="form-control" type="number" step="0.01" value="0" aria-describedby="debit_addon">
                                     <span class="input-group-addon" id="debit_addon">m<sup>3</sup></span>
                                 </div>
                             </div>
@@ -83,7 +83,7 @@
                 </h4>
             </section>
             <div class="row collapse" id="form-add-piezometer"  style="padding-left: 25px; padding-right: 25px;">
-                <form method="POST" action="{{ path_for('keamanan.piezometer.add', {'id': waduk.id}, {'sampling': sampling}) }}">
+                <form method="POST" action="{{ path_for('keamanan.piezometer.add', {'id': waduk.id}) }}">
                     <div class="row">
                         <div class="form-group col-md-6">
                             <label class="form-text" for="sampling">Tanggal</label>
@@ -100,7 +100,7 @@
                             <div class="form-group col-md-8">
                                 <label for="tma-{{ p.id }}">Tinggi Muka Air</label>
                                 <div class="input-group">
-                                    <input id="tma-{{ p.id }}" name="tma-{{ p.id }}" autofocus required class="form-control" type="number" step="0.01" value="" aria-describedby="tma_addon">
+                                    <input id="tma-{{ p.id }}" name="tma-{{ p.id }}" autofocus required class="form-control" type="number" step="0.01" value="0" aria-describedby="tma_addon">
                                     <span class="input-group-addon" id="tma_addon">m</span>
                                 </div>
                             </div>
@@ -178,9 +178,10 @@
         $.fn.bootstrapDP = datepicker;
 
         $('#datepicker').datepicker({
-            todayHighlight: true,
             autoclose: true,
-            format: 'yyyy-mm-dd'
+            format: 'yyyy-mm-dd',
+            startView: "months",
+            minViewMode: "months"
         });
         $('#datepicker').on('changeDate', function () {
             window.location = "{{ path_for('keamanan.bendungan', {'id': waduk.id}) }}?sampling=" + $('#datepicker').datepicker('getFormattedDate')

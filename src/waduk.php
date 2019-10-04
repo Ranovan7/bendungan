@@ -115,7 +115,7 @@ $app->group('/waduk', function() use ($loggedinMiddleware, $adminAuthorizationMi
                 ':bts_elev_waspada' => empty($form['elev_waspada']) ? 0 : $form['elev_waspada']
             ]);
 
-            $this->flash->addMessage('messages', 'Berhasil Menambah Waduk');
+            // $this->flash->addMessage('messages', 'Berhasil Menambah Waduk');
             return $this->response->withRedirect('/waduk');
         })->setName('waduk.add');
 
@@ -163,7 +163,7 @@ $app->group('/waduk', function() use ($loggedinMiddleware, $adminAuthorizationMi
                 ':bts_elev_waspada' => empty($form['elev_waspada']) ? 0 : $form['elev_waspada']
             ]);
 
-            $this->flash->addMessage('messages', 'Berhasil Mengedit Waduk');
+            // $this->flash->addMessage('messages', 'Berhasil Mengedit Waduk');
             return $this->response->withRedirect('/waduk');
         })->setName('waduk.detail');
 
@@ -236,7 +236,7 @@ $app->group('/waduk', function() use ($loggedinMiddleware, $adminAuthorizationMi
                     ':bts_rembesan' => empty($form['bts_rembesan']) ? 0 : $form['bts_rembesan'],
                 ]);
 
-                $this->flash->addMessage('messages', 'VNotch Berhasil Ditambahkan');
+                // $this->flash->addMessage('messages', 'VNotch Berhasil Ditambahkan');
                 return $this->response->withRedirect($this->router->pathFor('waduk.detail', ['id' => $id]));
             })->setName('waduk.vnotch.add');
 
@@ -251,7 +251,7 @@ $app->group('/waduk', function() use ($loggedinMiddleware, $adminAuthorizationMi
                         ':id' => $vnotch_id
                     ]);
 
-                    $this->flash->addMessage('messages', 'VNotch Berhasil Dihapus');
+                    // $this->flash->addMessage('messages', 'VNotch Berhasil Dihapus');
                     return $this->response->withRedirect($this->router->pathFor('waduk.detail', ['id' => $id]));
                 })->setName('waduk.vnotch.delete');
             });
@@ -286,7 +286,7 @@ $app->group('/waduk', function() use ($loggedinMiddleware, $adminAuthorizationMi
                     ':bts_tekanan_pori' => empty($form['bts_tekanan_pori']) ? 0 : $form['bts_tekanan_pori'],
                 ]);
 
-                $this->flash->addMessage('messages', 'Piezometer Berhasil Ditambahkan');
+                // $this->flash->addMessage('messages', 'Piezometer Berhasil Ditambahkan');
                 return $this->response->withRedirect($this->router->pathFor('waduk.detail', ['id' => $id], []));
             })->setName('waduk.piezometer.add');
         });

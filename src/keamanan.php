@@ -289,17 +289,18 @@ $app->group('/keamanan', function() use ($loggedinMiddleware, $petugasAuthorizat
                 }
 
                 // die($v_update);
-                // die($v_insert);
+                // dump($v_insert != '');
+                // dump($values);
 
                 // insert query
-                if (v_insert) {
+                if ($v_insert != '') {
                     $stmt = $this->db->query("INSERT INTO periodik_keamanan
                                                 (sampling, tma, keamanan_type, keamanan_id, waduk_id)
                                             VALUES
                                                 {$v_insert}");
                 }
                 // update query
-                if (v.update) {
+                if ($v_update != '') {
                     $stmt = $this->db->query("UPDATE periodik_keamanan AS m
                                                 SET tma = c.tma
                                                 FROM (VALUES {$v_update})

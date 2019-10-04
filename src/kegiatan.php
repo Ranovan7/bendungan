@@ -39,11 +39,13 @@ $app->group('/kegiatan', function() use ($loggedinMiddleware) {
 
         $this->get('[/]', function(Request $request, Response $response, $args) use ($petugas) {
             $hari = $request->getParam('sampling', date('Y-m-d'));
+            $month = date("m", strtotime($hari));
+            $year = date("Y", strtotime($hari));
             $id = $request->getAttribute('id');
             $waduk = $this->db->query("SELECT * FROM waduk WHERE id={$id}")->fetch();
             $kegiatan_raw = $this->db->query("SELECT kegiatan.*, foto.url AS foto_url
                                             FROM kegiatan LEFT JOIN foto ON kegiatan.foto_id=foto.id
-                                            WHERE waduk_id={$id}
+                                            WHERE waduk_id={$id} AND EXTRACT(MONTH FROM sampling)={$month} AND EXTRACT(YEAR FROM sampling)={$year}
                                             ORDER BY sampling DESC")->fetchAll();
 
             $kegiatan = [];

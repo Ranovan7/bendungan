@@ -25,7 +25,11 @@
                         <label for="komponen">Komponen</label>
                         <select class="form-control" id="komponen" name="komponen" autofocus>
                             {% for kom in komponen %}
-                                <option value="{{ kom }}">{{ kom }}</option>
+                                {% if loop.index0 == 0 %}
+                                    <option value="{{ kom }}" selected>{{ kom }}</option>
+                                {% else %}
+                                    <option value="{{ kom }}">{{ kom }}</option>
+                                {% endif %}
                             {% endfor %}
                         </select>
                     </div>
@@ -140,14 +144,12 @@
                 let formData = {
                     data: enc_img,
                     filename: file_name,
-                    uraian: $('input[name="uraian"]').val(),
-                    komponen: $('input[name="komponen"]').val(),
+                    uraian: $('textarea[name="uraian"]').val(),
+                    komponen: $('select[name="komponen"]').val(),
                     kategori: $('input[name="kategori"]:checked').val(),
-                    keterangan: $('input[name="keterangan"]').val(),
-                    sampling: $('input[name="sampling"]').val(),
-                    petugas: $('select[name="petugas"]').val()
+                    keterangan: $('input[name="keterangan"]').val()
                 };
-                console.log("Posting Photo");
+                console.log("formData");
                 $.post("{{ path_for('kinerja.lapor', {'id': waduk.id}) }}", formData,
                     function (res) {
                         console.log(res);

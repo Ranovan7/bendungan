@@ -35,7 +35,7 @@ $app->post('/login', function(Request $request, Response $response, $args) {
     $this->session->user_refresh_time = strtotime("+1hour");
 
     // die("Welcommmen {$user['username']}!");
-    $this->flash->addMessage('messages', 'Berhasil Login');
+    // $this->flash->addMessage('messages', 'Berhasil Login');
     return $this->response->withRedirect('/operasi');
 });
 
@@ -70,7 +70,7 @@ $app->get('/gen', function(Request $request, Response $response, $args) {
 });
 
 $app->get('/logout', function(Request $request, Response $response, $args) {
-    $this->flash->addMessage('messages', 'Berhasil Logout');
+    // $this->flash->addMessage('messages', 'Berhasil Logout');
     $this->session->destroy();
     return $this->response->withRedirect('/login');
 });

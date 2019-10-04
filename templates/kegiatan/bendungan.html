@@ -45,6 +45,7 @@
         text-decoration: none;
     }
 </style>
+<!-- <link href="{{ asset('css/bootstrap-editable.css') }}" rel="stylesheet"/> -->
 {% endblock %}
 
 {% block content %}
@@ -119,7 +120,7 @@
     </div>
     <h3>
         Bulan
-        <i class="fa fa-calendar"></i>
+        <!-- <i class="fa fa-calendar"></i> -->
         <span id="datepicker" style="color: #18bc9c"> {{ sampling | date('M Y') }}</span>
     </h3>
     <table class="table table-bordered table-stripped">
@@ -196,17 +197,11 @@
 
 {% block js %}
 <script src="{{ asset('js/MinifyJpegAsync.js') }}"></script>
-<script src="{{ asset('js/bootstrap-datepicker.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 <script>
     // resolve package confict
     // let datepicker = $.fn.datepicker.noConflict();
     // $.fn.bootstrapDP = datepicker;
-
-    $('#sampling').datepicker({
-        todayHighlight: true,
-        autoclose: true,
-        format: 'yyyy-mm-dd',
-    });
 
     $('#datepicker').datepicker({
         autoclose: true,
@@ -218,6 +213,13 @@
     $('#datepicker').on('changeDate', function () {
         window.location = "{{ path_for('kegiatan.bendungan', {'id': waduk.id}) }}?sampling=" + $('#datepicker').datepicker('getFormattedDate')
     });
+
+    $('#sampling').datepicker({
+        todayHighlight: true,
+        autoclose: true,
+        format: 'yyyy-mm-dd',
+    });
+
 </script>
 <script>
     $(document).ready(function () {

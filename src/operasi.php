@@ -137,7 +137,7 @@ $app->group('/operasi', function() use ($loggedinMiddleware, $petugasAuthorizati
                     ]);
                 }
 
-                $this->flash->addMessage('messages', 'Periodik Daily berhasil ditambahkan');
+                // $this->flash->addMessage('messages', 'Periodik Daily berhasil ditambahkan');
                 return $this->response->withRedirect($this->router->pathFor('operasi.bendungan', ['id' => $id], []));
             })->setName('operasi.tma.add');
 
@@ -254,7 +254,7 @@ $app->group('/operasi', function() use ($loggedinMiddleware, $petugasAuthorizati
                     ]);
                 }
 
-                $this->flash->addMessage('messages', 'Periodik Daily berhasil ditambahkan');
+                // $this->flash->addMessage('messages', 'Periodik Daily berhasil ditambahkan');
                 return $this->response->withRedirect($this->router->pathFor('operasi.bendungan', ['id' => $id], []));
             })->setName('operasi.daily.add');
 
