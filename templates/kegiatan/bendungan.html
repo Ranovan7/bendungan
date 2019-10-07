@@ -45,7 +45,7 @@
         text-decoration: none;
     }
 </style>
-<!-- <link href="{{ asset('css/bootstrap-editable.css') }}" rel="stylesheet"/> -->
+<link href="{{ asset('css/bootstrap-editable.css') }}" rel="stylesheet"/>
 {% endblock %}
 
 {% block content %}
@@ -139,7 +139,7 @@
                 <tr>
                     <td>
                         {{ t | date('d') }}
-                        <a href="#" style="float: right" class="text-right" title="print">
+                        <a href="/kegiatan/{{ waduk.id }}/paper?sampling={{ t | date('Y-m-d') }}" style="float: right" class="text-right" title="print">
                             <i class="fa fa-print"></i>
                         </a>
                     </td>
@@ -197,11 +197,12 @@
 
 {% block js %}
 <script src="{{ asset('js/MinifyJpegAsync.js') }}"></script>
+<script src="{{ asset('js/bootstrap-editable.min.js') }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 <script>
     // resolve package confict
-    // let datepicker = $.fn.datepicker.noConflict();
-    // $.fn.bootstrapDP = datepicker;
+    let datepicker = $.fn.datepicker.noConflict();
+    $.fn.bootstrapDP = datepicker;
 
     $('#datepicker').datepicker({
         autoclose: true,

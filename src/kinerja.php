@@ -79,9 +79,10 @@ $app->group('/kinerja', function() use ($loggedinMiddleware, $petugasAuthorizati
         $this->get('[/]', function(Request $request, Response $response, $args) use ($komponen) {
             $id = $request->getAttribute('id');
             $waduk = $this->db->query("SELECT * FROM waduk WHERE id={$id}")->fetch();
-            $kerusakan = $this->db->query("SELECT * FROM kerusakan
-                                                WHERE waduk_id={$id}
-                                                ORDER BY id DESC")->fetchAll();
+            $kerusakan = $this->db->query("SELECT kerusakan.*, users.username AS upb_name
+                                            FROM kerusakan LEFT JOIN users ON users.id=kerusakan.upb_id
+                                            WHERE kerusakan.waduk_id={$id}
+                                            ORDER BY kerusakan.id DESC")->fetchAll();
 
             // get photos
             $fotos = $this->db->query("SELECT * FROM foto WHERE obj_type='kerusakan'")->fetchAll();
@@ -169,6 +170,51 @@ $app->group('/kinerja', function() use ($loggedinMiddleware, $petugasAuthorizati
                 "uraian" => $form['uraian']
             ], 200);
         })->setName('kinerja.lapor');
+
+        $this->post('/uraian', function(Request $request, Response $response, $args) use ($komponen) {
+            $id = $request->getAttribute('id');
+            $form = $request->getParams();
+
+            $ker_id = $form['kerusakan_id'];
+            $uraian = $form["uraian-{$ker_id}"];
+            $stmt = $this->db->prepare("UPDATE kerusakan SET uraian_kerusakan='{$uraian}' WHERE id={$ker_id}");
+            $stmt->execute();
+
+            return $this->response->withRedirect($this->router->pathFor('kinerja.bendungan', ['id' => $id]));
+        })->setName('kinerja.uraian');
+
+        $this->post('/foto', function(Request $request, Response $response, $args) use ($komponen) {
+            $id = $request->getAttribute('id');
+            $form = $request->getParams();
+
+            $ker_id = $form['kerusakan_id'];
+            $uraian = $form["uraian-{$ker_id}"];
+            $stmt = $this->db->prepare("UPDATE kerusakan SET uraian_kerusakan='{$uraian}' WHERE id={$ker_id}");
+            $stmt->execute();
+
+            return $this->response->withRedirect($this->router->pathFor('kinerja.bendungan', ['id' => $id]));
+        })->setName('kinerja.uraian');
+
+        $this->post('/tanggapan', function(Request $request, Response $response, $args) use ($komponen) {
+            $id = $request->getAttribute('id');
+            $kategori = $request->getParam('kategori', 'tidak rusak');
+            $tanggapan = $request->getParam('tanggapan');
+            $kerusakan_id = $request->getParam('kerusakan_id');
+            $tgl_tanggapan = date('Y-m-d H:i');
+            $user = $request->getAttribute('user');
+
+            // dump($request->getParams());
+
+            $stmt = $this->db->prepare("UPDATE kerusakan
+                                        SET tanggapan_upb='{$tanggapan}',
+                                            upb_id={$user['id']},
+                                            kategori='{$kategori}',
+                                            tgl_tanggapan='{$tgl_tanggapan}'
+                                        WHERE id={$kerusakan_id}");
+            $stmt->execute();
+
+            return $this->response->withRedirect($this->router->pathFor('kinerja.bendungan', ['id' => $id]));
+        })->setName('kinerja.tanggapan');
 
         $this->post('/update', function(Request $request, Response $response, $args) use ($komponen) {
             $id = $request->getAttribute('id');

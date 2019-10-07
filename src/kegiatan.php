@@ -152,6 +152,29 @@ $app->group('/kegiatan', function() use ($loggedinMiddleware) {
                 "petugas" => $form['petugas']
             ], 200);
         })->setName('kegiatan.add');
+
+        $this->get('/paper', function(Request $request, Response $response, $args) use ($petugas) {
+            // $hari = $request->getParam('sampling', date('Y-m-d'));
+            $id = $request->getAttribute('id');
+            $waduk = $this->db->query("SELECT * FROM waduk WHERE id={$id}")->fetch();
+
+            $sampling = $request->getParam('sampling');
+            $day = date("d", strtotime($sampling));
+            $month = date("m", strtotime($sampling));
+            $year = date("Y", strtotime($sampling));
+
+            $kegiatan = $this->db->query("SELECT kegiatan.*, foto.url AS foto_url
+                                            FROM kegiatan LEFT JOIN foto ON kegiatan.foto_id=foto.id
+                                            WHERE EXTRACT(MONTH FROM sampling)={$month} AND EXTRACT(YEAR FROM sampling)={$year} AND EXTRACT(DAY FROM sampling)={$day}
+                                                AND waduk_id={$id}")->fetchAll();
+            // dump($kegiatan);
+            return $this->view->render($response, 'kegiatan/paper.html', [
+                'waduk' =>  $waduk,
+                'kegiatan' => $kegiatan,
+                'sampling' => $sampling
+            ]);
+        })->setName('kegiatan.paper');
+
     });
 
 })->add($loggedinMiddleware);
