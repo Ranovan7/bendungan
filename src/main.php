@@ -27,8 +27,20 @@ $app->post('/login', function(Request $request, Response $response, $args) {
     $stmt = $this->db->prepare("SELECT * FROM users WHERE username=:username");
     $stmt->execute([':username' => $credentials['username']]);
     $user = $stmt->fetch();
-    if (!$user || !password_verify($credentials['password'], $user['password'])) {
-        die("Username / password salah!");
+    if (!$user) {
+        die("Username tidak terdaftar!");
+    } elseif (!password_verify($credentials['password'], $user['password'])) {
+        // check password using md5 before returning false
+        if (MD5($credentials['password']) == $user['password']) {
+            // if md5 encrypt is correct, update password to use bcrypt
+            $update_pass = $this->db->prepare("UPDATE users SET password=:password WHERE id=:id");
+            $update_pass->execute([
+                ':password' => password_hash($credentials['password'], PASSWORD_DEFAULT),
+                ':id' => $user['id']
+            ]);
+        } else {
+            die("Password salah!");
+        }
     }
 
     $this->session->user_id = $user['id'];

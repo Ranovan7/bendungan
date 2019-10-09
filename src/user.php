@@ -9,10 +9,11 @@ $app->group('/user', function() use ($loggedinMiddleware, $adminAuthorizationMid
 
     $this->get('[/]', function(Request $request, Response $response, $args) {
         $waduk = $this->db->query("SELECT * FROM waduk")->fetchAll();
-        // $user = $this->db->query("SELECT users.*, waduk.nama AS waduk_nama, waduk.jenis AS waduk_jenis
-        //                             FROM users
-        //                             LEFT JOIN waduk ON users.waduk_id=waduk.id")->fetchAll();
-        $user = $this->db->query("SELECT * FROM users")->fetchAll();
+        $user = $this->db->query("SELECT users.*, waduk.nama AS waduk_nama
+                                    FROM users
+                                    LEFT JOIN waduk ON users.waduk_id=waduk.id
+                                    ORDER BY id")->fetchAll();
+        // $user = $this->db->query("SELECT * FROM users")->fetchAll();
         return $this->view->render($response, 'user/index.html', [
             'waduk' => $waduk,
             'users' => $user

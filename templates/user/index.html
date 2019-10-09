@@ -132,11 +132,6 @@
             {% endif %}
             <td>
                 {{ u.waduk_nama }}
-                {% if u.waduk_jenis == '1' or u.waduk_jenis == '4' %}
-                    (CH)
-                {% elseif u.waduk_jenis == '2' %}
-                    (TMA)
-                {% endif %}
             </td>
             <td>
                 <a href="{{ path_for('user.password', {id:u.id}) }}" class="small">
