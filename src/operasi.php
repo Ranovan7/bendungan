@@ -26,6 +26,8 @@ $app->group('/operasi', function() use ($loggedinMiddleware, $petugasAuthorizati
             $hari = $request->getParam('sampling', date('Y-m-d'));
             $id = $request->getAttribute('id');
             $waduk = $this->db->query("SELECT * FROM waduk WHERE id={$id}")->fetch();
+            $vnotch = $this->db->query("SELECT * FROM vnotch WHERE waduk_id={$id}")->fetchAll();
+            $piezometer = $this->db->query("SELECT * FROM piezometer WHERE waduk_id={$id}")->fetchAll();
 
             $month = $prev_date = date('m', strtotime($hari));
             $year = $prev_date = date('Y', strtotime($hari));
@@ -83,6 +85,8 @@ $app->group('/operasi', function() use ($loggedinMiddleware, $petugasAuthorizati
             return $this->view->render($response, 'operasi/bendungan.html', [
                 'waduk' => $waduk,
                 'periodik' => $periodik,
+                'vnotch' => $vnotch,
+                'piezometer' => $piezometer,
                 'sampling' => $hari
             ]);
         })->setName('operasi.bendungan');
