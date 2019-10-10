@@ -17,8 +17,58 @@ $app->group('/operasi', function() use ($loggedinMiddleware, $petugasAuthorizati
             return $this->response->withRedirect($this->router->pathFor('operasi.bendungan', ['id' => $waduk_id], []));
         }
 
-        return $this->response->withRedirect($this->router->pathFor('waduk.harian'));
+        return $this->response->withRedirect($this->router->pathFor('operasi.harian'));
     })->setName('operasi');
+
+    $this->get('/harian', function(Request $request, Response $response, $args) {
+        $hari = $request->getParam('sampling', date('Y-m-d'));
+        $end = date('Y-m-d', strtotime($hari .' +1day'));
+        $from = "{$hari} 06:00:00";
+        $to = "{$end} 05:55:00";
+
+        $waduk = $this->db->query("SELECT * FROM waduk")->fetchAll();
+        $daily = $this->db->query("SELECT * FROM periodik_daily WHERE sampling BETWEEN '{$from}' AND '{$to}'")->fetchAll();
+        $tma = $this->db->query("SELECT * FROM tma WHERE sampling BETWEEN '{$from}' AND '{$to}'")->fetchAll();
+        $vnotch = $this->db->query("SELECT periodik_keamanan.*, vnotch.nama AS nama_vn
+                                    FROM periodik_keamanan LEFT JOIN vnotch ON periodik_keamanan.keamanan_id=vnotch.id
+                                    WHERE keamanan_type='vnotch' AND sampling BETWEEN '{$from}' AND '{$to}'")->fetchAll();
+        $piezo = $this->db->query("SELECT periodik_keamanan.*, piezometer.nama AS nama_piezo
+                                    FROM periodik_keamanan LEFT JOIN piezometer ON periodik_keamanan.keamanan_id=piezometer.id
+                                    WHERE keamanan_type='piezometer' AND sampling BETWEEN '{$from}' AND '{$to}'")->fetchAll();
+
+        $waduk_daily = [];
+        foreach ($waduk as $w) {
+            $waduk_daily[$w['id']] = [
+                'nama' => $w['nama'],
+                'id' => $w['id'],
+                'operasi' => [],
+                'tma' => [],
+                'piezo' => [],
+                'vnotch' => []
+            ];
+        }
+        foreach ($daily as $d) {
+            $waduk_daily[$d['waduk_id']]['operasi'] = $d;
+        }
+        foreach ($tma as $t) {
+            $hour = date("H", strtotime($t['sampling']));
+            $waduk_daily[$t['waduk_id']]['tma'][$hour] = $t;
+        }
+        foreach ($piezo as $p) {
+            $waduk_daily[$p['waduk_id']]['piezo'][$p['nama_piezo']] = $p;
+        }
+        foreach ($vnotch as $v) {
+            $waduk_daily[$v['waduk_id']]['vnotch'][$v['nama_vn']] = $v;
+        }
+
+        // dump($hari);
+        // dump($waduk_daily);
+
+        return $this->view->render($response, 'operasi/harian.html', [
+            'waduk_daily' => $waduk_daily,
+            'sampling' => $hari
+        ]);
+    })->setName('operasi.harian');
 
     $this->group('/{id}', function() {
 

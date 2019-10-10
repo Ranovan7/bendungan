@@ -66,17 +66,27 @@
                         <td align="right">{{ w.operasi.inflow_deb }}</td>
                         <td align="right">{{ w.operasi.outflow_deb }}</td>
                         <td align="right">{{ w.operasi.spillway_deb }}</td>
+                    {% else %}
+                        <td colspan="10">Tidak Ada Data</td>
+                    {% endif %}
+
+                    {% if w.vnotch %}
                         {% for vn in w.vnotch %}
                             {% if vn.nama_vn == "VNotch 1" %}
                                 <td align="right">{{ vn.tma }}</td>
                                 <td align="right">{{ vn.debit }}</td>
                             {% endif %}
                         {% endfor %}
+                    {% else %}
+                        <td colspan="2">Tidak Ada Data</td>
+                    {% endif %}
+
+                    {% if w.piezo %}
                         {% for pie in w.piezo %}
                             <td align="right">{{ pie.tma }}</td>
                         {% endfor %}
                     {% else %}
-                        <td colspan="27">Tidak Ada Data</td>
+                        <td colspan="15">Tidak Ada Data</td>
                     {% endif %}
                 </tr>
             {% endfor %}
@@ -99,7 +109,7 @@
     });
 
     $('#datepicker').on('changeDate', function () {
-        window.location = "{{ path_for('waduk.harian') }}?sampling=" + $('#datepicker').datepicker('getFormattedDate')
+        window.location = "{{ path_for('operasi.harian') }}?sampling=" + $('#datepicker').datepicker('getFormattedDate')
     });
 </script>
 {% endblock %}
