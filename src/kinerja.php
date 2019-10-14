@@ -46,12 +46,21 @@ $app->group('/kinerja', function() use ($loggedinMiddleware, $petugasAuthorizati
             return $this->response->withRedirect($this->router->pathFor('kinerja.bendungan', ['id' => $waduk_id], []));
         }
 
+        $kat = ['berat', 'sedang', 'ringan'];
         $waduk = $this->db->query("SELECT * FROM waduk")->fetchAll();
-        $kerusakan = $this->db->query("SELECT * FROM kerusakan ORDER BY tgl_lapor DESC")->fetchAll();
+        $kerusakan = $this->db->query("SELECT * FROM kerusakan
+                                        ORDER BY tgl_lapor DESC")->fetchAll();
 
         $kinerja = [];
         foreach ($kerusakan as $ker) {
-            $kinerja[$ker['waduk_id']]['kerusakan'][] = $ker;
+            if (in_array($ker['kategori'], $kat)) {
+                $kinerja[$ker['waduk_id']]['kerusakan'][] = $ker;
+            }
+            if (!$kinerja[$ker['waduk_id']]['kategori'][$ker['kategori']]) {
+                $kinerja[$ker['waduk_id']]['kategori'][$ker['kategori']] = 1;
+            } else {
+                $kinerja[$ker['waduk_id']]['kategori'][$ker['kategori']] += 1;
+            }
         }
         foreach ($waduk as $w) {
             $kinerja[$w['id']]['waduk'] = $w;

@@ -44,7 +44,7 @@ $app->post('/login', function(Request $request, Response $response, $args) {
     }
 
     $this->session->user_id = $user['id'];
-    $this->session->user_refresh_time = strtotime("+1hour");
+    $this->session->user_refresh_time = strtotime("+12hour");
 
     // die("Welcommmen {$user['username']}!");
     // $this->flash->addMessage('messages', 'Berhasil Login');

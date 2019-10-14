@@ -5,7 +5,7 @@
 {% block css %}
     <style>
      .thumbnail {
-       box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5);
+       /* box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5); */
        transition: 0.3s;
        min-width: 40%;
        border-radius: 5px;
@@ -15,10 +15,10 @@
        min-height: 40px;
      }
 
-     .thumbnail:hover {
+     /* .thumbnail:hover {
        cursor: pointer;
        box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 1);
-     }
+     } */
      .btn-outline-primary {
          color: #007bff;
          background-color: transparent;
@@ -42,6 +42,10 @@
           border: 1px solid yellow;
           padding: 20px;
      }
+     .border-grey {
+          border: 1px solid grey;
+          padding: 20px;
+     }
      .border-blue {
           border: 1px solid blue;
           padding: 20px;
@@ -52,10 +56,80 @@
 {% block content %}
     <section class="content-header">
         <h1>
-            Kinerja Bendungan
+            Kinerja Komponen Bendungan
         </h1>
     </section>
     <hr>
+    <div class="container">
+        {% for k in kinerja %}
+        <div class="thumbnail border-{% if k.kerusakan %}red{% else %}grey{% endif %}">
+            <div class="row caption">
+                <div class="col-md-3">
+                    <a href="/kinerja/{{ k.waduk.id }}">
+                        {{ k.waduk.nama }}
+                    </a>
+                </div>
+                <div class="col-md-7">
+                    {% if k.kerusakan %}
+                        <a href="/kinerja/{{ k.waduk.id }}">
+                            {{ k.kerusakan.0.komponen }}
+                            (<span class="hari" data-tgl="{{ k.kerusakan.0.tgl_lapor }}"></span>)
+                            {% if k.kerusakan|length - 1 != 0 %}
+                                dan {{ k.kerusakan|length - 1 }} kerusakan lainnya . . .
+                            {% endif %}
+                        </a>
+                    {% else %}
+                        Tidak Ada Kerusakan
+                    {% endif %}
+                </div>
+                <div class="col-md-2">
+                    <div class="row">
+                        <div class="col-xs-3">
+
+                        </div>
+                        <div class="col-xs-2">
+                            {% if k.kategori.berat %}
+                                <a href="#" data-toggle="tooltip" title="{{ k.kategori.berat }} Kerusakan Berat">
+                                    <span class="label label-danger">{{ k.kategori.berat }}</span>
+                                </a>
+                            {% else %}
+                                <a href="#" data-toggle="tooltip" title="0 Kerusakan Berat">
+                                    <span class="label label-danger">0</span>
+                                </a>
+                            {% endif %}
+                        </div>
+                        <div class="col-xs-2">
+                            {% if k.kategori.sedang %}
+                                <a href="#" data-toggle="tooltip" title="{{ k.kategori.sedang }} Kerusakan Sedang">
+                                    <span class="label label-warning">{{ k.kategori.sedang }}</span>
+                                </a>
+                            {% else %}
+                                <a href="#" data-toggle="tooltip" title="0 Kerusakan Sedang">
+                                    <span class="label label-warning">0</span>
+                                </a>
+                            {% endif %}
+                        </div>
+                        <div class="col-xs-2">
+                            {% if k.kategori.ringan %}
+                                <a href="#" data-toggle="tooltip" title="{{ k.kategori.ringan }} Kerusakan Ringan">
+                                    <span class="label label-default">{{ k.kategori.ringan }}</span>
+                                </a>
+                            {% else %}
+                                <a href="#" data-toggle="tooltip" title="0 Kerusakan Ringan">
+                                    <span class="label label-default">0</span>
+                                </a>
+                            {% endif %}
+                        </div>
+                        <div class="col-xs-3">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <!-- <hr>
     {% for k in kinerja %}
         {% if loop.index0 % 3 == 0 %}
             <div class="container">
@@ -100,72 +174,34 @@
                 </div>
             </div>
         {% endif %}
-    {% endfor %}
+    {% endfor %} -->
 
 {% endblock %}
 
 {% block js %}
+    <script src="{{ asset('js/moment.min.js') }}"></script>
+    <script src="{{ asset('js/id.js') }}"></script>
     <script type="text/javascript" src="{{ asset('js/MinifyJpegAsync.js') }}"></script>
     <script>
         //turn to popup mode
-        $.fn.editable.defaults.mode = 'popup';
+        // $.fn.editable.defaults.mode = 'popup';
+        // $(document).ready(function() {
+        //     $('.editable').editable();
+        // });
+
+        $(document).ready(function(){
+          $('[data-toggle="tooltip"]').tooltip();
+        });
+
+        $(document).ready(function(){
+          $('[data-toggle="popover"]').popover();
+        });
+
         $(document).ready(function() {
-            $('.editable').editable();
+    	  moment.locale('id');
+          $('.hari').each(function (i, e) {
+            console.log($(e).prepend(moment($(e).data('tgl')).fromNow()));
+          });
         });
     </script>
-    <!-- <script>
-        $(document).ready(function () {
-
-            {% for k in kerusakan %}
-                $('#fotoFile-{{ k.id }}').on('change', function(event) {
-                    console.log("Input Change Detected");
-                    readURL(event, {{ k.id }});
-                });
-            {% endfor %}
-        });
-
-        let enc_img = '';
-        let file_name = '';
-        function readURL(event, id) {
-            let f = event.target.files[0];
-            file_name = f.name;
-            let reader = new FileReader();
-
-            reader.onloadend = function(e){
-                console.log(`onload function called, parameter : ${e}`);
-                MinifyJpegAsync.minify(e.target.result, 1280, function(data) {
-                    enc_img = "data:image/jpeg;base64," + btoa(data);
-                    let img = new Image();
-                    img.src = enc_img;
-
-                    document.getElementById(`blah-${id}`).src = enc_img;
-                    console.log('Hasil proses minify') ;
-                });
-            };  // (function(theFile))(f)
-            reader.readAsDataURL(f);
-        };
-
-        function upload_foto(waduk_id, asset_id, kerusakan_id) {
-            if ($(`input[name="keterangan-${kerusakan_id}"]`).val() == ''){
-                alert('Harap masukkan keterangan foto kegiatan');
-                $(`input[name="keterangan-${kerusakan_id}"]`).focus();
-            } else if ($(`#blah-${kerusakan_id}`).attr('src') == "{{ asset('img/null.jpg') }}"){
-                alert('Pilih foto terlebih dahulu');
-            } else {
-                let formData = {
-                    data: enc_img,
-                    filename: file_name,
-                    keterangan: $(`input[name="keterangan-${kerusakan_id}"]`).val(),
-                    kerusakan_id: kerusakan_id
-                };
-                console.log("Posting Photo");
-                $.post(`/asset/${waduk_id}/rusak/${asset_id}/foto`, formData,
-                    function (res) {
-                        console.log(res);
-                        location.reload();
-                    }
-                );
-            }
-        };
-    </script> -->
 {% endblock %}

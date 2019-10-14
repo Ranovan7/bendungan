@@ -5,7 +5,7 @@
 {% block css %}
     <style>
      .thumbnail {
-       box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5);
+       /* box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5); */
        transition: 0.3s;
        min-width: 40%;
        border-radius: 5px;
@@ -15,10 +15,10 @@
        min-height: 40px;
      }
 
-     .thumbnail:hover {
+     /* .thumbnail:hover {
        cursor: pointer;
        box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 1);
-     }
+     } */
      .btn-outline-primary {
          color: #007bff;
          background-color: transparent;
@@ -32,20 +32,24 @@
      }
      .border-grey {
           border: 1px solid grey;
-          padding: 20px;
+          /* padding: 20px; */
      }
      .border-red {
           border: 1px solid red;
-          padding: 20px;
+          /* padding: 20px; */
      }
      .border-orange {
           border: 1px solid orange;
-          padding: 20px;
+          /* padding: 20px; */
      }
      .border-yellow {
           border: 1px solid yellow;
-          padding: 20px;
+          /* padding: 20px; */
      }
+     .vcenter {
+        display: inline-block;
+        vertical-align: middle;
+    }
     </style>
     <link href="{{ asset('css/bootstrap-editable.css') }}" rel="stylesheet"/>
 {% endblock %}
@@ -61,6 +65,122 @@
             </a>
         </h1>
     </section>
+    <hr>
+    <div class="container">
+        {% for k in kerusakan %}
+        <div class="thumbnail border-{% if k.kerusakan %}red{% else %}grey{% endif %}">
+            <div class="row caption">
+                <div class="col-md-1 vcenter">
+                    <a href="#" data-toggle="tooltip" title="Kerusakan {{ k.kategori|title }}">
+                        <h3>
+                            {% if k.kategori == 'berat' %}
+                                <span class="label label-danger">B</span>
+                            {% elseif k.kategori == 'sedang' %}
+                                <span class="label label-warning">S</span>
+                            {% elseif k.kategori == 'ringan' %}
+                                <span class="label label-secondary">R</span>
+                            {% else %}
+                                <span class="label label-primary"> - </span>
+                            {% endif %}
+                        </h3>
+                    </a>
+                </div>
+                <div class="col-md-2">
+                    <p>{{ k.komponen }}</p>
+                </div>
+                <div class="col-md-3">
+                    <p>{{ k.uraian_kerusakan }}</p>
+                    <p>(<span class="hari" data-tgl="{{ k.tgl_lapor }}"></span>)</p>
+                </div>
+                <div class="col-md-3">
+                    {% if k.tanggapan_upb %}
+                        <p>{{ k.tanggapan_upb }}</p>
+                        <p>(<span class="hari" data-tgl="{{ k.tgl_tanggapan }}"></span>)</p>
+                    {% else %}
+                        <p>UPB Belum Menanggapi</p>
+                        {% if user().role == '1' %}
+                            <p>
+                                <a data-toggle="modal"
+                                    href="#form-tanggapan-{{ k.id }}"
+                                    role="button" aria-expanded="false"
+                                    aria-controls="">
+                                    Tanggapi
+                                </a>
+                            </p>
+                        {% endif %}
+                    {% endif %}
+                </div>
+                <div class="col-md-3">
+                    {% if k.tindak_lanjut %}
+                        <p>{{ k.tindak_lanjut }}</p>
+                    {% else %}
+                        <p>Belum Ada Tindak Lanjut</p>
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Tanggapan UPB -->
+        <div class="modal fade" id="form-tanggapan-{{ k.id }}" tabindex="-1" role="dialog" aria-labelledby="modalTanggapan" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form method="POST" action="">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="modalTanggapan">Tanggapan UPB</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                      <div class="form-group">
+                          <label class="form-text" for="tanggapan-{{ k.id }}">Tanggapan UPB</label>
+                          <textarea class="form-control" name="tanggapan-{{ k.id }}" id="tanggapan-{{ k.id }}" required value=""></textarea>
+                      </div>
+                      <div class="form-group">
+                          <label class="form-text" for="kategori-{{ k.id }}">Kategori Kerusakan</label>
+                          <select class="form-control" name="kategori-{{ k.id }}" id="kategori-{{ k.id }}">
+                            <option value="tidak rusak" {% if k.kategori == 'tidak rusak' %}selected{% endif %}>Tidak Rusak</option>
+                            <option value="ringan" {% if k.kategori == 'ringan' %}selected{% endif %}>Ringan</option>
+                            <option value="sedang" {% if k.kategori == 'sedang' %}selected{% endif %}>Sedang</option>
+                            <option value="berat" {% if k.kategori == 'berat' %}selected{% endif %}>Berat</option>
+                          </select>
+                      </div>
+                  </div>
+                  <div class="modal-footer">
+                      <input type="button" value="Tanggapi" onclick="tanggapan_upb({{ k.id }})" class="btn btn-primary">
+                      <button type="button" class="btn btn-danger" data-dismiss="modal">Batal</button>
+                  </div>
+                </form>
+            </div>
+          </div>
+        </div>
+
+        {% endfor %}
+    </div>
+    <!-- <hr>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <td></td>
+                <td>Komponen</td>
+                <td>Uraian</td>
+                <td></td>
+                <td></td>
+            </tr>
+        </thead>
+        {% for k in kerusakan %}
+            <tbody>
+                <tr>
+                    <td><i class="fas fa-edit mr-2" style="color:{% if k.kategori == 'berat' %}red{% elseif k.kategori == 'sedang' %}orange{% elseif k.kategori == 'ringan' %}yellow{% else %}grey{% endif %}"></i></td>
+                    <td>{{ k.komponen }}</td>
+                    <td>{{ k.uraian_kerusakan }}</td>
+                    <td>{{ k.tgl_lapor }}</td>
+                    <td>UPB belum menanggapi</td>
+                </tr>
+            </tbody>
+        {% endfor %}
+    </table> -->
     <hr>
     {% for k in kerusakan %}
         {% if loop.index0 % 3 == 0 %}
@@ -264,6 +384,8 @@
 {% endblock %}
 
 {% block js %}
+    <script src="{{ asset('js/moment.min.js') }}"></script>
+    <script src="{{ asset('js/id.js') }}"></script>
     <script src="{{ asset('js/bootstrap-editable.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('js/MinifyJpegAsync.js') }}"></script>
     <script>
@@ -271,6 +393,13 @@
         $.fn.editable.defaults.mode = 'popup';
         $(document).ready(function() {
             $('.editable').editable();
+        });
+
+        $(document).ready(function() {
+    	  moment.locale('id');
+          $('.hari').each(function (i, e) {
+            console.log($(e).prepend(moment($(e).data('tgl')).fromNow()));
+          });
         });
     </script>
     <script>
@@ -327,5 +456,25 @@
                 );
             }
         };
+
+        function tanggapan_upb(kerusakan_id,) {
+            if ($(`input[name="tanggapan-${kerusakan_id}"]`).val() == ''){
+                alert('Harap masukkan tanggapan');
+                $(`input[name="tanggapan-${kerusakan_id}"]`).focus();
+            } else {
+                let formData = {
+                    kerusakan_id: kerusakan_id,
+                    tanggapan: $(`textarea[name="tanggapan-${kerusakan_id}"]`).val(),
+                    kategori: $(`select[name="kategori-${kerusakan_id}"]`).val()
+                };
+                console.log(formData);
+                $.post(`/kinerja/{{ waduk.id }}/tanggapan`, formData,
+                    function (res) {
+                        // console.log(res);
+                        location.reload();
+                    }
+                );
+            }
+        }
     </script>
 {% endblock %}
