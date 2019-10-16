@@ -195,14 +195,43 @@ $app->group('/kinerja', function() use ($loggedinMiddleware, $petugasAuthorizati
         $this->post('/foto', function(Request $request, Response $response, $args) use ($komponen) {
             $id = $request->getAttribute('id');
             $form = $request->getParams();
+            // dump($form);
 
-            $ker_id = $form['kerusakan_id'];
-            $uraian = $form["uraian-{$ker_id}"];
-            $stmt = $this->db->prepare("UPDATE kerusakan SET uraian_kerusakan='{$uraian}' WHERE id={$ker_id}");
-            $stmt->execute();
+            // convert base64 to image file
+            $data = explode( ',', $form['data'] );
+            $image = base64_decode($data[1]);
+
+            // create new directory to save the image
+            $directory = $this->get('settings')['upload_directory'];
+            $date = date("Y-m-d-H-i");  // to make it unique
+            $public_url = "kerusakan" . DIRECTORY_SEPARATOR . $date . "_" . $form['filename'];   // for url in database
+            $img_dir = $directory . DIRECTORY_SEPARATOR . $public_url;  // for saving file
+
+            // check if file exist, if not create new
+            $folder = $directory . DIRECTORY_SEPARATOR . "kerusakan";
+            if (!file_exists($folder)) {
+                mkdir($folder, 0775, true);
+            }
+
+            // save foto data in database
+            $stmt_foto = $this->db->prepare("INSERT INTO foto
+                                    (url, keterangan, obj_type, obj_id)
+                                    VALUES
+                                    (:url, :keterangan, :obj_type, :obj_id)");
+            $stmt_foto->execute([
+                ':url' => "uploads" . DIRECTORY_SEPARATOR . $public_url,
+                ':keterangan' => $form['keterangan'],
+                ':obj_type' => "kerusakan",
+                ':obj_id' => $form['kerusakan_id']
+            ]);
+
+            // save image in designated directory
+            $file = fopen($img_dir, "wb");
+            fwrite($file, $image);
+            fclose($file);
 
             return $this->response->withRedirect($this->router->pathFor('kinerja.bendungan', ['id' => $id]));
-        })->setName('kinerja.uraian');
+        })->setName('kinerja.foto');
 
         $this->post('/tanggapan', function(Request $request, Response $response, $args) use ($komponen) {
             $id = $request->getAttribute('id');

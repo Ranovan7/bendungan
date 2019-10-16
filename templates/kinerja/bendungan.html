@@ -70,32 +70,38 @@
         {% for k in kerusakan %}
         <div class="thumbnail border-{% if k.kerusakan %}red{% else %}grey{% endif %}">
             <div class="row caption">
-                <div class="col-md-1 vcenter">
-                    <a href="#" data-toggle="tooltip" title="Kerusakan {{ k.kategori|title }}">
-                        <h3>
-                            {% if k.kategori == 'berat' %}
-                                <span class="label label-danger">B</span>
-                            {% elseif k.kategori == 'sedang' %}
-                                <span class="label label-warning">S</span>
-                            {% elseif k.kategori == 'ringan' %}
-                                <span class="label label-secondary">R</span>
-                            {% else %}
-                                <span class="label label-primary"> - </span>
-                            {% endif %}
-                        </h3>
-                    </a>
-                </div>
-                <div class="col-md-2">
-                    <p>{{ k.komponen }}</p>
+                <div class="col-md-3">
+                    <div class="row">
+                        <div class="col-xs-4 vcenter">
+                            <a href="#" data-toggle="tooltip" title="Kerusakan {{ k.kategori|title }}">
+                                <h3>
+                                    {% if k.kategori == 'berat' %}
+                                        <span class="label label-danger">B</span>
+                                    {% elseif k.kategori == 'sedang' %}
+                                        <span class="label label-warning">S</span>
+                                    {% elseif k.kategori == 'ringan' %}
+                                        <span class="label label-secondary">R</span>
+                                    {% else %}
+                                        <span class="label label-primary"> - </span>
+                                    {% endif %}
+                                </h3>
+                            </a>
+                        </div>
+                        <div class="col-xs-8" style="padding-top: 10px;">
+                            <p class="vcenter">{{ k.komponen }}</p>
+                        </div>
+                    </div>
+                    <hr class="visible-xs visible-sm">
                 </div>
                 <div class="col-md-3">
                     <p>{{ k.uraian_kerusakan }}</p>
-                    <p>(<span class="hari" data-tgl="{{ k.tgl_lapor }}"></span>)</p>
+                    <p><small>(<span class="hari" data-tgl="{{ k.tgl_lapor }}"></span>)</small></p>
+                    <hr class="visible-xs visible-sm">
                 </div>
                 <div class="col-md-3">
                     {% if k.tanggapan_upb %}
                         <p>{{ k.tanggapan_upb }}</p>
-                        <p>(<span class="hari" data-tgl="{{ k.tgl_tanggapan }}"></span>)</p>
+                        <p><small>(<span class="hari" data-tgl="{{ k.tgl_tanggapan }}"></span>)</small></p>
                     {% else %}
                         <p>UPB Belum Menanggapi</p>
                         {% if user().role == '1' %}
@@ -109,16 +115,103 @@
                             </p>
                         {% endif %}
                     {% endif %}
+                    <hr class="visible-xs visible-sm">
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-2">
                     {% if k.tindak_lanjut %}
                         <p>{{ k.tindak_lanjut }}</p>
+                        <p><small>(<span class="hari" data-tgl="{{ k.tgl_tindak_lanjut }}"></span>)</small></p>
                     {% else %}
-                        <p>Belum Ada Tindak Lanjut</p>
+                        <p>Belum ada tindak lanjut</p>
                     {% endif %}
-
+                    <hr class="visible-xs visible-sm">
+                </div>
+                <div class="col-md-1">
+                    <h3 align="center">
+                        <a href="javascript:void(0);" data-toggle="collapse" data-target="#photo-gallery-{{ k.id }}">
+                            <i class="fas fa-angle-down mr-2"></i>
+                        </a>
+                    </h3>
                 </div>
             </div>
+            <div class="collapse text-center" id="photo-gallery-{{ k.id }}">
+                <ul class="list-inline">
+                    {% for f in foto[k.id] %}
+                        <li>
+                            <a data-toggle="modal" href="#preview-foto-{{ f.id }}"
+                                role="button" aria-expanded="false"
+                                class="card-link">
+                                <img class="img-thumbnail" id="foto-{{ f.id }}" src="{{ asset(f.url) }}" alt="" style="width: 5rem;height: 5rem;">
+                            </a>
+                        </li>
+
+                        <!-- Modal Preview Foto -->
+                        <div class="modal fade" id="preview-foto-{{ f.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                          <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Foto Kerusakan {{ k.nama_asset }}</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
+                              </div>
+                              <div class="modal-body">
+                                  <div class="form-group">
+                                      <img class="img-responsive" src="{{ asset(f.url) }}" id="foto-modal-show">
+                                      <div style="position: absolute;top: 70%;left: 0;width: 100%;background-color: rgba(255, 255, 255, 0.6);">
+                                          <p class="text-center">{{ f.keterangan }}</p>
+                                      </div>
+                                  </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                    {% endfor %}
+                    <li>
+                        <a class="ml-2"
+                            data-toggle="modal" href="#form-add-foto-{{ k.id }}"
+                            role="button" aria-expanded="false"
+                            aria-controls="">
+                            <big><i class="fas fa-plus mr-2"></i></big>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Tambah Foto Modal -->
+        <div class="modal fade" id="form-add-foto-{{ k.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form method="POST">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Edit Uraian Kerusakan</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                      <div class="form-group">
+                          <div class="custom-file" style="height: 100%;">
+                              <input type="file" class="custom-file-input" id="fotoFile-{{ k.id }}">
+                              <label class="custom-file-label" for="customFile">Choose file</label>
+                              <div>
+                                  <img id="blah-{{ k.id }}" src="{{ asset('img/null.jpg') }}" class="img-responsive" style="width: 100%;border: solid 1px #ccc" alt=" pra tinjau gambar">
+                              </div>
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          <label for="keterangan-{{ k.id }}">Keterangan Foto</label>
+                          <input id="keterangan-{{ k.id }}" name="keterangan-{{ k.id }}" autofocus required class="form-control" type="text" value="">
+                      </div>
+                  </div>
+                  <div class="modal-footer">
+                      <input type="button" value="Tambah" onclick="upload_foto({{ waduk.id }}, {{ k.id }})" class="btn btn-primary">
+                      <button type="button" class="btn btn-danger" data-dismiss="modal">Batal</button>
+                  </div>
+                </form>
+            </div>
+          </div>
         </div>
 
         <!-- Modal Tanggapan UPB -->
@@ -158,228 +251,6 @@
 
         {% endfor %}
     </div>
-    <!-- <hr>
-    <table class="table table-hover">
-        <thead>
-            <tr>
-                <td></td>
-                <td>Komponen</td>
-                <td>Uraian</td>
-                <td></td>
-                <td></td>
-            </tr>
-        </thead>
-        {% for k in kerusakan %}
-            <tbody>
-                <tr>
-                    <td><i class="fas fa-edit mr-2" style="color:{% if k.kategori == 'berat' %}red{% elseif k.kategori == 'sedang' %}orange{% elseif k.kategori == 'ringan' %}yellow{% else %}grey{% endif %}"></i></td>
-                    <td>{{ k.komponen }}</td>
-                    <td>{{ k.uraian_kerusakan }}</td>
-                    <td>{{ k.tgl_lapor }}</td>
-                    <td>UPB belum menanggapi</td>
-                </tr>
-            </tbody>
-        {% endfor %}
-    </table> -->
-    <hr>
-    {% for k in kerusakan %}
-        {% if loop.index0 % 3 == 0 %}
-            <div class="container">
-                <div class="row">
-        {% endif %}
-
-            <div class="col-sm-4">
-              <div class="thumbnail border-{% if k.kategori == 'berat' %}red{% elseif k.kategori == 'sedang' %}orange{% elseif k.kategori == 'ringan' %}yellow{% else %}grey{% endif %}">
-                <div class="caption text-center">
-                    <h4>
-                        <a href="#"
-                            data-url="/kinerja/{{ waduk.id }}/update"
-                            class="editable"
-                            id="komponen"
-                            data-source="/kinerja/komponen"
-                            data-value="{{ k.komponen }}"
-                            data-title="Komponen"
-                            data-type="select"
-                            data-pk="{{ k.id }}">
-                            {% if k.komponen %}{{ k.komponen }}{% else %}<span style="color: red;">Empty</span>{% endif %}
-                        </a>
-
-                    </h4>
-                    <hr>
-                    <p class="card-text" style="font-size: 0.8em;">Uraian Kerusakan :</p>
-                    <p class="card-text" style="font-size: 1.5em;">
-                        {% if k.uraian_kerusakan %}
-                            {{ k.uraian_kerusakan }}
-                        {% else %}
-                            Belum ada Uraian
-                        {% endif %}
-                        <a class="ml-2"
-                            data-toggle="modal" href="#form-edit-uraian-{{ k.id }}"
-                            role="button" aria-expanded="false"
-                            aria-controls="">
-                            <i class="fas fa-edit mr-2"></i>
-                        </a>
-                    </p>
-                    <p class="card-text" style="margin-left: 1.5em;">{{ waduk.nama }}, {{ k.tgl_lapor | date('d M Y')}}</p>
-                    <hr style="border:1px solid rgba(0,0,0,0.3)">
-                    {% if k.tanggapan_upb %}
-                        <p class="card-text" style="font-size: 0.8em;font-style: italic;">Tanggapan UPB ({% if k.upb_name %}{{ k.upb_name }}{% else %} - {% endif %}):</p>
-                        <strong>
-                          <!-- <p class="text-center">{{ k.tanggapan_upb }}</p> -->
-                          <p style="font-size: 2rem;">
-                              {% if user().role == 1 %}
-                                  <a data-url="/kinerja/{{ waduk.id }}/update"
-                                    class="editable"
-                                    data-name="tanggapan_upb"
-                                    data-type="text"
-                                    data-pk="{{ k.id }}">
-                                    {{ k.tanggapan_upb }}
-                                  </a>
-                              {% else %}
-                                  {{ k.tanggapan_upb }}
-                              {% endif %}
-                          </p>
-                        </strong>
-                        <p style="padding-left: 5px">{{ k.tgl_tanggapan | date('H:i, d M Y') }}</p>
-                    {% else %}
-                        {% if user().role == 1 %}
-                            <form method="POST" action="{{ path_for('kinerja.tanggapan', {'id': waduk.id}) }}">
-                               <input type="hidden" name="kerusakan_id" value="{{ k.id }}">
-                               <div class="form-group">
-                                 <input type="text" class="form-control" id="tanggapan" name="tanggapan" placeholder="Tanggapan UPB">
-                               </div>
-                               <div class="form-group">
-                                 <select class="form-control" id="kategori" name="kategori" required>
-                                  <option value="">Kategori</option>
-                                  <option value="tidak rusak">Tidak Rusak</option>
-                                  <option value="ringan">Ringan</option>
-                                  <option value="sedang">Sedang</option>
-                                  <option value="berat">Berat</option>
-                                </select>
-                               </div>
-                               <input type="submit" name="submit" value="Tambah" class="btn btn-primary">
-                            </form>
-                        {% else %}
-                            <strong>
-                              <p class="text-center" style="font-size: 2rem;">Belum ada tanggapan dari UPB</p>
-                            </strong>
-                        {% endif %}
-                    {% endif %}
-                    <hr>
-                </div>
-                <div class="caption card-footer text-center">
-                  <ul class="list-inline">
-                      {% for f in foto[k.id] %}
-                          <li>
-                              <a data-toggle="modal" href="#preview-foto-{{ f.id }}"
-                                  role="button" aria-expanded="false"
-                                  class="card-link">
-                                  <img class="img-thumbnail" id="foto-{{ f.id }}" src="{{ asset(f.url) }}" alt="" style="width: 5rem;height: 5rem;">
-                              </a>
-                          </li>
-
-                          <!-- Modal Preview Foto -->
-                          <div class="modal fade" id="preview-foto-{{ f.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                              <div class="modal-content">
-                                <div class="modal-header">
-                                  <h5 class="modal-title" id="exampleModalLabel">Foto Kerusakan {{ k.nama_asset }}</h5>
-                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                  </button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="form-group">
-                                        <img class="img-responsive" src="{{ asset(f.url) }}" id="foto-modal-show">
-                                        <div style="position: absolute;top: 70%;left: 0;width: 100%;background-color: rgba(255, 255, 255, 0.6);">
-                                            <p class="text-center">{{ f.keterangan }}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                      {% endfor %}
-                      <li>
-                          <a class="ml-2"
-                              data-toggle="modal" href="#form-add-foto-{{ k.id }}"
-                              role="button" aria-expanded="false"
-                              aria-controls="">
-                              <big><i class="fas fa-plus mr-2"></i></big>
-                          </a>
-                      </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <!-- Edit Uraian Modal -->
-            <div class="modal fade" id="form-edit-uraian-{{ k.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-              <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <form method="POST" action="{{ path_for('kinerja.uraian', {'id': waduk.id}) }}">
-                      <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Edit Uraian Kerusakan</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                          <span aria-hidden="true">&times;</span>
-                        </button>
-                      </div>
-                      <div class="modal-body">
-                          <input type="hidden" name="kerusakan_id" value="{{ k.id }}">
-                          <div class="form-group">
-                              <label class="form-text" for="uraian-{{ k.id }}">Uraian Kerusakan</label>
-                              <textarea class="form-control" name="uraian-{{ k.id }}" id="uraian-{{ k.id }}" required value=""></textarea>
-                          </div>
-                      </div>
-                      <div class="modal-footer">
-                          <input type="submit" name="submit" value="Ubah" class="btn btn-primary">
-                          <button type="button" class="btn btn-danger" data-dismiss="modal">Batal</button>
-                      </div>
-                    </form>
-                </div>
-              </div>
-            </div>
-
-            <!-- Tambah Foto Modal -->
-            <div class="modal fade" id="form-add-foto-{{ k.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-              <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <form method="POST" action="{{ path_for('kinerja.bendungan', {'id': waduk.id, 'asset_id': k.asset_id}) }}">
-                      <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Edit Uraian Kerusakan</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                          <span aria-hidden="true">&times;</span>
-                        </button>
-                      </div>
-                      <div class="modal-body">
-                          <div class="form-group">
-                              <div class="custom-file" style="height: 100%;">
-                                  <input type="file" class="custom-file-input" id="fotoFile-{{ k.id }}">
-                                  <label class="custom-file-label" for="customFile">Choose file</label>
-                                  <div>
-                                      <img id="blah-{{ k.id }}" src="{{ asset('img/null.jpg') }}" class="img-responsive" style="width: 100%;border: solid 1px #ccc" alt=" pra tinjau gambar">
-                                  </div>
-                              </div>
-                          </div>
-                          <div class="form-group">
-                              <label for="keterangan-{{ k.id }}">Keterangan Foto</label>
-                              <input id="keterangan-{{ k.id }}" name="keterangan-{{ k.id }}" autofocus required class="form-control" type="text" value="">
-                          </div>
-                      </div>
-                      <div class="modal-footer">
-                          <input type="button" value="Tambah" onclick="upload_foto({{ waduk.id }}, {{ k.id }})" class="btn btn-primary">
-                          <button type="button" class="btn btn-danger" data-dismiss="modal">Batal</button>
-                      </div>
-                    </form>
-                </div>
-              </div>
-            </div>
-
-        {% if ((loop.index0 + 1) % 3 == 0) or (loop.last) %}
-                </div>
-            </div>
-        {% endif %}
-    {% endfor %}
 
 {% endblock %}
 
