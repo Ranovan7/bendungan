@@ -271,76 +271,76 @@
     <table class="table table-bordered table-stripped">
         <thead>
             <tr>
-              <th rowspan="2">Tanggal</th>
-              <th rowspan="2">Curah Hujan</th>
-              <th colspan="2">Jam 6</th>
-              <th colspan="2">Jam 12</th>
-              <th colspan="2">Jam 18</th>
-              <th colspan="2">Inflow</th>
-              <th colspan="4">Outflow</th>
+              <th rowspan="2" style="vertical-align:middle;">Tanggal</th>
+              <th rowspan="2" style="vertical-align:middle;">Curah Hujan</th>
+              <th colspan="2" style="vertical-align:middle;">Jam 6</th>
+              <th colspan="2" style="vertical-align:middle;">Jam 12</th>
+              <th colspan="2" style="vertical-align:middle;">Jam 18</th>
+              <th colspan="2" style="vertical-align:middle;">Inflow</th>
+              <th colspan="4" style="vertical-align:middle;">Outflow</th>
             </tr>
             <tr>
-              <th>TMA</th>
-              <th>Vol</th>
-              <th>TMA</th>
-              <th>Vol</th>
-              <th>TMA</th>
-              <th>Vol</th>
-              <th>Debit</th>
-              <th>Volume</th>
-              <th>Q Intake</th>
-              <th>V Intake</th>
-              <th>Q Spillway</th>
-              <th>V Spillway</th>
+              <th style="vertical-align:middle;">TMA</th>
+              <th style="vertical-align:middle;">Vol</th>
+              <th style="vertical-align:middle;">TMA</th>
+              <th style="vertical-align:middle;">Vol</th>
+              <th style="vertical-align:middle;">TMA</th>
+              <th style="vertical-align:middle;">Vol</th>
+              <th style="vertical-align:middle;">Debit</th>
+              <th style="vertical-align:middle;">Volume</th>
+              <th style="vertical-align:middle;">Q Intake</th>
+              <th style="vertical-align:middle;">V Intake</th>
+              <th style="vertical-align:middle;">Q Spillway</th>
+              <th style="vertical-align:middle;">V Spillway</th>
             </tr>
         </thead>
         <tbody>
             {% for t, per in periodik %}
             <tr>
                 <td>{{ t | date('d M Y') }}</td>
-                <td align="right">
+                <td class="text-right" style="vertical-align:middle;">
                     <a data-url="/operasi/{{ waduk.id }}/daily/update" class="editable" data-name="curahhujan_{{ t }}" data-type="number" data-step="any" data-step="any" data-pk="{{ per.id }}">
                         {% if per.ch %}{{ per.ch }}{% else %}<span style="color: red;">Empty</span>{% endif %}
                     </a>
                 </td>
                 {% for j, tma in per.tma %}
-                    <td align="right">
+                    <td class="text-right" style="vertical-align:middle;">
                         <a href="#" data-url="/operasi/{{ waduk.id }}/tma/update" class="editable" id="manual_{{ t }}_{{ j }}" data-type="number" data-step="any" data-pk="{{ tma.id }}">
                             {% if tma.tma %}{{ tma.tma }}{% else %}<span style="color: red;">Empty</span>{% endif %}
                         </a>
                     </td>
-                    <td align="right">
+                    <td class="text-right" style="vertical-align:middle;">
                         <a href="#" data-url="/operasi/{{ waduk.id }}/tma/update" class="editable" id="volume_{{ t }}_{{ j }}" data-type="number" data-step="any" data-pk="{{ tma.id }}">
                             {% if tma.volume %}{{ tma.volume }}{% else %}<span style="color: red;">Empty</span>{% endif %}
                         </a>
                     </td>
                 {% endfor %}
-                <td align="right">
+                <td class="text-right" style="vertical-align:middle;">
                     <a href="#" data-url="#" class="editable" id="inflow-deb-{{ per.id }}" data-type="number" data-step="any" data-pk="{{ per.id }}">
                         {% if per.inflow.debit %}{{ per.inflow.debit }}{% else %}<span style="color: red;">Empty</span>{% endif %}
                     </a>
                 </td>
-                <td align="right">
+                <td class="text-right" style="vertical-align:middle;">
                     <a href="#" data-url="#" class="editable" id="inflow-vol-{{ per.id }}" data-type="number" data-step="any" data-pk="{{ per.id }}">
                         {% if per.inflow.volume %}{{ per.inflow.volume }}{% else %}<span style="color: red;">Empty</span>{% endif %}
                     </a>
                 </td>
-                <td align="right">
+                <td class="text-right" style="vertical-align:middle;">
                     <a href="#" data-url="#" class="editable" id="outflow-deb-{{ per.id }}" data-type="number" data-step="any" data-pk="{{ per.id }}">
                         {% if per.outflow.debit %}{{ per.outflow.debit }}{% else %}<span style="color: red;">Empty</span>{% endif %}
                     </a>
                 </td>
-                <td align="right">
+                <td class="text-right" style="vertical-align:middle;">
                     <a href="#" data-url="#" class="editable" id="outflow-vol-{{ per.id }}" data-type="number" data-step="any" data-pk="{{ per.id }}">
                         {% if per.outflow.volume %}{{ per.outflow.volume }}{% else %}<span style="color: red;">Empty</span>{% endif %}
                     </a>
                 </td>
-                <td align="right">
+                <td class="text-right" style="vertical-align:middle;">
                     <a href="#" data-url="#" class="editable" id="spillway-deb-{{ per.id }}" data-type="number" data-step="any" data-pk="{{ per.id }}">
                         {% if per.outflow.spill_deb %}{{ per.outflow.spill_deb }}{% else %}<span style="color: red;">Empty</span>{% endif %}
                     </a>
                 </td>
-                <td align="right">
+                <td class="text-right" style="vertical-align:middle;">
                     <a href="#" data-url="#" class="editable" id="spillway-vol-{{ per.id }}" data-type="number" data-step="any" data-pk="{{ per.id }}">
                         {% if per.outflow.spill_vol %}{{ per.outflow.spill_vol }}{% else %}<span style="color: red;">Empty</span>{% endif %}
                     </a>

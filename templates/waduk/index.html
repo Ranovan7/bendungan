@@ -165,7 +165,7 @@
             <td>
                 {{ w.waduk.kab }}
             </td>
-            <td>
+            <td class="text-right" style="vertical-align:middle;">
                 <a data-url="/waduk/{{ w.waduk.id }}/update"
                     class="editable"
                     data-name="volume"
@@ -173,10 +173,10 @@
                     data-title="{{ w.waduk.name }} Tampungan"
                     data-step="any" data-step="any"
                     data-pk="{{ w.waduk.id }}">
-                        {% if w.waduk.volume %}{{ w.waduk.volume }}{% else %}<span style="color: red;">Empty</span>{% endif %}
+                        {% if w.waduk.volume %}{{ w.waduk.volume|number_format(0, ',', '.') }}{% else %}<span style="color: red;">Empty</span>{% endif %}
                 </a>
             </td>
-            <td>
+            <td class="text-right" style="vertical-align:middle;">
                 <a data-url="/waduk/{{ w.waduk.id }}/update"
                     class="editable"
                     data-name="lbi"
@@ -184,10 +184,10 @@
                     data-title="{{ w.waduk.name }} Irigasi"
                     data-step="any" data-step="any"
                     data-pk="{{ w.waduk.id }}">
-                        {% if w.waduk.lbi %}{{ w.waduk.lbi }}{% else %}<span style="color: red;">Empty</span>{% endif %}
+                        {% if w.waduk.lbi %}{{ w.waduk.lbi|number_format(0, ',', '.') }}{% else %}<span style="color: red;">Empty</span>{% endif %}
                 </a>
             </td>
-            <td>
+            <td class="text-right" style="vertical-align:middle;">
                 <a data-url="/waduk/{{ w.waduk.id }}/update"
                     class="editable"
                     data-name="elev_puncak"
@@ -195,10 +195,10 @@
                     data-title="{{ w.waduk.name }} Elev Puncak"
                     data-step="any" data-step="any"
                     data-pk="{{ w.waduk.id }}">
-                        {% if w.waduk.elev_puncak %}{{ w.waduk.elev_puncak }}{% else %}<span style="color: red;">Empty</span>{% endif %}
+                        {% if w.waduk.elev_puncak %}{{ w.waduk.elev_puncak|number_format(2, ',', '.') }}{% else %}<span style="color: red;">Empty</span>{% endif %}
                 </a>
             </td>
-            <td>
+            <td class="text-right" style="vertical-align:middle;">
                 <a data-url="/waduk/{{ w.waduk.id }}/update"
                     class="editable"
                     data-name="muka_air_max"
@@ -206,10 +206,10 @@
                     data-title="{{ w.waduk.name }} MAB"
                     data-step="any" data-step="any"
                     data-pk="{{ w.waduk.id }}">
-                        {% if w.waduk.muka_air_max %}{{ w.waduk.muka_air_max }}{% else %}<span style="color: red;">Empty</span>{% endif %}
+                        {% if w.waduk.muka_air_max %}{{ w.waduk.muka_air_max|number_format(2, ',', '.') }}{% else %}<span style="color: red;">Empty</span>{% endif %}
                 </a>
             </td>
-            <td>
+            <td class="text-right" style="vertical-align:middle;">
                 <a data-url="/waduk/{{ w.waduk.id }}/update"
                     class="editable"
                     data-name="muka_air_normal"
@@ -217,10 +217,10 @@
                     data-title="{{ w.waduk.name }} MAN"
                     data-step="any" data-step="any"
                     data-pk="{{ w.waduk.id }}">
-                        {% if w.waduk.muka_air_normal %}{{ w.waduk.muka_air_normal }}{% else %}<span style="color: red;">Empty</span>{% endif %}
+                        {% if w.waduk.muka_air_normal %}{{ w.waduk.muka_air_normal|number_format(2, ',', '.') }}{% else %}<span style="color: red;">Empty</span>{% endif %}
                 </a>
             </td>
-            <td>
+            <td class="text-right" style="vertical-align:middle;">
                 <a data-url="/waduk/{{ w.waduk.id }}/update"
                     class="editable"
                     data-name="muka_air_min"
@@ -228,10 +228,10 @@
                     data-title="{{ w.waduk.name }} MAMin"
                     data-step="any" data-step="any"
                     data-pk="{{ w.waduk.id }}">
-                        {% if w.waduk.muka_air_min %}{{ w.waduk.muka_air_min }}{% else %}<span style="color: red;">Empty</span>{% endif %}
+                        {% if w.waduk.muka_air_min %}{{ w.waduk.muka_air_min|number_format(2, ',', '.') }}{% else %}<span style="color: red;">Empty</span>{% endif %}
                 </a>
             </td>
-            <td>
+            <td class="text-right" style="vertical-align:middle;">
                 <a data-url="/waduk/{{ w.waduk.id }}/update"
                     class="editable"
                     data-name="sedimen"
@@ -239,10 +239,10 @@
                     data-title="{{ w.waduk.name }} Sedimen"
                     data-step="any" data-step="any"
                     data-pk="{{ w.waduk.id }}">
-                        {% if w.waduk.sedimen %}{{ w.waduk.sedimen }}{% else %}<span style="color: red;">Empty</span>{% endif %}
+                        {% if w.waduk.sedimen %}{{ w.waduk.sedimen|number_format(2, ',', '.') }}{% else %}<span style="color: red;">Empty</span>{% endif %}
                 </a>
             </td>
-            <td>
+            <td class="text-right" style="vertical-align:middle;">
                 <a data-url="/waduk/{{ w.waduk.id }}/update"
                     class="editable"
                     data-name="bts_elev_awas"
@@ -250,10 +250,10 @@
                     data-title="{{ w.waduk.name }} Elev Awas"
                     data-step="any" data-step="any"
                     data-pk="{{ w.waduk.id }}">
-                        {% if w.waduk.bts_elev_awas %}{{ w.waduk.bts_elev_awas }}{% else %}<span style="color: red;">Empty</span>{% endif %}
+                        {% if w.waduk.bts_elev_awas %}{{ w.waduk.bts_elev_awas|number_format(2, ',', '.') }}{% else %}<span style="color: red;">Empty</span>{% endif %}
                 </a>
             </td>
-            <td>
+            <td class="text-right" style="vertical-align:middle;">
                 <a data-url="/waduk/{{ w.waduk.id }}/update"
                     class="editable"
                     data-name="bts_elev_siaga"
@@ -261,10 +261,10 @@
                     data-title="{{ w.waduk.name }} Elev Siaga"
                     data-step="any" data-step="any"
                     data-pk="{{ w.waduk.id }}">
-                        {% if w.waduk.bts_elev_siaga %}{{ w.waduk.bts_elev_siaga }}{% else %}<span style="color: red;">Empty</span>{% endif %}
+                        {% if w.waduk.bts_elev_siaga %}{{ w.waduk.bts_elev_siaga|number_format(2, ',', '.') }}{% else %}<span style="color: red;">Empty</span>{% endif %}
                 </a>
             </td>
-            <td>
+            <td class="text-right" style="vertical-align:middle;">
                 <a data-url="/waduk/{{ w.waduk.id }}/update"
                     class="editable"
                     data-name="bts_elev_waspada"
@@ -272,7 +272,7 @@
                     data-title="{{ w.waduk.name }} Elev Waspada"
                     data-step="any" data-step="any"
                     data-pk="{{ w.waduk.id }}">
-                        {% if w.waduk.bts_elev_waspada %}{{ w.waduk.bts_elev_waspada }}{% else %}<span style="color: red;">Empty</span>{% endif %}
+                        {% if w.waduk.bts_elev_waspada %}{{ w.waduk.bts_elev_waspada|number_format(2, ',', '.') }}{% else %}<span style="color: red;">Empty</span>{% endif %}
                 </a>
             </td>
             <!-- <td></td>

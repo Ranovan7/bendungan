@@ -52,6 +52,7 @@
     }
     </style>
     <link href="{{ asset('css/bootstrap-editable.css') }}" rel="stylesheet"/>
+    <link href="//cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
@@ -66,9 +67,45 @@
         </h1>
     </section>
     <hr>
-    <div class="container">
+    <div class="container" id="kinerja">
+        <div class="thumbnail border-grey">
+            <div class="row caption">
+                <div class="col-md-1">
+                    Kategori
+                    <select id='filterKategori' onchange="filterData()">
+                      <option value='semua'>Semua</option>
+                      <option value='berat'>Berat</option>
+                      <option value='sedang'>Sedang</option>
+                      <option value='ringan'>Ringan</option>
+                    </select>
+                    <hr class="visible-xs visible-sm">
+                </div>
+                <div class="col-md-2">
+                    Komponen
+                    <select id='filterKomponen' onchange="filterData()">
+                      <option value='semua'>Semua</option>
+                      {% for kom in komponens %}
+                        <option value='{{ kom }}'>{{ kom | title }}</option>
+                      {% endfor %}
+                    </select>
+                    <hr class="visible-xs visible-sm">
+                </div>
+                <div class="col-md-3">
+                    Uraian
+                    <hr class="visible-xs visible-sm">
+                </div>
+                <div class="col-md-3">
+                    Tanggapan
+                    <hr class="visible-xs visible-sm">
+                </div>
+                <div class="col-md-2">
+                    Tindak Lanjut
+                    <hr class="visible-xs visible-sm">
+                </div>
+            </div>
+        </div>
         {% for k in kerusakan %}
-        <div class="thumbnail border-{% if k.kerusakan %}red{% else %}grey{% endif %}">
+        <div class="kerusakan thumbnail border-{% if k.kerusakan %}red{% else %}grey{% endif %}" style="margin-bottom: 0;">
             <div class="row caption">
                 <div class="col-md-3">
                     <div class="row">
@@ -77,18 +114,22 @@
                                 <h3>
                                     {% if k.kategori == 'berat' %}
                                         <span class="label label-danger">B</span>
+                                        <input type="hidden" id="katValue" value="berat">
                                     {% elseif k.kategori == 'sedang' %}
                                         <span class="label label-warning">S</span>
+                                        <input type="hidden" id="katValue" value="sedang">
                                     {% elseif k.kategori == 'ringan' %}
                                         <span class="label label-secondary">R</span>
+                                        <input type="hidden" id="katValue" value="ringan">
                                     {% else %}
-                                        <span class="label label-primary"> - </span>
+                                        <span class="label label-primary">-</span>
+                                        <input type="hidden" id="katValue" value="-">
                                     {% endif %}
                                 </h3>
                             </a>
                         </div>
                         <div class="col-xs-8" style="padding-top: 10px;">
-                            <p class="vcenter">{{ k.komponen }}</p>
+                            <p class="vcenter" id="komValue">{{ k.komponen }}</p>
                         </div>
                     </div>
                     <hr class="visible-xs visible-sm">
@@ -258,12 +299,16 @@
     <script src="{{ asset('js/moment.min.js') }}"></script>
     <script src="{{ asset('js/id.js') }}"></script>
     <script src="{{ asset('js/bootstrap-editable.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('js/MinifyJpegAsync.js') }}"></script>
+    <script src="{{ asset('js/MinifyJpegAsync.js') }}"></script>
+    <script src="//cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
     <script>
         //turn to popup mode
         $.fn.editable.defaults.mode = 'popup';
         $(document).ready(function() {
             $('.editable').editable();
+        });
+        $(document).ready(function(){
+          $('[data-toggle="popover"]').popover();
         });
 
         $(document).ready(function() {
@@ -347,5 +392,21 @@
                 );
             }
         }
+
+        function filterData() {
+            let kategori = document.getElementById("filterKategori").value;
+            let komponen = document.getElementById("filterKomponen").value;
+            let kerusakans = document.getElementsByClassName("kerusakan");
+            for (let ker of kerusakans) {
+                let kat = $(ker).find('#katValue').val();
+                let kom = $(ker).find('#komValue').text();
+
+                if ((kategori == "semua" || kat == kategori) && (komponen == "semua" || kom == komponen)) {
+                    $(ker).css("display", "");
+                } else {
+                    $(ker).css("display", "none");
+                }
+            }
+        };
     </script>
 {% endblock %}

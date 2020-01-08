@@ -17,31 +17,31 @@
     <table class="table table-bordered table-stripped table-responsive">
         <thead>
             <tr class="active">
-                <th rowspan="2" valign="middle">No</th>
-                <th rowspan="2">Nama</th>
-                <th rowspan="2">CH</th>
-                <th colspan="2">Pagi</th>
-                <th colspan="2">Siang</th>
-                <th colspan="2">Sore</th>
-                <th rowspan="2">Q Inflow</th>
-                <th colspan="2">Q Outflow</th>
-                <th colspan="2">VNotch</th>
-                <th colspan="15">Piezometer</th>
+                <th rowspan="2" style="vertical-align:middle;" class="text-center">No</th>
+                <th rowspan="2" style="vertical-align:middle;" class="text-center">Nama</th>
+                <th rowspan="2" style="vertical-align:middle;" class="text-center">CH</th>
+                <th colspan="2" style="vertical-align:middle;" class="text-center">Pagi</th>
+                <th colspan="2" style="vertical-align:middle;" class="text-center">Siang</th>
+                <th colspan="2" style="vertical-align:middle;" class="text-center">Sore</th>
+                <th rowspan="2" style="vertical-align:middle;" class="text-center">Q Inflow</th>
+                <th colspan="2" style="vertical-align:middle;" class="text-center">Q Outflow</th>
+                <th colspan="2" style="vertical-align:middle;" class="text-center">VNotch</th>
+                <th colspan="15" style="vertical-align:middle;" class="text-center">Piezometer</th>
             </tr>
             <tr class="active">
-                <th>TMA</th>
-                <th>Vol</th>
-                <th>TMA</th>
-                <th>Vol</th>
-                <th>TMA</th>
-                <th>Vol</th>
-                <th>Intake</th>
-                <th>Spillway</th>
-                <th>Tinggi</th>
-                <th>Debit</th>
+                <th style="vertical-align:middle;" class="text-center">TMA</th>
+                <th style="vertical-align:middle;" class="text-center">Vol</th>
+                <th style="vertical-align:middle;" class="text-center">TMA</th>
+                <th style="vertical-align:middle;" class="text-center">Vol</th>
+                <th style="vertical-align:middle;" class="text-center">TMA</th>
+                <th style="vertical-align:middle;" class="text-center">Vol</th>
+                <th style="vertical-align:middle;" class="text-center">Intake</th>
+                <th style="vertical-align:middle;" class="text-center">Spillway</th>
+                <th style="vertical-align:middle;" class="text-center">Tinggi</th>
+                <th style="vertical-align:middle;" class="text-center">Debit</th>
                 {% for i in range(1, 5) %}
                     {% for j in ['A', 'B', 'C'] %}
-                        <th>{{ i }}{{ j }}</th>
+                        <th style="vertical-align:middle;" class="text-center">{{ i }}{{ j }}</th>
                     {% endfor %}
                 {% endfor %}
             </tr>
@@ -49,44 +49,44 @@
         <tbody>
             {% for w in waduk_daily %}
                 <tr>
-                    <td>{{ loop.index }}</td>
-                    <td>
+                    <td style="vertical-align:middle;">{{ loop.index }}</td>
+                    <td style="vertical-align:middle;">
                         <a href="{{ path_for('operasi.bendungan', {'id': w.id}) }}">
                             {{ w.nama }}
                         </a>
                     </td>
                     {% if w.tma or w.operasi %}
-                        <td align="right">{{ w.operasi.curahhujan }}</td>
-                        <td align="right">{{ w.tma['06'].manual }}</td>
-                        <td align="right">{{ w.tma['06'].volume }}</td>
-                        <td align="right">{{ w.tma.12.manual }}</td>
-                        <td align="right">{{ w.tma.12.volume }}</td>
-                        <td align="right">{{ w.tma.18.manual }}</td>
-                        <td align="right">{{ w.tma.18.volume }}</td>
-                        <td align="right">{{ w.operasi.inflow_deb }}</td>
-                        <td align="right">{{ w.operasi.outflow_deb }}</td>
-                        <td align="right">{{ w.operasi.spillway_deb }}</td>
+                        <td class="text-right" style="vertical-align:middle;">{% if w.operasi.curahhujan %}{{ w.operasi.curahhujan|number_format(2, ',', '.') }}{% else %}-{% endif %}</td>
+                        <td class="text-right" style="vertical-align:middle;">{% if w.tma['06'].manual %}{{ w.tma['06'].manual|number_format(2, ',', '.') }}{% else %}-{% endif %}</td>
+                        <td class="text-right" style="vertical-align:middle;">{% if w.tma['06'].volume %}{{ w.tma['06'].volume|number_format(0, ',', '.') }}{% else %}-{% endif %}</td>
+                        <td class="text-right" style="vertical-align:middle;">{% if w.tma.12.manual %}{{ w.tma.12.manual|number_format(2, ',', '.') }}{% else %}-{% endif %}</td>
+                        <td class="text-right" style="vertical-align:middle;">{% if w.tma.12.volume %}{{ w.tma.12.volume|number_format(0, ',', '.') }}{% else %}-{% endif %}</td>
+                        <td class="text-right" style="vertical-align:middle;">{% if w.tma.18.manual %}{{ w.tma.18.manual|number_format(2, ',', '.') }}{% else %}-{% endif %}</td>
+                        <td class="text-right" style="vertical-align:middle;">{% if w.tma.18.volume %}{{ w.tma.18.volume|number_format(0, ',', '.') }}{% else %}-{% endif %}</td>
+                        <td class="text-right" style="vertical-align:middle;">{% if w.operasi.inflow_deb %}{{ w.operasi.inflow_deb|number_format(2, ',', '.') }}{% else %}-{% endif %}</td>
+                        <td class="text-right" style="vertical-align:middle;">{% if w.operasi.outflow_deb %}{{ w.operasi.outflow_deb|number_format(2, ',', '.') }}{% else %}-{% endif %}</td>
+                        <td class="text-right" style="vertical-align:middle;">{% if w.operasi.spillway_deb %}{{ w.operasi.spillway_deb|number_format(2, ',', '.') }}{% else %}-{% endif %}</td>
                     {% else %}
-                        <td colspan="10">Tidak Ada Data</td>
+                        <td colspan="10" style="vertical-align:middle;">Tidak Ada Data</td>
                     {% endif %}
 
                     {% if w.vnotch %}
                         {% for vn in w.vnotch %}
                             {% if vn.nama_vn == "VNotch 1" %}
-                                <td align="right">{{ vn.tma }}</td>
-                                <td align="right">{{ vn.debit }}</td>
+                                <td class="text-right" style="vertical-align:middle;">{% if vn.tma %}{{ vn.tma|number_format(2, ',', '.') }}{% else %}-{% endif %}</td>
+                                <td class="text-right" style="vertical-align:middle;">{% if vn.debit %}{{ vn.debit|number_format(2, ',', '.') }}{% else %}-{% endif %}</td>
                             {% endif %}
                         {% endfor %}
                     {% else %}
-                        <td colspan="2">Tidak Ada Data</td>
+                        <td colspan="2" style="vertical-align:middle;">Tidak Ada Data</td>
                     {% endif %}
 
                     {% if w.piezo %}
                         {% for pie in w.piezo %}
-                            <td align="right">{{ pie.tma }}</td>
+                            <td class="text-right" style="vertical-align:middle;">{% if pie.tma %}{{ pie.tma|number_format(2, ',', '.') }}{% else %}-{% endif %}</td>
                         {% endfor %}
                     {% else %}
-                        <td colspan="15">Tidak Ada Data</td>
+                        <td colspan="15" style="vertical-align:middle;">Tidak Ada Data</td>
                     {% endif %}
                 </tr>
             {% endfor %}

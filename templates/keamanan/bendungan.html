@@ -122,16 +122,16 @@
     <table class="table table-bordered table-stripped">
         <thead>
             <tr class="active">
-              <th rowspan="2">Tanggal</th>
-              <th colspan="3">VNotch</th>
-              <th colspan="{{ piezometer | length }}">Piezometer</th>
+              <th rowspan="2" style="vertical-align:middle;">Tanggal</th>
+              <th colspan="3" style="vertical-align:middle;">VNotch</th>
+              <th colspan="{{ piezometer | length }}" style="vertical-align:middle;">Piezometer</th>
             </tr>
             <tr class="active">
-              <th>Nama</th>
-              <th>Tinggi</th>
-              <th>Debit</th>
+              <th style="vertical-align:middle;">Nama</th>
+              <th style="vertical-align:middle;">Tinggi</th>
+              <th style="vertical-align:middle;">Debit</th>
               {% for p in piezometer %}
-                <th>{{ p.nama }}</th>
+                <th style="vertical-align:middle;">{{ p.nama }}</th>
               {% endfor %}
             </tr>
         </thead>
@@ -140,22 +140,22 @@
                 {% for v in vnotch %}
                     <tr>
                         {% if loop.index == 1 %}
-                            <td rowspan="{{ vnotch | length }}">{{ t | date('d M Y') }}</td>
+                            <td rowspan="{{ vnotch | length }}" style="vertical-align:middle;">{{ t | date('d M Y') }}</td>
                         {% endif %}
-                        <td>{{ v.nama }}</td>
-                        <td align="right">
+                        <td style="vertical-align:middle;">{{ v.nama }}</td>
+                        <td class="text-right" style="vertical-align:middle;">
                             <a data-url="/keamanan/{{ waduk.id }}/vnotch/update" class="editable" data-name="tma_{{ t }}_{{ v.id }}" data-type="number" data-step="any" data-pk="{{ per.vnotch[v.nama].id }}">
                                 {% if per.vnotch[v.nama].tma %}{{ per.vnotch[v.nama].tma }}{% else %}<span style="color: red;">Empty</span>{% endif %}
                             </a>
                         </td>
-                        <td align="right">
+                        <td class="text-right" style="vertical-align:middle;">
                             <a data-url="/keamanan/{{ waduk.id }}/vnotch/update" class="editable" data-name="debit_{{ t }}_{{ v.id }}" data-type="number" data-step="any" data-pk="{{ per.vnotch[v.nama].id }}">
                                 {% if per.vnotch[v.nama].debit %}{{ per.vnotch[v.nama].debit }}{% else %}<span style="color: red;">Empty</span>{% endif %}
                             </a>
                         </td>
                         {% if loop.index == 1 %}
                             {% for p in piezometer %}
-                                <td rowspan="{{ vnotch | length }}" align="right">
+                                <td rowspan="{{ vnotch | length }}" class="text-right" style="vertical-align:middle;">
                                     <a data-url="/keamanan/{{ waduk.id }}/piezometer/update" class="editable" data-name="tma_{{ t }}_{{ p.id }}" data-type="number" data-step="any" data-pk="{{ per.piezometer[p.nama].id }}">
                                         {% if per.piezometer[p.nama].tma %}{{ per.piezometer[p.nama].tma }}{% else %}<span style="color: red;">Empty</span>{% endif %}
                                     </a>

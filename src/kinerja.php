@@ -93,6 +93,14 @@ $app->group('/kinerja', function() use ($loggedinMiddleware, $petugasAuthorizati
                                             WHERE kerusakan.waduk_id={$id}
                                             ORDER BY kerusakan.id DESC")->fetchAll();
 
+            // list of komponens
+            $komponens = [];
+            foreach ($kerusakan as $ker) {
+                if (!in_array($ker['komponen'], $komponens)) {
+                    $komponens[] = $ker['komponen'];
+                }
+            }
+
             // get photos
             $fotos = $this->db->query("SELECT * FROM foto WHERE obj_type='kerusakan'")->fetchAll();
             $foto = [];
@@ -103,6 +111,7 @@ $app->group('/kinerja', function() use ($loggedinMiddleware, $petugasAuthorizati
             return $this->view->render($response, 'kinerja/bendungan.html', [
                 'waduk' => $waduk,
                 'kerusakan' => $kerusakan,
+                'komponens' => $komponens,
                 'foto' => $foto
             ]);
         })->setName('kinerja.bendungan');
