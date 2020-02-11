@@ -26,22 +26,16 @@ $app->group('/keamanan', function() use ($loggedinMiddleware, $petugasAuthorizat
             $hari = $request->getParam('sampling', date('Y-m-d'));
             $id = $request->getAttribute('id');
             $waduk = $this->db->query("SELECT * FROM waduk WHERE id={$id}")->fetch();
-            $vnotch = $this->db->query("SELECT * FROM vnotch WHERE waduk_id={$id}")->fetchAll();
-            $piezometer = $this->db->query("SELECT * FROM piezometer WHERE waduk_id={$id}")->fetchAll();
 
-            $month = $prev_date = date('m', strtotime($request->getParam('sampling', date('Y-m-d'))));
-            $year = $prev_date = date('Y', strtotime($request->getParam('sampling', date('Y-m-d'))));
+            $month = intval(date('m', strtotime($hari)));
+            $year = intval(date('Y', strtotime($hari)));
             $keamanan = $this->db->query("SELECT * FROM periodik_keamanan
                                             WHERE waduk_id={$id}
                                                 AND EXTRACT(MONTH FROM sampling)={$month}
                                                 AND EXTRACT(YEAR FROM sampling)={$year}")->fetchAll();
 
             # make vnotch and piezometer name easier to get
-            $vnotch_q = [];
             $piezometer_q = [];
-            foreach ($vnotch as $v) {
-                $vnotch_q[$v['id']] = $v['nama'];
-            }
             foreach ($piezometer as $p) {
                 $piezometer_q[$p['id']] = $p['nama'];
             }
@@ -55,11 +49,7 @@ $app->group('/keamanan', function() use ($loggedinMiddleware, $petugasAuthorizat
                 }
 
                 if ($k['keamanan_type'] == 'vnotch') {
-                    $periodik[$tanggal]['vnotch'][$vnotch_q[$k['keamanan_id']]] = [
-                        'id' => $k['id'],
-                        'tma' => $k['tma'],
-                        'debit' => $k['debit']
-                    ];
+
                 } else {
                     $periodik[$tanggal]['piezometer'][$piezometer_q[$k['keamanan_id']]] = [
                         'id' => $k['id'],
@@ -69,10 +59,23 @@ $app->group('/keamanan', function() use ($loggedinMiddleware, $petugasAuthorizat
             }
             krsort($periodik);
             // dump($periodik);
+
+            $vnotch = $this->db->query("SELECT * FROM periodik_vnotch
+                                        WHERE waduk_id={$id}
+                                            AND EXTRACT(MONTH FROM sampling)={$month}
+                                            AND EXTRACT(YEAR FROM sampling)={$year}
+                                        ORDER BY SAMPLING DESC")->fetchAll();
+            $piezo = $this->db->query("SELECT * FROM periodik_piezo
+                                        WHERE waduk_id={$id}
+                                            AND EXTRACT(MONTH FROM sampling)={$month}
+                                            AND EXTRACT(YEAR FROM sampling)={$year}
+                                        ORDER BY SAMPLING DESC")->fetchAll();
+            // dump($vnotch);
+
             return $this->view->render($response, 'keamanan/bendungan.html', [
                 'waduk' => $waduk,
                 'vnotch' => $vnotch,
-                'piezometer' => $piezometer,
+                'piezo' => $piezo,
                 'periodik' => $periodik,
                 'sampling' => $hari,
             ]);
@@ -100,78 +103,61 @@ $app->group('/keamanan', function() use ($loggedinMiddleware, $petugasAuthorizat
                 // check if record in submitted sampling/time already existed
                 // if exists, insert/update record accordingly
                 $sampling = $form['sampling'];
-                $records = $this->db->query("SELECT id, keamanan_id FROM periodik_keamanan
+                $record = $this->db->query("SELECT id FROM periodik_vnotch
                                                 WHERE
-                                                    keamanan_type='vnotch'
-                                                AND
                                                     waduk_id={$id}
                                                 AND
-                                                    sampling='{$sampling}'")->fetchAll();
+                                                    sampling='{$sampling} 00:00:00'")->fetch();
 
-                // get all form values, put into array with id as key
-                $values = [];
-                foreach ($form as $k => $v) {
-                    if ($k == 'sampling') {
-                        // sampling not included since it's form name
-                        // doesn't contain record id
-                        continue;
-                    }
-                    $f = explode("-", $k);
-                    $values[$f[1]][$f[0]] = $v;
-                }
-
-                // checking existing record
-                $v_insert = '';
-                $v_update = '';
-                foreach ($values as $i => $v) {
-                    // check if form id exist
-                    $check = [];
-                    foreach ($records as $record) {
-                        if ($i == $record['keamanan_id']) {
-                            $check['id'] = $record['id'];
-                            $check['keamanan_id'] = $record['keamanan_id'];
-                            break;
-                        }
-                    }
-
-                    if ($check) {
-                        // updating existing records
-                        if ($v_update) {
-                            $v_update .= ' ,';
-                        }
-                        $tma = $v["tma"];
-                        $debit = $v["debit"];
-                        $v_update .= "({$check['id']}, {$tma}, {$debit})";
-                    } else {
-                        // insert new record
-                        if ($v_insert) {
-                            $v_insert .= ' ,';
-                        }
-                        $tma = $v["tma"];
-                        $debit = $v["debit"];
-                        $v_insert .= "('{$sampling}' ,{$tma}, {$debit}, 'vnotch', {$i}, {$id})";
-                    }
-                }
-
-                // use to check values string
-                // die($v_update);
-                // die($v_insert);
-
-                // insert query
-                if (!empty($v_insert)) {
-                    $stmt = $this->db->query("INSERT INTO periodik_keamanan
-                                                (sampling, tma, debit, keamanan_type, keamanan_id, waduk_id)
-                                            VALUES
-                                                {$v_insert}");
-                }
-
-                // update query
-                if (!empty($v_update)) {
-                    $stmt = $this->db->query("UPDATE periodik_keamanan AS m
-                                                SET tma = c.tma, debit = c.debit
-                                                FROM (VALUES {$v_update})
-                                                    AS c(id, tma, debit)
-                                                WHERE c.id = m.id");
+                if (empty($record)) {
+                    $stmt = $this->db->prepare("INSERT INTO periodik_vnotch (
+                                        sampling,
+                                        waduk_id,
+                                        vn1_tma,
+                                        vn1_debit,
+                                        vn2_tma,
+                                        vn2_debit,
+                                        vn3_tma,
+                                        vn3_debit
+                                    ) VALUES (
+                                        :sampling,
+                                        :waduk_id,
+                                        :vn1_tma,
+                                        :vn1_debit,
+                                        :vn2_tma,
+                                        :vn2_debit,
+                                        :vn3_tma,
+                                        :vn3_debit
+                                    )");
+                    $stmt->execute([
+                        ":sampling" => $form['sampling'] . " 00:00:00",
+                        ":waduk_id" => $id,
+                        ":vn1_tma" => intval($form['tma-vn1']),
+                        ":vn1_debit" => intval($form['debit-vn1']),
+                        ":vn2_tma" => intval($form['tma-vn2']),
+                        ":vn2_debit" => intval($form['debit-vn2']),
+                        ":vn3_tma" => intval($form['tma-vn3']),
+                        ":vn3_debit" => intval($form['debit-vn3'])
+                    ]);
+                } else {
+                    $stmt = $this->db->prepare("UPDATE periodik_vnotch SET
+                                        vn1_tma=:vn1_tma,
+                                        vn1_debit=:vn1_debit,
+                                        vn2_tma=:vn2_tma,
+                                        vn2_debit=:vn2_debit,
+                                        vn3_tma=:vn3_tma,
+                                        vn3_debit=:vn3_debit
+                                     WHERE waduk_id=:waduk_id AND sampling=:sampling");
+                    $stmt->execute([
+                        ":sampling" => $form['sampling'] . " 00:00:00",
+                        ":waduk_id" => $id,
+                        ":vn1_tma" => intval($form['tma-vn1']),
+                        ":vn1_debit" => intval($form['debit-vn1']),
+                        ":vn2_tma" => intval($form['tma-vn2']),
+                        ":vn2_debit" => intval($form['debit-vn2']),
+                        ":vn3_tma" => intval($form['tma-vn3']),
+                        ":vn3_debit" => intval($form['debit-vn3'])
+                    ]);
                 }
 
                 return $this->response->withRedirect($this->router->pathFor('keamanan.bendungan', ['id' => $id], []));
@@ -239,73 +225,74 @@ $app->group('/keamanan', function() use ($loggedinMiddleware, $petugasAuthorizat
                 // check if record in submitted sampling/time already existed
                 // if exists, insert/update record accordingly
                 $sampling = $form['sampling'];
-                $records = $this->db->query("SELECT id, keamanan_id FROM periodik_keamanan
-                                                WHERE
-                                                    keamanan_type='piezometer'
-                                                AND
-                                                    waduk_id={$id}
-                                                AND
-                                                    sampling='{$sampling}'")->fetchAll();
+                $record = $this->db->query("SELECT id FROM periodik_piezo
+                                                WHERE waduk_id={$id}
+                                                    AND sampling='{$sampling}'")->fetch();
 
-                // get all form values, put into array with id as key
-                $values = [];
-                foreach ($form as $k => $v) {
-                    if ($k == 'sampling') {
-                        continue;
-                    }
-                    $f = explode("-", $k);
-                    $values[$f[1]][$f[0]] = $v;
-                }
-
-                // checking existing record
-                $v_insert = '';
-                $v_update = '';
-                foreach ($values as $i => $v) {
-                    // check if form id exist
-                    $check = [];
-                    foreach ($records as $record) {
-                        if ($i == $record['keamanan_id']) {
-                            $check['id'] = $record['id'];
-                            $check['keamanan_id'] = $record['keamanan_id'];
-                            break;
-                        }
-                    }
-
-                    if ($check) {
-                        // updating existing records
-                        if ($v_update) {
-                            $v_update .= ' ,';
-                        }
-                        $tma = $v["tma"];
-                        $v_update .= "({$check['id']}, {$tma})";
-                    } else {
-                        // insert new record
-                        if ($v_insert) {
-                            $v_insert .= ' ,';
-                        }
-                        $tma = $v["tma"];
-                        $v_insert .= "('{$sampling}' ,{$tma}, 'piezometer', {$i}, {$id})";
-                    }
-                }
-
-                // die($v_update);
-                // dump($v_insert != '');
-                // dump($values);
-
-                // insert query
-                if ($v_insert != '') {
-                    $stmt = $this->db->query("INSERT INTO periodik_keamanan
-                                                (sampling, tma, keamanan_type, keamanan_id, waduk_id)
-                                            VALUES
-                                                {$v_insert}");
-                }
-                // update query
-                if ($v_update != '') {
-                    $stmt = $this->db->query("UPDATE periodik_keamanan AS m
-                                                SET tma = c.tma
-                                                FROM (VALUES {$v_update})
-                                                    AS c(id, tma)
-                                                WHERE c.id = m.id");
+                if (empty($record)) {
+                    $stmt = $this->db->prepare("INSERT INTO periodik_piezo (
+                                        sampling,
+                                        waduk_id,
+                                        p1a, p1b, p1c,
+                                        p2a, p2b, p2c,
+                                        p3a, p3b, p3c,
+                                        p4a, p4b, p4c,
+                                        p5a, p5b, p5c
+                                    ) VALUES (
+                                        :sampling,
+                                        :waduk_id,
+                                        :p1a, :p1b, :p1c,
+                                        :p2a, :p2b, :p2c,
+                                        :p3a, :p3b, :p3c,
+                                        :p4a, :p4b, :p4c,
+                                        :p5a, :p5b, :p5c
+                                    )");
+                    $stmt->execute([
+                        ":sampling" => $form['sampling'] . " 00:00:00",
+                        ":waduk_id" => $id,
+                        ":p1a" => intval($form['p1a']),
+                        ":p1b" => intval($form['p1b']),
+                        ":p1c" => intval($form['p1c']),
+                        ":p2a" => intval($form['p2a']),
+                        ":p2b" => intval($form['p2b']),
+                        ":p2c" => intval($form['p2c']),
+                        ":p3a" => intval($form['p3a']),
+                        ":p3b" => intval($form['p3b']),
+                        ":p3c" => intval($form['p3c']),
+                        ":p4a" => intval($form['p4a']),
+                        ":p4b" => intval($form['p4b']),
+                        ":p4c" => intval($form['p4c']),
+                        ":p5a" => intval($form['p5a']),
+                        ":p5b" => intval($form['p5b']),
+                        ":p5c" => intval($form['p5c'])
+                    ]);
+                } else {
+                    $stmt = $this->db->prepare("UPDATE periodik_piezo SET
+                                            p1a=:p1a, p1b=:p1b, p1c=:p1c,
+                                            p2a=:p2a, p2b=:p2b, p2c=:p2c,
+                                            p3a=:p3a, p3b=:p3b, p3c=:p3c,
+                                            p4a=:p4a, p4b=:p4b, p4c=:p4c,
+                                            p5a=:p5a, p5b=:p5b, p5c=:p5c
+                                         WHERE waduk_id=:waduk_id AND sampling=:sampling");
+                    $stmt->execute([
+                        ":sampling" => $form['sampling'] . " 00:00:00",
+                        ":waduk_id" => $id,
+                        ":p1a" => intval($form['p1a']),
+                        ":p1b" => intval($form['p1b']),
+                        ":p1c" => intval($form['p1c']),
+                        ":p2a" => intval($form['p2a']),
+                        ":p2b" => intval($form['p2b']),
+                        ":p2c" => intval($form['p2c']),
+                        ":p3a" => intval($form['p3a']),
+                        ":p3b" => intval($form['p3b']),
+                        ":p3c" => intval($form['p3c']),
+                        ":p4a" => intval($form['p4a']),
+                        ":p4b" => intval($form['p4b']),
+                        ":p4c" => intval($form['p4c']),
+                        ":p5a" => intval($form['p5a']),
+                        ":p5b" => intval($form['p5b']),
+                        ":p5c" => intval($form['p5c'])
+                    ]);
                 }
 
                 return $this->response->withRedirect($this->router->pathFor('keamanan.bendungan', ['id' => $id], []));

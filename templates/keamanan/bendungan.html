@@ -44,26 +44,72 @@
                         </div>
                     </div>
                     <br>
-                    {% for v in vnotch %}
-                        <h3>{{ v.nama }}</h3>
-                        <div class="row">
-                            <div class="form-group col-md-6">
-                                <label for="tma-{{ v.id }}">Tinggi Muka Air</label>
-                                <div class="input-group">
-                                    <input id="tma-{{ v.id }}" name="tma-{{ v.id }}" autofocus required class="form-control" type="number" step="0.01" value="0" aria-describedby="tma_addon">
-                                    <span class="input-group-addon" id="tma_addon">m</span>
-                                </div>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="debit-{{ v.id }}">Debit Air</label>
-                                <div class="input-group">
-                                    <input id="debit-{{ v.id }}" name="debit-{{ v.id }}" autofocus required class="form-control" type="number" step="0.01" value="0" aria-describedby="debit_addon">
-                                    <span class="input-group-addon" id="debit_addon">m<sup>3</sup></span>
+                    <h3>VNotch 1</h3>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label for="tma-vn1">Tinggi Muka Air</label>
+                            <div class="input-group">
+                                <input id="tma-vn1" name="tma-vn1"  class="form-control" type="number" step="0.1" value="">
+                                <div class="input-group-append">
+                                    <span class="input-group-text" id="tma-append">m</span>
                                 </div>
                             </div>
                         </div>
-                        <hr>
-                    {% endfor %}
+                        <div class="form-group col-md-6">
+                            <label for="debit-vn1">Debit Air</label>
+                            <div class="input-group">
+                                <input id="debit-vn1" name="debit-vn1" class="form-control" type="number" step="0.1" value="">
+                                <div class="input-group-append">
+                                    <span class="input-group-text" id="debit-append">m<sup>3</sup>/detik</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <h3>VNotch 2</h3>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label for="tma-vn2">Tinggi Muka Air</label>
+                            <div class="input-group">
+                                <input id="tma-vn2" name="tma-vn2" class="form-control" type="number" step="0.1" value="">
+                                <div class="input-group-append">
+                                    <span class="input-group-text" id="tma-append">m</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="debit-vn2">Debit Air</label>
+                            <div class="input-group">
+                                <input id="debit-vn2" name="debit-vn2" class="form-control" type="number" step="0.1" value="">
+                                <div class="input-group-append">
+                                    <span class="input-group-text" id="debit-append">m<sup>3</sup>/detik</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <h3>VNotch 3</h3>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label for="tma-vn3">Tinggi Muka Air</label>
+                            <div class="input-group">
+                                <input id="tma-vn3" name="tma-vn3" class="form-control" type="number" step="0.1" value="">
+                                <div class="input-group-append">
+                                    <span class="input-group-text" id="tma-append">m</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="debit-vn3">Debit Air</label>
+                            <div class="input-group">
+                                <input id="debit-vn3" name="debit-vn3" class="form-control" type="number" step="0.1" value="">
+                                <div class="input-group-append">
+                                    <span class="input-group-text" id="debit-append">m<sup>3</sup>/detik</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
                   <div class="form-group">
                     <input type="submit" class="btn btn-primary" value="Tambah">
                   </div>
@@ -94,19 +140,201 @@
                         </div>
                     </div>
                     <br>
-                    {% for p in piezometer %}
-                        <h3>{{ p.nama }}</h3>
-                        <div class="row">
-                            <div class="form-group col-md-8">
-                                <label for="tma-{{ p.id }}">Tinggi Muka Air</label>
-                                <div class="input-group">
-                                    <input id="tma-{{ p.id }}" name="tma-{{ p.id }}" autofocus required class="form-control" type="number" step="0.01" value="0" aria-describedby="tma_addon">
-                                    <span class="input-group-addon" id="tma_addon">m</span>
+                    <h3>Piezo 1A</h3>
+                    <div class="row">
+                        <div class="form-group col-md-8">
+                            <label for="p1a">Tinggi Muka Air</label>
+                            <div class="input-group">
+                                <input id="p1a" name="p1a"  class="form-control" type="number" step="0.1" value="">
+                                <div class="input-group-append">
+                                    <span class="input-group-text" id="tma-append">m</span>
                                 </div>
                             </div>
                         </div>
-                        <hr>
-                    {% endfor %}
+                    </div>
+                    <br>
+                    <h3>Piezo 1B</h3>
+                    <div class="row">
+                        <div class="form-group col-md-8">
+                            <label for="p1b">Tinggi Muka Air</label>
+                            <div class="input-group">
+                                <input id="p1b" name="p1b"  class="form-control" type="number" step="0.1" value="">
+                                <div class="input-group-append">
+                                    <span class="input-group-text" id="tma-append">m</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <h3>Piezo 1C</h3>
+                    <div class="row">
+                        <div class="form-group col-md-8">
+                            <label for="p1c">Tinggi Muka Air</label>
+                            <div class="input-group">
+                                <input id="p1c" name="p1c"  class="form-control" type="number" step="0.1" value="">
+                                <div class="input-group-append">
+                                    <span class="input-group-text" id="tma-append">m</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <h3>Piezo 2A</h3>
+                    <div class="row">
+                        <div class="form-group col-md-8">
+                            <label for="p2a">Tinggi Muka Air</label>
+                            <div class="input-group">
+                                <input id="p2a" name="p2a"  class="form-control" type="number" step="0.1" value="">
+                                <div class="input-group-append">
+                                    <span class="input-group-text" id="tma-append">m</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <h3>Piezo 2B</h3>
+                    <div class="row">
+                        <div class="form-group col-md-8">
+                            <label for="p2b">Tinggi Muka Air</label>
+                            <div class="input-group">
+                                <input id="p2b" name="p2b"  class="form-control" type="number" step="0.1" value="">
+                                <div cla2s="input-group-append">
+                                    <span class="input-group-text" id="tma-append">m</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <h3>Piezo 2C</h3>
+                    <div class="row">
+                        <div class="form-group col-md-8">
+                            <label for="p2c">Tinggi Muka Air</label>
+                            <div class="input-group">
+                                <input id="p2c" name="p2c"  class="form-control" type="number" step="0.1" value="">
+                                <div class="input-group-append">
+                                    <span class="input-group-text" id="tma-append">m</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <h3>Piezo 3A</h3>
+                    <div class="row">
+                        <div class="form-group col-md-8">
+                            <label for="p3a">Tinggi Muka Air</label>
+                            <div class="input-group">
+                                <input id="p3a" name="p3a"  class="form-control" type="number" step="0.1" value="">
+                                <div class="input-group-append">
+                                    <span class="input-group-text" id="tma-append">m</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <h3>Piezo 3B</h3>
+                    <div class="row">
+                        <div class="form-group col-md-8">
+                            <label for="p3b">Tinggi Muka Air</label>
+                            <div class="input-group">
+                                <input id="p3b" name="p3b"  class="form-control" type="number" step="0.1" value="">
+                                <div class="input-group-append">
+                                    <span class="input-group-text" id="tma-append">m</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <h3>Piezo 3C</h3>
+                    <div class="row">
+                        <div class="form-group col-md-8">
+                            <label for="p3c">Tinggi Muka Air</label>
+                            <div class="input-group">
+                                <input id="p3c" name="p3c"  class="form-control" type="number" step="0.1" value="">
+                                <div class="input-group-append">
+                                    <span class="input-group-text" id="tma-append">m</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <h3>Piezo 4A</h3>
+                    <div class="row">
+                        <div class="form-group col-md-8">
+                            <label for="p4a">Tinggi Muka Air</label>
+                            <div class="input-group">
+                                <input id="p4a" name="p4a"  class="form-control" type="number" step="0.1" value="">
+                                <div class="input-group-append">
+                                    <span class="input-group-text" id="tma-append">m</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <h3>Piezo 4B</h3>
+                    <div class="row">
+                        <div class="form-group col-md-8">
+                            <label for="p4b">Tinggi Muka Air</label>
+                            <div class="input-group">
+                                <input id="p4b" name="p4b"  class="form-control" type="number" step="0.1" value="">
+                                <div class="input-group-append">
+                                    <span class="input-group-text" id="tma-append">m</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <h3>Piezo 4C</h3>
+                    <div class="row">
+                        <div class="form-group col-md-8">
+                            <label for="p4c">Tinggi Muka Air</label>
+                            <div class="input-group">
+                                <input id="p4c" name="p4c"  class="form-control" type="number" step="0.1" value="">
+                                <div class="input-group-append">
+                                    <span class="input-group-text" id="tma-append">m</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <h3>Piezo 5A</h3>
+                    <div class="row">
+                        <div class="form-group col-md-8">
+                            <label for="p5a">Tinggi Muka Air</label>
+                            <div class="input-group">
+                                <input id="p5a" name="p5a"  class="form-control" type="number" step="0.1" value="">
+                                <div class="input-group-append">
+                                    <span class="input-group-text" id="tma-append">m</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <h3>Piezo 5B</h3>
+                    <div class="row">
+                        <div class="form-group col-md-8">
+                            <label for="p5b">Tinggi Muka Air</label>
+                            <div class="input-group">
+                                <input id="p5b" name="p5b"  class="form-control" type="number" step="0.1" value="">
+                                <div class="input-group-append">
+                                    <span class="input-group-text" id="tma-append">m</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <h3>Piezo 5C</h3>
+                    <div class="row">
+                        <div class="form-group col-md-8">
+                            <label for="p5c">Tinggi Muka Air</label>
+                            <div class="input-group">
+                                <input id="p5c" name="p5c"  class="form-control" type="number" step="0.1" value="">
+                                <div class="input-group-append">
+                                    <span class="input-group-text" id="tma-append">m</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
                   <div class="form-group">
                     <input type="submit" class="btn btn-primary" value="Tambah">
                   </div>
@@ -123,48 +351,50 @@
         <thead>
             <tr class="active">
               <th rowspan="2" style="vertical-align:middle;">Tanggal</th>
-              <th colspan="3" style="vertical-align:middle;">VNotch</th>
-              <th colspan="{{ piezometer | length }}" style="vertical-align:middle;">Piezometer</th>
+              <th colspan="2" style="vertical-align:middle;">VNotch</th>
+              <th colspan="15" style="vertical-align:middle;">Piezometer</th>
             </tr>
             <tr class="active">
-              <th style="vertical-align:middle;">Nama</th>
               <th style="vertical-align:middle;">Tinggi</th>
               <th style="vertical-align:middle;">Debit</th>
-              {% for p in piezometer %}
-                <th style="vertical-align:middle;">{{ p.nama }}</th>
-              {% endfor %}
+              <th style="vertical-align:middle;">Piezo 1A</th>
+              <th style="vertical-align:middle;">Piezo 1B</th>
+              <th style="vertical-align:middle;">Piezo 1C</th>
+              <th style="vertical-align:middle;">Piezo 2A</th>
+              <th style="vertical-align:middle;">Piezo 2B</th>
+              <th style="vertical-align:middle;">Piezo 2C</th>
+              <th style="vertical-align:middle;">Piezo 3A</th>
+              <th style="vertical-align:middle;">Piezo 3B</th>
+              <th style="vertical-align:middle;">Piezo 3C</th>
+              <th style="vertical-align:middle;">Piezo 4A</th>
+              <th style="vertical-align:middle;">Piezo 4B</th>
+              <th style="vertical-align:middle;">Piezo 4C</th>
+              <th style="vertical-align:middle;">Piezo 5A</th>
+              <th style="vertical-align:middle;">Piezo 5B</th>
+              <th style="vertical-align:middle;">Piezo 5C</th>
             </tr>
         </thead>
         <tbody>
-            {% for t, per in periodik %}
-                {% for v in vnotch %}
-                    <tr>
-                        {% if loop.index == 1 %}
-                            <td rowspan="{{ vnotch | length }}" style="vertical-align:middle;">{{ t | date('d M Y') }}</td>
-                        {% endif %}
-                        <td style="vertical-align:middle;">{{ v.nama }}</td>
-                        <td class="text-right" style="vertical-align:middle;">
-                            <a data-url="/keamanan/{{ waduk.id }}/vnotch/update" class="editable" data-name="tma_{{ t }}_{{ v.id }}" data-type="number" data-step="any" data-pk="{{ per.vnotch[v.nama].id }}">
-                                {% if per.vnotch[v.nama].tma %}{{ per.vnotch[v.nama].tma }}{% else %}<span style="color: red;">Empty</span>{% endif %}
-                            </a>
-                        </td>
-                        <td class="text-right" style="vertical-align:middle;">
-                            <a data-url="/keamanan/{{ waduk.id }}/vnotch/update" class="editable" data-name="debit_{{ t }}_{{ v.id }}" data-type="number" data-step="any" data-pk="{{ per.vnotch[v.nama].id }}">
-                                {% if per.vnotch[v.nama].debit %}{{ per.vnotch[v.nama].debit }}{% else %}<span style="color: red;">Empty</span>{% endif %}
-                            </a>
-                        </td>
-                        {% if loop.index == 1 %}
-                            {% for p in piezometer %}
-                                <td rowspan="{{ vnotch | length }}" class="text-right" style="vertical-align:middle;">
-                                    <a data-url="/keamanan/{{ waduk.id }}/piezometer/update" class="editable" data-name="tma_{{ t }}_{{ p.id }}" data-type="number" data-step="any" data-pk="{{ per.piezometer[p.nama].id }}">
-                                        {% if per.piezometer[p.nama].tma %}{{ per.piezometer[p.nama].tma }}{% else %}<span style="color: red;">Empty</span>{% endif %}
-                                    </a>
-                                </td>
-                            {% endfor %}
-                        {% endif %}
-                    </tr>
-                {% endfor %}
-            {% endfor %}
+            <tr>
+                <td>{{ sampling | date('d') }}</td>
+                <td align="right">{{ vnotch.0.vn1_tma }}</td>
+                <td align="right">{{ vnotch.0.vn1_debit }}</td>
+                <td align="right">{{ piezo.0.p1a }}</td>
+                <td align="right">{{ piezo.0.p1b }}</td>
+                <td align="right">{{ piezo.0.p1c }}</td>
+                <td align="right">{{ piezo.0.p2a }}</td>
+                <td align="right">{{ piezo.0.p2b }}</td>
+                <td align="right">{{ piezo.0.p2c }}</td>
+                <td align="right">{{ piezo.0.p3a }}</td>
+                <td align="right">{{ piezo.0.p3b }}</td>
+                <td align="right">{{ piezo.0.p3c }}</td>
+                <td align="right">{{ piezo.0.p4a }}</td>
+                <td align="right">{{ piezo.0.p4b }}</td>
+                <td align="right">{{ piezo.0.p4c }}</td>
+                <td align="right">{{ piezo.0.p5a }}</td>
+                <td align="right">{{ piezo.0.p5b }}</td>
+                <td align="right">{{ piezo.0.p5c }}</td>
+            </tr>
         </tbody>
     </table>
 {% endblock %}
