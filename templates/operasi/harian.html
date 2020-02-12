@@ -23,18 +23,18 @@
                 <th colspan="2" style="vertical-align:middle;" class="text-center">Pagi</th>
                 <th colspan="2" style="vertical-align:middle;" class="text-center">Siang</th>
                 <th colspan="2" style="vertical-align:middle;" class="text-center">Sore</th>
-                <th rowspan="2" style="vertical-align:middle;" class="text-center">Q Inflow</th>
-                <th colspan="2" style="vertical-align:middle;" class="text-center">Q Outflow</th>
-                <th colspan="2" style="vertical-align:middle;" class="text-center">VNotch</th>
-                <th colspan="15" style="vertical-align:middle;" class="text-center">Piezometer</th>
+                <th rowspan="2" style="vertical-align:middle;" class="text-center">Q Inflow (m<sup>3</sup>/det)</th>
+                <th colspan="2" style="vertical-align:middle;" class="text-center">Q Outflow (m<sup>3</sup>/det)</th>
+                <th colspan="2" style="vertical-align:middle;" class="text-center">VNotch (L/det)</th>
+                <th colspan="15" style="vertical-align:middle;" class="text-center">Piezometer (m)</th>
             </tr>
             <tr class="active">
-                <th style="vertical-align:middle;" class="text-center">TMA</th>
-                <th style="vertical-align:middle;" class="text-center">Vol</th>
-                <th style="vertical-align:middle;" class="text-center">TMA</th>
-                <th style="vertical-align:middle;" class="text-center">Vol</th>
-                <th style="vertical-align:middle;" class="text-center">TMA</th>
-                <th style="vertical-align:middle;" class="text-center">Vol</th>
+                <th style="vertical-align:middle;" class="text-center">TMA (m)</th>
+                <th style="vertical-align:middle;" class="text-center">Vol (m<sup>3</sup>)</th>
+                <th style="vertical-align:middle;" class="text-center">TMA (m)</th>
+                <th style="vertical-align:middle;" class="text-center">Vol (m<sup>3</sup>)</th>
+                <th style="vertical-align:middle;" class="text-center">TMA (m)</th>
+                <th style="vertical-align:middle;" class="text-center">Vol (m<sup>3</sup>)</th>
                 <th style="vertical-align:middle;" class="text-center">Intake</th>
                 <th style="vertical-align:middle;" class="text-center">Spillway</th>
                 <th style="vertical-align:middle;" class="text-center">Tinggi</th>
@@ -71,20 +71,28 @@
                     {% endif %}
 
                     {% if w.vnotch %}
-                        {% for vn in w.vnotch %}
-                            {% if vn.nama_vn == "VNotch 1" %}
-                                <td class="text-right" style="vertical-align:middle;">{% if vn.tma %}{{ vn.tma|number_format(2, ',', '.') }}{% else %}-{% endif %}</td>
-                                <td class="text-right" style="vertical-align:middle;">{% if vn.debit %}{{ vn.debit|number_format(2, ',', '.') }}{% else %}-{% endif %}</td>
-                            {% endif %}
-                        {% endfor %}
+                        <td class="text-right" style="vertical-align:middle;">{% if w.vnotch.vn1_tma %}{{ w.vnotch.vn1_tma|number_format(2, ',', '.') }}{% else %}-{% endif %}</td>
+                        <td class="text-right" style="vertical-align:middle;">{% if w.vnotch.vn1_debit %}{{ w.vnotch.vn1_debit|number_format(2, ',', '.') }}{% else %}-{% endif %}</td>
                     {% else %}
                         <td colspan="2" style="vertical-align:middle;">Tidak Ada Data</td>
                     {% endif %}
 
                     {% if w.piezo %}
-                        {% for pie in w.piezo %}
-                            <td class="text-right" style="vertical-align:middle;">{% if pie.tma %}{{ pie.tma|number_format(2, ',', '.') }}{% else %}-{% endif %}</td>
-                        {% endfor %}
+                        <td class="text-right" style="vertical-align:middle;">{% if w.piezo.p1a %}{{ w.piezo.p1a|number_format(2, ',', '.') }}{% else %}-{% endif %}</td>
+                        <td class="text-right" style="vertical-align:middle;">{% if w.piezo.p1b %}{{ w.piezo.p1b|number_format(2, ',', '.') }}{% else %}-{% endif %}</td>
+                        <td class="text-right" style="vertical-align:middle;">{% if w.piezo.p1c %}{{ w.piezo.p1c|number_format(2, ',', '.') }}{% else %}-{% endif %}</td>
+                        <td class="text-right" style="vertical-align:middle;">{% if w.piezo.p2a %}{{ w.piezo.p2a|number_format(2, ',', '.') }}{% else %}-{% endif %}</td>
+                        <td class="text-right" style="vertical-align:middle;">{% if w.piezo.p2b %}{{ w.piezo.p2b|number_format(2, ',', '.') }}{% else %}-{% endif %}</td>
+                        <td class="text-right" style="vertical-align:middle;">{% if w.piezo.p2c %}{{ w.piezo.p2c|number_format(2, ',', '.') }}{% else %}-{% endif %}</td>
+                        <td class="text-right" style="vertical-align:middle;">{% if w.piezo.p3a %}{{ w.piezo.p3a|number_format(2, ',', '.') }}{% else %}-{% endif %}</td>
+                        <td class="text-right" style="vertical-align:middle;">{% if w.piezo.p3b %}{{ w.piezo.p3b|number_format(2, ',', '.') }}{% else %}-{% endif %}</td>
+                        <td class="text-right" style="vertical-align:middle;">{% if w.piezo.p3c %}{{ w.piezo.p3c|number_format(2, ',', '.') }}{% else %}-{% endif %}</td>
+                        <td class="text-right" style="vertical-align:middle;">{% if w.piezo.p4a %}{{ w.piezo.p4a|number_format(2, ',', '.') }}{% else %}-{% endif %}</td>
+                        <td class="text-right" style="vertical-align:middle;">{% if w.piezo.p4b %}{{ w.piezo.p4b|number_format(2, ',', '.') }}{% else %}-{% endif %}</td>
+                        <td class="text-right" style="vertical-align:middle;">{% if w.piezo.p4c %}{{ w.piezo.p4c|number_format(2, ',', '.') }}{% else %}-{% endif %}</td>
+                        <td class="text-right" style="vertical-align:middle;">{% if w.piezo.p5a %}{{ w.piezo.p5a|number_format(2, ',', '.') }}{% else %}-{% endif %}</td>
+                        <td class="text-right" style="vertical-align:middle;">{% if w.piezo.p5b %}{{ w.piezo.p5b|number_format(2, ',', '.') }}{% else %}-{% endif %}</td>
+                        <td class="text-right" style="vertical-align:middle;">{% if w.piezo.p5c %}{{ w.piezo.p5c|number_format(2, ',', '.') }}{% else %}-{% endif %}</td>
                     {% else %}
                         <td colspan="15" style="vertical-align:middle;">Tidak Ada Data</td>
                     {% endif %}

@@ -351,8 +351,8 @@
         <thead>
             <tr class="active">
               <th rowspan="2" style="vertical-align:middle;">Tanggal</th>
-              <th colspan="2" style="vertical-align:middle;">VNotch</th>
-              <th colspan="15" style="vertical-align:middle;">Piezometer</th>
+              <th colspan="2" style="vertical-align:middle;">VNotch (L/det)</th>
+              <th colspan="15" style="vertical-align:middle;">Piezometer (m)</th>
             </tr>
             <tr class="active">
               <th style="vertical-align:middle;">Tinggi</th>
@@ -375,26 +375,28 @@
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td>{{ sampling | date('d') }}</td>
-                <td align="right">{{ vnotch.0.vn1_tma }}</td>
-                <td align="right">{{ vnotch.0.vn1_debit }}</td>
-                <td align="right">{{ piezo.0.p1a }}</td>
-                <td align="right">{{ piezo.0.p1b }}</td>
-                <td align="right">{{ piezo.0.p1c }}</td>
-                <td align="right">{{ piezo.0.p2a }}</td>
-                <td align="right">{{ piezo.0.p2b }}</td>
-                <td align="right">{{ piezo.0.p2c }}</td>
-                <td align="right">{{ piezo.0.p3a }}</td>
-                <td align="right">{{ piezo.0.p3b }}</td>
-                <td align="right">{{ piezo.0.p3c }}</td>
-                <td align="right">{{ piezo.0.p4a }}</td>
-                <td align="right">{{ piezo.0.p4b }}</td>
-                <td align="right">{{ piezo.0.p4c }}</td>
-                <td align="right">{{ piezo.0.p5a }}</td>
-                <td align="right">{{ piezo.0.p5b }}</td>
-                <td align="right">{{ piezo.0.p5c }}</td>
-            </tr>
+            {% for d, per in periodik %}
+                <tr>
+                    <td align="right">{{ d }}</td>
+                    <td align="right">{{ per.vnotch.vn1_tma }}</td>
+                    <td align="right">{{ per.vnotch.vn1_debit }}</td>
+                    <td align="right">{% if per.piezo.p1a %}{{ per.piezo.p1a }}{% else %}-{% endif %}</td>
+                    <td align="right">{% if per.piezo.p1b %}{{ per.piezo.p1b }}{% else %}-{% endif %}</td>
+                    <td align="right">{% if per.piezo.p1c %}{{ per.piezo.p1c }}{% else %}-{% endif %}</td>
+                    <td align="right">{% if per.piezo.p2a %}{{ per.piezo.p2a }}{% else %}-{% endif %}</td>
+                    <td align="right">{% if per.piezo.p2b %}{{ per.piezo.p2b }}{% else %}-{% endif %}</td>
+                    <td align="right">{% if per.piezo.p2c %}{{ per.piezo.p2c }}{% else %}-{% endif %}</td>
+                    <td align="right">{% if per.piezo.p3a %}{{ per.piezo.p3a }}{% else %}-{% endif %}</td>
+                    <td align="right">{% if per.piezo.p3b %}{{ per.piezo.p3b }}{% else %}-{% endif %}</td>
+                    <td align="right">{% if per.piezo.p3c %}{{ per.piezo.p3c }}{% else %}-{% endif %}</td>
+                    <td align="right">{% if per.piezo.p4a %}{{ per.piezo.p4a }}{% else %}-{% endif %}</td>
+                    <td align="right">{% if per.piezo.p4b %}{{ per.piezo.p4b }}{% else %}-{% endif %}</td>
+                    <td align="right">{% if per.piezo.p4c %}{{ per.piezo.p4c }}{% else %}-{% endif %}</td>
+                    <td align="right">{% if per.piezo.p5a %}{{ per.piezo.p5a }}{% else %}-{% endif %}</td>
+                    <td align="right">{% if per.piezo.p5b %}{{ per.piezo.p5b }}{% else %}-{% endif %}</td>
+                    <td align="right">{% if per.piezo.p5c %}{{ per.piezo.p5c }}{% else %}-{% endif %}</td>
+                </tr>
+            {% endfor %}
         </tbody>
     </table>
 {% endblock %}

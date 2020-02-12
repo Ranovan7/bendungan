@@ -29,12 +29,10 @@ $app->group('/operasi', function() use ($loggedinMiddleware, $petugasAuthorizati
         $waduk = $this->db->query("SELECT * FROM waduk")->fetchAll();
         $daily = $this->db->query("SELECT * FROM periodik_daily WHERE sampling BETWEEN '{$from}' AND '{$to}'")->fetchAll();
         $tma = $this->db->query("SELECT * FROM tma WHERE sampling BETWEEN '{$from}' AND '{$to}'")->fetchAll();
-        $vnotch = $this->db->query("SELECT periodik_keamanan.*, vnotch.nama AS nama_vn
-                                    FROM periodik_keamanan LEFT JOIN vnotch ON periodik_keamanan.keamanan_id=vnotch.id
-                                    WHERE keamanan_type='vnotch' AND sampling BETWEEN '{$from}' AND '{$to}'")->fetchAll();
-        $piezo = $this->db->query("SELECT periodik_keamanan.*, piezometer.nama AS nama_piezo
-                                    FROM periodik_keamanan LEFT JOIN piezometer ON periodik_keamanan.keamanan_id=piezometer.id
-                                    WHERE keamanan_type='piezometer' AND sampling BETWEEN '{$from}' AND '{$to}'")->fetchAll();
+        $vnotch = $this->db->query("SELECT * FROM periodik_vnotch
+                                    WHERE sampling BETWEEN '{$from}' AND '{$to}'")->fetchAll();
+        $piezo = $this->db->query("SELECT * FROM periodik_piezo
+                                    WHERE sampling BETWEEN '{$from}' AND '{$to}'")->fetchAll();
 
         $waduk_daily = [];
         foreach ($waduk as $w) {
@@ -55,10 +53,10 @@ $app->group('/operasi', function() use ($loggedinMiddleware, $petugasAuthorizati
             $waduk_daily[$t['waduk_id']]['tma'][$hour] = $t;
         }
         foreach ($piezo as $p) {
-            $waduk_daily[$p['waduk_id']]['piezo'][$p['nama_piezo']] = $p;
+            $waduk_daily[$p['waduk_id']]['piezo'] = $p;
         }
         foreach ($vnotch as $v) {
-            $waduk_daily[$v['waduk_id']]['vnotch'][$v['nama_vn']] = $v;
+            $waduk_daily[$v['waduk_id']]['vnotch'] = $v;
         }
 
         // dump($hari);
@@ -76,8 +74,6 @@ $app->group('/operasi', function() use ($loggedinMiddleware, $petugasAuthorizati
             $hari = $request->getParam('sampling', date('Y-m-d'));
             $id = $request->getAttribute('id');
             $waduk = $this->db->query("SELECT * FROM waduk WHERE id={$id}")->fetch();
-            $vnotch = $this->db->query("SELECT * FROM vnotch WHERE waduk_id={$id}")->fetchAll();
-            $piezometer = $this->db->query("SELECT * FROM piezometer WHERE waduk_id={$id}")->fetchAll();
 
             $month = $prev_date = date('m', strtotime($hari));
             $year = $prev_date = date('Y', strtotime($hari));

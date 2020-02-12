@@ -29,36 +29,6 @@ $app->group('/keamanan', function() use ($loggedinMiddleware, $petugasAuthorizat
 
             $month = intval(date('m', strtotime($hari)));
             $year = intval(date('Y', strtotime($hari)));
-            $keamanan = $this->db->query("SELECT * FROM periodik_keamanan
-                                            WHERE waduk_id={$id}
-                                                AND EXTRACT(MONTH FROM sampling)={$month}
-                                                AND EXTRACT(YEAR FROM sampling)={$year}")->fetchAll();
-
-            # make vnotch and piezometer name easier to get
-            $piezometer_q = [];
-            foreach ($piezometer as $p) {
-                $piezometer_q[$p['id']] = $p['nama'];
-            }
-
-            # prepare preview data
-            $periodik = [];
-            foreach ($keamanan as $i => $k) {
-                $tanggal = $k['sampling'];
-                if (!$periodik[$tanggal]['id']) {
-                    $periodik[$tanggal]['id'] = $k['id'];
-                }
-
-                if ($k['keamanan_type'] == 'vnotch') {
-
-                } else {
-                    $periodik[$tanggal]['piezometer'][$piezometer_q[$k['keamanan_id']]] = [
-                        'id' => $k['id'],
-                        'tma' => $k['tma']
-                    ];
-                }
-            }
-            krsort($periodik);
-            // dump($periodik);
 
             $vnotch = $this->db->query("SELECT * FROM periodik_vnotch
                                         WHERE waduk_id={$id}
@@ -70,7 +40,26 @@ $app->group('/keamanan', function() use ($loggedinMiddleware, $petugasAuthorizat
                                             AND EXTRACT(MONTH FROM sampling)={$month}
                                             AND EXTRACT(YEAR FROM sampling)={$year}
                                         ORDER BY SAMPLING DESC")->fetchAll();
-            // dump($vnotch);
+
+            # prepare preview data
+            $periodik = [];
+            $day = intval(date('d', strtotime($hari)));
+            for ($x = $day; $x > 0; $x--) {
+                $periodik[$x] = [
+                    'piezo' => [],
+                    'vnotch' => []
+                ];
+            }
+            foreach ($vnotch as $v) {
+                $d = intval(date('d', strtotime($v['sampling'])));
+                $periodik[$d]['vnotch'] = $v;
+            }
+            foreach ($piezo as $p) {
+                $d = intval(date('d', strtotime($p['sampling'])));
+                $periodik[$d]['piezo'] = $p;
+            }
+            krsort($periodik);
+            // dump($periodik);
 
             return $this->view->render($response, 'keamanan/bendungan.html', [
                 'waduk' => $waduk,
@@ -175,17 +164,17 @@ $app->group('/keamanan', function() use ($loggedinMiddleware, $petugasAuthorizat
 
                 if ($form['pk']) {
                     // update keamanan
-                    $stmt = $this->db->prepare("UPDATE periodik_keamanan SET {$column}=:value WHERE id=:id");
+                    $stmt = $this->db->prepare("UPDATE periodik_vnotch SET {$column}=:value WHERE id=:id");
                     $stmt->execute([
                         ':value' => $form['value'],
                         ':id' => $form['pk']
                     ]);
                 } else {
                     // insert new keamanan
-                    $stmt = $this->db->prepare("INSERT INTO periodik_keamanan
-                                                    (sampling, {$column}, keamanan_type, keamanan_id, waduk_id)
+                    $stmt = $this->db->prepare("INSERT INTO periodik_vnotch
+                                                    (sampling, {$column}, waduk_id)
                                                 VALUES
-                                                    (:sampling, :value, 'vnotch', :keamanan_id, :waduk_id)");
+                                                    (:sampling, :value, :waduk_id)");
                     $stmt->execute([
                         ':sampling' => $sampling,
                         ':value' => $form['value'],
@@ -310,17 +299,17 @@ $app->group('/keamanan', function() use ($loggedinMiddleware, $petugasAuthorizat
 
                 if ($form['pk']) {
                     // update keamanan
-                    $stmt = $this->db->prepare("UPDATE periodik_keamanan SET {$column}=:value WHERE id=:id");
+                    $stmt = $this->db->prepare("UPDATE periodik_piezo SET {$column}=:value WHERE id=:id");
                     $stmt->execute([
                         ':value' => $form['value'],
                         ':id' => $form['pk']
                     ]);
                 } else {
                     // insert new keamanan
-                    $stmt = $this->db->prepare("INSERT INTO periodik_keamanan
-                                                    (sampling, {$column}, keamanan_type, keamanan_id, waduk_id)
+                    $stmt = $this->db->prepare("INSERT INTO periodik_piezo
+                                                    (sampling, {$column}, waduk_id)
                                                 VALUES
-                                                    (:sampling, :value, 'piezometer', :keamanan_id, :waduk_id)");
+                                                    (:sampling, :value, :waduk_id)");
                     $stmt->execute([
                         ':sampling' => $sampling,
                         ':value' => $form['value'],
