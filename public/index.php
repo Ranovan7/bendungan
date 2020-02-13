@@ -319,7 +319,7 @@ $app->get('/test', function(Request $request, Response $response) {
 $app->group('/api', function() {
     $app = $this;
 
-    // require __DIR__ . '/../src/api/main.php';
+    require __DIR__ . '/../src/api/bendungan.php';
 });
 
 require __DIR__ . '/../src/main.php';
